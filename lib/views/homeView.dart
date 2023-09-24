@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/views/recordsView.dart';
 
 import '../utils/constants.dart';
 import '../utils/functions.dart';
@@ -74,37 +75,40 @@ class _HomeViewState extends State<HomeView> {
           final item = data[i];
           return Center(
             child: Dismissible(
-              background:
-                  Container(color: Colors.red, child: const Icon(Icons.delete)),
-              key: Key(item['indecs'].toString()),
-              direction: DismissDirection.endToStart,
-              onDismissed: (direction) async {
-                // setState(() {
-                //   isLoading = true;
-                // });
-                // if (deletedItem.isNotEmpty) {
-                //   await DatabaseHelper.instance
-                //       .deleteLog(deletedItem['indecs']);
-                // } else {}
-                // setState(() {
-                //   deletedItem = data.removeAt(i);
-                //   showUndo = true;
-                //   isLoading = false;
-                // });
-              },
-              child: const ListTile(title: Text("dgsig"),subtitle: Text("sngig"),)
-              // child: ExerciseWidget(
-              //   name: item['name'],
-              //   reps1: item['reps1'].toString(),
-              //   reps2: item['reps2'].toString(),
-              //   reps3: item['reps3'].toString(),
-              //   weight1: item['weight1'].toString(),
-              //   weight2: item['weight2'].toString(),
-              //   weight3: item['weight3'].toString(),
-              //   muscle: item['muscle'],
-              //   screen: 1,
-              // ),
-            ),
+                background: Container(
+                    color: Colors.red, child: const Icon(Icons.delete)),
+                key: Key(item['indecs'].toString()),
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) async {
+                  // setState(() {
+                  //   isLoading = true;
+                  // });
+                  // if (deletedItem.isNotEmpty) {
+                  //   await DatabaseHelper.instance
+                  //       .deleteLog(deletedItem['indecs']);
+                  // } else {}
+                  // setState(() {
+                  //   deletedItem = data.removeAt(i);
+                  //   showUndo = true;
+                  //   isLoading = false;
+                  // });
+                },
+                child: const ListTile(
+                  title: Text("dgsig"),
+                  subtitle: Text("sngig"),
+                )
+                // child: ExerciseWidget(
+                //   name: item['name'],
+                //   reps1: item['reps1'].toString(),
+                //   reps2: item['reps2'].toString(),
+                //   reps3: item['reps3'].toString(),
+                //   weight1: item['weight1'].toString(),
+                //   weight2: item['weight2'].toString(),
+                //   weight3: item['weight3'].toString(),
+                //   muscle: item['muscle'],
+                //   screen: 1,
+                // ),
+                ),
           );
         },
       ),
@@ -206,14 +210,12 @@ class _HomeViewState extends State<HomeView> {
             title: const Text('Logs'),
             onTap: () {
               Navigator.pop(context);
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => RecordsScreen(
-              //       titleText: 'Previous Records',
-              //     ),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RecordsView(),
+                ),
+              );
             },
           ),
           // ListTile(
@@ -329,15 +331,15 @@ class _HomeViewState extends State<HomeView> {
             //     content: Text('Please select an exercise to add.'),
             //   ));
             // } else {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => AddScreen(
-        //       name: addName,
-        //       muscle: addMuscle,
-        //     ),
-        //   ),
-        // );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => AddScreen(
+            //       name: addName,
+            //       muscle: addMuscle,
+            //     ),
+            //   ),
+            // );
             // }
           },
           items: exercises
@@ -410,15 +412,15 @@ class _HomeViewState extends State<HomeView> {
             //     content: Text('Please select an exercise to add.'),
             //   ));
             // } else {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => AddScreen(
-                //       name: addName,
-                //       muscle: addMuscle,
-                //     ),
-                //   ),
-                // );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => AddScreen(
+            //       name: addName,
+            //       muscle: addMuscle,
+            //     ),
+            //   ),
+            // );
             // }
           },
         ),
