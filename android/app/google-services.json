@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "425111337192",
+    "project_id": "trackrecordd",
+    "storage_bucket": "trackrecordd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425111337192:android:8d8d73ee795f38db1cb15d",
+        "android_client_info": {
+          "package_name": "com.example.trackrecordd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0Xs2ENkMVtN0RnVhX4pro_lk12TRUDH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
