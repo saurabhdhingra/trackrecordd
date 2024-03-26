@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/authViews/accDetails.dart';
+import 'package:trackrecordd/authViews/basicDetails.dart';
 import 'package:trackrecordd/utils/uiUtils.dart';
 
 import '../utils/constants.dart';
-import 'accDetails.dart';
+import 'basicDetails.dart';
 
 class VerifyView extends StatefulWidget {
   @override
@@ -98,7 +98,7 @@ class _VerifyViewState extends State<VerifyView> {
     if (user!.emailVerified) {
       timer.cancel();
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const AccdetailsWidget()));
+          MaterialPageRoute(builder: (context) => const BasicDetailsPage()));
     }
   }
 }

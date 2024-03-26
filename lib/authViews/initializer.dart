@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/authViews/basicDetails.dart';
 import 'package:trackrecordd/authViews/signUp.dart';
 import 'package:trackrecordd/views/homeView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,6 +35,6 @@ class _InitializerWidgetState extends State<InitializerWidget> {
           )
         : _user == null
             ? const SignupView()
-            : const HomeView();
+            : const BasicDetailsPage();
   }
 }

@@ -4,31 +4,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 
-class AccdetailsWidget extends StatefulWidget {
-  const AccdetailsWidget({Key? key}) : super(key: key);
+class BasicDetailsPage extends StatefulWidget {
+  const BasicDetailsPage({Key? key}) : super(key: key);
 
   @override
-  AccdetailsWidgetState createState() => AccdetailsWidgetState();
+  BasicDetailsPageState createState() => BasicDetailsPageState();
 }
 
-class AccdetailsWidgetState extends State<AccdetailsWidget> {
-  String firstname = "";
-  String lastName = "";
-
+class BasicDetailsPageState extends State<BasicDetailsPage> {
   static final _firestore = FirebaseFirestore.instance;
   static final _CollectionReference =
       _firestore.collection("Users").doc("UsersInfo").collection("Profile");
   static final _DocumentReference = _CollectionReference.doc('ProfileInfo');
 
-  final TextEditingController textController6 = new TextEditingController();
-  final TextEditingController textController7 = new TextEditingController();
-  final TextEditingController textController8 = new TextEditingController();
-  final TextEditingController textController9 = new TextEditingController();
-  final TextEditingController textController10 = new TextEditingController();
-  final TextEditingController textController11 = new TextEditingController();
-  final TextEditingController textController12 = new TextEditingController();
-  final TextEditingController textController13 = new TextEditingController();
-  final TextEditingController textController14 = new TextEditingController();
+  final FocusNode dateNode = FocusNode(debugLabel: "date");
+  final FocusNode monthNode = FocusNode(debugLabel: "date");
+  final FocusNode yearNode = FocusNode(debugLabel: "date");
+
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController dobDateController = TextEditingController();
+  final TextEditingController dobMonthController = TextEditingController();
+  final TextEditingController dobYearController = TextEditingController();
+  final TextEditingController textController6 = TextEditingController();
+  final TextEditingController textController7 = TextEditingController();
+  final TextEditingController textController8 = TextEditingController();
+  final TextEditingController textController9 = TextEditingController();
+  final TextEditingController textController10 = TextEditingController();
+  final TextEditingController textController11 = TextEditingController();
+  final TextEditingController textController12 = TextEditingController();
+  final TextEditingController textController13 = TextEditingController();
+  final TextEditingController textController14 = TextEditingController();
 
   final _formKey1 = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
@@ -73,17 +79,22 @@ class AccdetailsWidgetState extends State<AccdetailsWidget> {
               ),
               SizedBox(height: height * 0.02),
               alignedText(height, 'Name *'),
-              CustomField(
-                setValue: (value) => setState(() => firstname),
-                formKey: _formKey1,
-                keyboardType: TextInputType.emailAddress,
+              CustomTextInputWidget(
+                width: width * 0.9,
+                height: height * 0.06,
+                controller: firstNameController,
               ),
+              // CustomField(
+              //   setValue: (value) => setState(() => firstname),
+              //   formKey: _formKey1,
+              //   keyboardType: TextInputType.emailAddress,
+              // ),
               SizedBox(height: height * 0.02),
               alignedText(height, 'Last Name *'),
-              CustomField(
-                setValue: (value) => setState(() => lastName),
-                formKey: _formKey2,
-                keyboardType: TextInputType.emailAddress,
+              CustomTextInputWidget(
+                width: width * 0.9,
+                height: height * 0.06,
+                controller: lastNameController,
               ),
               SizedBox(height: height * 0.02),
               alignedText(height, 'Date of birth 👶 *'),
@@ -94,79 +105,36 @@ class AccdetailsWidgetState extends State<AccdetailsWidget> {
                     width: width * 0.055,
                     height: height * 0.05,
                   ),
-                  Container(
+                  CustomTextInputWidget(
                     width: width * 0.15,
                     height: height * 0.06,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(
-                        color: Colors.black,
-                      ),
-                    ),
-                    child: TextFormField(
-                      key: _formKey3,
-                      obscureText: false,
-                      decoration: inputDecoration('Date'),
-                      style: TextStyle(
-                        fontSize: height * 0.018,
-                        fontWeight: FontWeight.w300,
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                    ),
+                    focusNode: dateNode,
+                    nextFocusNode: monthNode,
+                    controller: dobDateController,
+                    hintText: "Date",
                   ),
                   SizedBox(
                     width: width * 0.075,
                     height: height * 0.05,
                   ),
-                  Container(
+                  CustomTextInputWidget(
                     width: width * 0.15,
                     height: height * 0.06,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(
-                        color: Colors.black,
-                      ),
-                    ),
-                    child: TextFormField(
-                      key: _formKey4,
-                      obscureText: false,
-                      decoration: inputDecoration('Month'),
-                      style: TextStyle(
-                        fontSize: height * 0.018,
-                        fontWeight: FontWeight.w300,
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                    ),
+                    focusNode: monthNode,
+                    nextFocusNode: yearNode,
+                    controller: dobMonthController,
+                    hintText: "Month",
                   ),
                   SizedBox(
                     width: width * 0.075,
                     height: height * 0.05,
                   ),
-                  Container(
-                    width: width * 0.25,
+                  CustomTextInputWidget(
+                    width: width * 0.15,
                     height: height * 0.06,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(
-                        color: Colors.black,
-                      ),
-                    ),
-                    child: TextFormField(
-                      key: _formKey5,
-                      obscureText: false,
-                      decoration: inputDecoration('Year'),
-                      style: TextStyle(
-                        fontSize: height * 0.018,
-                        fontWeight: FontWeight.w300,
-                      ),
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                    ),
+                    focusNode: yearNode,
+                    controller: dobMonthController,
+                    hintText: "Year",
                   ),
                 ],
               ),
@@ -524,45 +492,11 @@ class AccdetailsWidgetState extends State<AccdetailsWidget> {
                     width: width * 0.3,
                     height: height * 0.05,
                   ),
-                  Container(
-                    width: width * 0.2,
-                    height: height * 0.06,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(
-                        color: Colors.black,
-                      ),
-                    ),
-                    child: TextFormField(
-                      controller: textController12,
-                      obscureText: false,
-                      decoration: const InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0x00000000),
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0x00000000),
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
-                        ),
-                      ),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(),
-                    ),
-                  ),
+                  CustomTextInputWidget(
+                      width: width * 0.2,
+                      height: height * 0.05,
+                      filledColor: Colors.white,
+                      controller: textController12),
                 ],
               ),
               Row(

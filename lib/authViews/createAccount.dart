@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/authViews/accDetails.dart';
+import 'package:trackrecordd/authViews/basicDetails.dart';
 import 'package:trackrecordd/authViews/verify.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';

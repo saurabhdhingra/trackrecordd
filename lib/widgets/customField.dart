@@ -113,3 +113,94 @@ class _CustomFieldState extends State<CustomField> {
   //   );
   // }
 }
+
+class CustomTextInputWidget extends StatelessWidget {
+  const CustomTextInputWidget({
+    super.key,
+    required this.width,
+    required this.height,
+    this.filledColor,
+    this.borderColor,
+    this.focusedBorderColor,
+    this.textAlign,
+    required this.controller,
+    this.validator,
+    this.keyboardType,
+    this.obscureText,
+    this.initialValue,
+    this.hintText,
+    this.unit,
+    this.maxLines,
+    this.textFormatters,
+    this.focusNode,
+    this.nextFocusNode,
+  });
+
+  final double width;
+  final double height;
+  final FocusNode? focusNode;
+  final FocusNode? nextFocusNode;
+
+  final Color? filledColor;
+  final Color? borderColor;
+  final Color? focusedBorderColor;
+  final TextAlign? textAlign;
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final bool? obscureText;
+  final String? initialValue;
+  final String? hintText;
+  final String? unit;
+  final int? maxLines;
+  final List<TextInputFormatter>? textFormatters;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: filledColor ?? Colors.white,
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: Colors.black),
+      ),
+      child: TextFormField(
+        controller: controller,
+        obscureText: false,
+        initialValue: initialValue,
+        validator: validator,
+        keyboardType: keyboardType,
+        cursorColor: Colors.black,
+        inputFormatters: textFormatters,
+        style: TextStyle(fontSize: width * 0.04, color: Colors.black87),
+        onFieldSubmitted: (value) => (nextFocusNode != null)
+            ? FocusScope.of(context).requestFocus(nextFocusNode)
+            : null,
+        decoration: InputDecoration(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: borderColor ?? const Color(0x00000000),
+              width: 1,
+            ),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(4.0),
+              topRight: Radius.circular(4.0),
+            ),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: focusedBorderColor ?? const Color(0x00000000),
+              width: 1,
+            ),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(4.0),
+              topRight: Radius.circular(4.0),
+            ),
+          ),
+        ),
+        textAlign: textAlign ?? TextAlign.center,
+      ),
+    );
+  }
+}
