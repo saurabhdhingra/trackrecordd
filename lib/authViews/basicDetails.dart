@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:trackrecordd/views/homeView.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 
 class BasicDetailsPage extends StatefulWidget {
@@ -289,6 +290,10 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                   child: TextButton(
                     onPressed: () {
                       print('Button pressed ...');
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const HomeView();
+                      }));
                     },
                     child: Text(
                       'Next >>',

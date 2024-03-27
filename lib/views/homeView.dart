@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/views/recordsView.dart';
+import 'package:trackrecordd/views/settingsView.dart';
 
 import '../utils/constants.dart';
 import '../utils/functions.dart';
@@ -237,12 +238,12 @@ class _HomeViewState extends State<HomeView> {
             title: const Text('Settings'),
             onTap: () {
               Navigator.pop(context);
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => SettingsScreen(),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsView(),
+                ),
+              );
             },
           ),
           const Divider(
@@ -285,6 +286,7 @@ class _HomeViewState extends State<HomeView> {
                 },
                 backgroundColor: Colors.orange[400],
                 child: const Icon(Icons.undo),
+                heroTag: "btn1",
               )
             : const SizedBox(),
         SizedBox(
@@ -293,6 +295,7 @@ class _HomeViewState extends State<HomeView> {
         FloatingActionButton(
           backgroundColor: Colors.blue,
           child: const Icon(Icons.add),
+          heroTag: "btn2",
           onPressed: () async {
             // setState(() {
             //   showUndo = false;
