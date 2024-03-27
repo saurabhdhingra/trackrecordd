@@ -1,22 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../models/userInfo.dart';
 import 'exceptions.dart';
 
 class UserStore {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Future<void> createUser({required User user}) async {
+  Future<void> createUser({required UserInformation userInfo}) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
     try {
-      final userDocument = userCollection.doc(user.id);
-      await userDocument.set(user.toJson());
+      final userDocument = userCollection.doc(user?.uid);
+      await userDocument.set(userInfo.toJson());
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to create new user', devDetails: '$error');
     }
   }
 
-  Future<User?> getuser({required String userId}) async {
+  Future<UserInfo?> getUserInformation({required String userId}) async {
     if (userId.isNotEmpty) {
       final userDoc = await userCollection.doc(userId).get();
 
@@ -24,11 +27,10 @@ class UserStore {
         return null;
       }
 
-      final userData = userDoc.data()as Map<String, dynamic>;
-      return User.fromJson(userData);
-    }else{
+      final userData = userDoc.data() as Map<String, dynamic>;
+      return UserInfo.fromJson(userData);
+    } else {
       throw FireStoreException(message: 'User ID passed is empty.');
-
     }
   }
 }

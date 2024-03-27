@@ -122,10 +122,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  SizedBox(
-                    width: width * 0.16,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.16),
                   Column(
                     children: [
                       const Text(
@@ -139,10 +136,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    width: width * 0.33,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.3),
                   Column(
                     children: [
                       const Text(
@@ -161,10 +155,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  SizedBox(
-                    width: width * 0.08,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.08),
                   Column(
                     children: [
                       const Text(
@@ -178,10 +169,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    width: width * 0.19,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.13),
                   Column(
                     children: [
                       const Text(
@@ -195,10 +183,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    width: width * 0.23,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.13),
                   Column(
                     children: [
                       const Text(
@@ -217,10 +202,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  SizedBox(
-                    width: width * 0.19,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.17),
                   Column(
                     children: [
                       const Text(
@@ -234,10 +216,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    width: width * 0.39,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.3),
                   Column(
                     children: [
                       const Text(
@@ -256,10 +235,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  SizedBox(
-                    width: width * 0.19,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.17),
                   Column(
                     children: [
                       const Text(
@@ -273,10 +249,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    width: width * 0.39,
-                    height: height * 0.02,
-                  ),
+                  SizedBox(width: width * 0.3),
                   Column(
                     children: [
                       const Text(
@@ -294,9 +267,9 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               ),
               SizedBox(height: height * 0.02),
               const Align(
-                alignment: AlignmentDirectional(-0.75, 0),
+                alignment: AlignmentDirectional(-0.7, 0),
                 child: Text(
-                  '* mandatory, and no we won\'t ask you the gender.',
+                  '* mandatory',
                   style: TextStyle(color: Colors.black),
                 ),
               ),
@@ -304,10 +277,9 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                 height: height * 0.02,
               ),
               Align(
-                alignment: const AlignmentDirectional(0.7, 0),
+                alignment: const AlignmentDirectional(0.75, 0),
                 child: Container(
                   width: width * 0.4,
-                  height: height * 0.05,
                   decoration: BoxDecoration(
                     color: const Color(0xFFFED500),
                     shape: BoxShape.rectangle,
