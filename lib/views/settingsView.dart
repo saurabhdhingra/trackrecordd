@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/authViews/login.dart';
 // import 'package:trackrecord/database/models.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +19,7 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
+  final auth = FirebaseAuth.instance;
   bool dark = false;
   void getThemeState() async {
     final prefs = await SharedPreferences.getInstance();
@@ -55,6 +58,26 @@ class _SettingsViewState extends State<SettingsView> {
             SizedBox(height: height * 0.02),
             editExercisesLink(width, context, height),
             SizedBox(height: height * 0.02),
+            Center(
+              child: Container(
+                width: width * 0.9,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.all(Radius.circular(height / 38)),
+                ),
+                child: ListTile(
+                  title: Text('Logout'),
+                  onTap: () {
+                    auth.signOut();
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginView(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -136,19 +159,17 @@ class _SettingsViewState extends State<SettingsView> {
                   ? CupertinoSwitch(
                       value: themeProvider.isSystem,
                       onChanged: (value) {
-                        // final provider = Provider.of<ThemeProvider>(
-                        //     context,
-                        //     listen: false);
-                        // provider.toggleSystemTheme(value, dark);
+                        final provider =
+                            Provider.of<ThemeProvider>(context, listen: false);
+                        provider.toggleSystemTheme(value, dark);
                       },
                     )
                   : Switch(
                       value: themeProvider.isSystem,
                       onChanged: (value) {
-                        // final provider = Provider.of<ThemeProvider>(
-                        //     context,
-                        //     listen: false);
-                        // provider.toggleSystemTheme(value, dark);
+                        final provider =
+                            Provider.of<ThemeProvider>(context, listen: false);
+                        provider.toggleSystemTheme(value, dark);
                       },
                     ),
             ),
@@ -160,25 +181,23 @@ class _SettingsViewState extends State<SettingsView> {
                   ? CupertinoSwitch(
                       value: themeProvider.isDark,
                       onChanged: (value) {
-                        // final provider = Provider.of<ThemeProvider>(
-                        //     context,
-                        //     listen: false);
-                        // setState(() {
-                        //   dark = value;
-                        // });
-                        // provider.toggleTheme(value);
+                        final provider =
+                            Provider.of<ThemeProvider>(context, listen: false);
+                        setState(() {
+                          dark = value;
+                        });
+                        provider.toggleTheme(value);
                       },
                     )
                   : Switch(
                       value: themeProvider.isDark,
                       onChanged: (value) {
-                        // final provider = Provider.of<ThemeProvider>(
-                        //     context,
-                        //     listen: false);
-                        // setState(() {
-                        //   dark = value;
-                        // });
-                        // provider.toggleTheme(value);
+                        final provider =
+                            Provider.of<ThemeProvider>(context, listen: false);
+                        setState(() {
+                          dark = value;
+                        });
+                        provider.toggleTheme(value);
                       },
                     ),
             ),
