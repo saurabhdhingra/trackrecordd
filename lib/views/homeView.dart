@@ -119,7 +119,6 @@ class _HomeViewState extends State<HomeView> {
 
   SizedBox homeViewHeading(height, width, BuildContext context) {
     return SizedBox(
-      height: height / 10,
       width: width,
       child: Row(
         children: [
@@ -158,9 +157,12 @@ class _HomeViewState extends State<HomeView> {
           SizedBox(
             width: width * 0.05,
           ),
-          const VerticalDivider(
-            width: 2,
-            thickness: 4,
+          SizedBox(
+            height: height * 0.1,
+            child: const VerticalDivider(
+              width: 2,
+              thickness: 4,
+            ),
           ),
           SizedBox(
             width: width * 0.06,

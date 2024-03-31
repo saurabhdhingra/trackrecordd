@@ -78,7 +78,7 @@ class _LoginViewState extends State<LoginView> {
                           color: Color(0x00000000),
                           width: 1,
                         ),
-                        borderRadius:  BorderRadius.only(
+                        borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(4.0),
                           topRight: Radius.circular(4.0),
                         ),
@@ -88,13 +88,13 @@ class _LoginViewState extends State<LoginView> {
                           color: Color(0x00000000),
                           width: 1,
                         ),
-                        borderRadius:  BorderRadius.only(
+                        borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(4.0),
                           topRight: Radius.circular(4.0),
                         ),
                       ),
                     ),
-                    style:const TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w300,
                     ),
                     keyboardType: TextInputType.emailAddress,
@@ -116,7 +116,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
                 child: Padding(
-                  padding:const  EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
                   child: TextField(
                     controller: emailController,
                     obscureText: true,
@@ -132,7 +132,7 @@ class _LoginViewState extends State<LoginView> {
                           color: Color(0x00000000),
                           width: 1,
                         ),
-                        borderRadius:  BorderRadius.only(
+                        borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(4.0),
                           topRight: Radius.circular(4.0),
                         ),
@@ -142,7 +142,7 @@ class _LoginViewState extends State<LoginView> {
                           color: Color(0x00000000),
                           width: 1,
                         ),
-                        borderRadius:  BorderRadius.only(
+                        borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(4.0),
                           topRight: Radius.circular(4.0),
                         ),
@@ -172,13 +172,18 @@ class _LoginViewState extends State<LoginView> {
                           fontSize: 22),
                     ),
                     onPressed: () {
-                      auth
-                          .signInWithEmailAndPassword(
-                              email: email, password: password)
-                          .then((_) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) =>const  HomeView()));
-                      });
+                      try {
+                        auth
+                            .signInWithEmailAndPassword(
+                                email: email, password: password)
+                            .then((_) {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const HomeView()));
+                        });
+                      } catch (e) {
+                        print("Wrong password");
+                      }
                     }),
               ),
               SizedBox(
@@ -201,7 +206,7 @@ class _LoginViewState extends State<LoginView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const  CreateAccountView(),
+                              builder: (context) => const CreateAccountView(),
                             ),
                           );
                         })

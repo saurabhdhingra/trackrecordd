@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/models/userInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:trackrecordd/views/homeView.dart';
 import 'package:trackrecordd/widgets/customField.dart';
+
+import '../database/userFunctions.dart';
 
 class BasicDetailsPage extends StatefulWidget {
   const BasicDetailsPage({Key? key}) : super(key: key);
@@ -13,11 +14,6 @@ class BasicDetailsPage extends StatefulWidget {
 }
 
 class BasicDetailsPageState extends State<BasicDetailsPage> {
-  static final _firestore = FirebaseFirestore.instance;
-  static final _CollectionReference =
-      _firestore.collection("Users").doc("UsersInfo").collection("Profile");
-  static final _DocumentReference = _CollectionReference.doc('ProfileInfo');
-
   final FocusNode dateNode = FocusNode(debugLabel: "date");
   final FocusNode monthNode = FocusNode(debugLabel: "date");
   final FocusNode yearNode = FocusNode(debugLabel: "date");
@@ -29,7 +25,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
   final TextEditingController dobYearController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
-  final TextEditingController shouldersControler = TextEditingController();
+  final TextEditingController shouldersController = TextEditingController();
   final TextEditingController chestController = TextEditingController();
   final TextEditingController waistController = TextEditingController();
   final TextEditingController leftArmController = TextEditingController();
@@ -65,15 +61,15 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               SizedBox(height: height * 0.02),
               alignedText(height, 'Name *'),
               CustomTextInputWidget(
-                width: width * 0.9,
-                height: height * 0.06,
+                width: 0.9,
+                height: 0.06,
                 controller: firstNameController,
               ),
               SizedBox(height: height * 0.02),
               alignedText(height, 'Last Name *'),
               CustomTextInputWidget(
-                width: width * 0.9,
-                height: height * 0.06,
+                width: 0.9,
+                height: 0.06,
                 controller: lastNameController,
               ),
               SizedBox(height: height * 0.02),
@@ -81,39 +77,31 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  SizedBox(
-                    width: width * 0.055,
-                    height: height * 0.05,
-                  ),
+                  SizedBox(width: width * 0.1),
                   CustomTextInputWidget(
-                    width: width * 0.15,
-                    height: height * 0.06,
+                    width: 0.15,
+                    height: 0.06,
                     focusNode: dateNode,
                     nextFocusNode: monthNode,
                     controller: dobDateController,
+                    keyboardType: TextInputType.number,
                     hintText: "Date",
                   ),
-                  SizedBox(
-                    width: width * 0.075,
-                    height: height * 0.05,
-                  ),
+                  SizedBox(width: width * 0.175),
                   CustomTextInputWidget(
-                    width: width * 0.15,
-                    height: height * 0.06,
+                    width: 0.15,
+                    height: 0.06,
                     focusNode: monthNode,
                     nextFocusNode: yearNode,
                     controller: dobMonthController,
                     hintText: "Month",
                   ),
-                  SizedBox(
-                    width: width * 0.075,
-                    height: height * 0.05,
-                  ),
+                  SizedBox(width: width * 0.15),
                   CustomTextInputWidget(
-                    width: width * 0.15,
-                    height: height * 0.06,
+                    width: 0.2,
+                    height: 0.06,
                     focusNode: yearNode,
-                    controller: dobMonthController,
+                    controller: dobYearController,
                     hintText: "Year",
                   ),
                 ],
@@ -131,8 +119,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
+                        width: 0.2,
+                        height: 0.06,
                         controller: weightController,
                       )
                     ],
@@ -145,8 +133,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
+                        width: 0.2,
+                        height: 0.06,
                         controller: heightController,
                       )
                     ],
@@ -164,9 +152,9 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
-                        controller: shouldersControler,
+                        width: 0.2,
+                        height: 0.06,
+                        controller: shouldersController,
                       )
                     ],
                   ),
@@ -178,8 +166,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
+                        width: 0.2,
+                        height: 0.06,
                         controller: chestController,
                       )
                     ],
@@ -192,8 +180,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
+                        width: 0.2,
+                        height: 0.06,
                         controller: waistController,
                       )
                     ],
@@ -211,8 +199,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
+                        width: 0.2,
+                        height: 0.06,
                         controller: leftArmController,
                       )
                     ],
@@ -225,8 +213,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
+                        width: 0.2,
+                        height: 0.06,
                         controller: rightArmController,
                       )
                     ],
@@ -244,8 +232,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
+                        width: 0.2,
+                        height: 0.06,
                         controller: leftLegController,
                       )
                     ],
@@ -258,8 +246,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                         style: TextStyle(color: Colors.black87),
                       ),
                       CustomTextInputWidget(
-                        width: width * 0.2,
-                        height: height * 0.06,
+                        width: 0.2,
+                        height: 0.06,
                         controller: rightLegController,
                       )
                     ],
@@ -268,7 +256,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               ),
               SizedBox(height: height * 0.02),
               const Align(
-                alignment: AlignmentDirectional(-0.7, 0),
+                alignment: AlignmentDirectional(0.7, 0),
                 child: Text(
                   '* mandatory',
                   style: TextStyle(color: Colors.black),
@@ -290,6 +278,25 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                   child: TextButton(
                     onPressed: () {
                       print('Button pressed ...');
+
+                      UserStore store = UserStore();
+                      store.createUser(
+                          userInfo: UserInformation(
+                              firstName: firstNameController.text,
+                              lastName: lastNameController.text,
+                              dateOfBirth: DateTime.parse(
+                                  "${dobYearController.text}-${dobMonthController.text}-${dobDateController.text}"),
+                              dateJoined: DateTime.now(),
+                              measurements: {
+                            "weight": weightController.text,
+                            "height": heightController.text,
+                            "shoulders": shouldersController.text,
+                            "chest": chestController.text,
+                            "waist": waistController.text,
+                            "leftArm": leftArmController.text,
+                            "rightArm": rightArmController.text,
+                            "leftLeg": leftLegController.text
+                          }));
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
                         return const HomeView();
