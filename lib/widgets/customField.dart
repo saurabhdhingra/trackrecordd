@@ -162,6 +162,7 @@ class CustomTextInputWidget extends StatelessWidget {
     return Container(
       width: width * devWidth,
       height: height * devHeight,
+      padding: EdgeInsets.symmetric(horizontal: width * 0.1),
       decoration: BoxDecoration(
         color: filledColor ?? Colors.white,
         borderRadius: BorderRadius.circular(25),
@@ -169,7 +170,8 @@ class CustomTextInputWidget extends StatelessWidget {
       ),
       child: TextFormField(
         controller: controller,
-        obscureText: false,
+        obscureText: obscureText ?? false,
+        obscuringCharacter: 'x',
         initialValue: initialValue,
         validator: validator,
         keyboardType: keyboardType,
@@ -180,6 +182,9 @@ class CustomTextInputWidget extends StatelessWidget {
             ? FocusScope.of(context).requestFocus(nextFocusNode)
             : null,
         decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.black45, fontSize: width * 0.05),
+          contentPadding: EdgeInsets.zero,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
               color: borderColor ?? const Color(0x00000000),
@@ -201,7 +206,7 @@ class CustomTextInputWidget extends StatelessWidget {
             ),
           ),
         ),
-        textAlign: textAlign ?? TextAlign.center,
+        textAlign: textAlign ?? TextAlign.start,
       ),
     );
   }

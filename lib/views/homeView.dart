@@ -9,6 +9,7 @@ import 'package:trackrecordd/views/settingsView.dart';
 import '../utils/constants.dart';
 import '../utils/functions.dart';
 import '../utils/uiUtils.dart';
+import '../widgets/exerciseTile.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -18,7 +19,48 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late List<Map<String, dynamic>> data = [];
+  late List<Map<String, dynamic>> data = [
+    {
+      "name": "Pull Over",
+      "weight1": 10,
+      "weight2": 12.5,
+      "weight3": 12.5,
+      "reps1": 15,
+      "reps2": 12,
+      "reps3": 15,
+      "muscle": "Triceps",
+    },
+    {
+      "name": "Bench Press",
+      "weight1": 10,
+      "weight2": 12.5,
+      "weight3": 12.5,
+      "reps1": 15,
+      "reps2": 12,
+      "reps3": 15,
+      "muscle": "Triceps",
+    },
+    {
+      "name": "Lateral Push Down",
+      "weight1": 10,
+      "weight2": 12.5,
+      "weight3": 12.5,
+      "reps1": 15,
+      "reps2": 12,
+      "reps3": 15,
+      "muscle": "Triceps",
+    },
+    {
+      "name": "Pull Over",
+      "weight1": 10,
+      "weight2": 12.5,
+      "weight3": 12.5,
+      "reps1": 15,
+      "reps2": 12,
+      "reps3": 15,
+      "muscle": "Triceps",
+    }
+  ];
   late List<String> exercises = [];
   late List muscles = [];
   late List<Map> androidmuscles = [];
@@ -77,40 +119,36 @@ class _HomeViewState extends State<HomeView> {
           final item = data[i];
           return Center(
             child: Dismissible(
-                background: Container(
-                    color: Colors.red, child: const Icon(Icons.delete)),
-                key: Key(item['indecs'].toString()),
-                direction: DismissDirection.endToStart,
-                onDismissed: (direction) async {
-                  // setState(() {
-                  //   isLoading = true;
-                  // });
-                  // if (deletedItem.isNotEmpty) {
-                  //   await DatabaseHelper.instance
-                  //       .deleteLog(deletedItem['indecs']);
-                  // } else {}
-                  // setState(() {
-                  //   deletedItem = data.removeAt(i);
-                  //   showUndo = true;
-                  //   isLoading = false;
-                  // });
-                },
-                child: const ListTile(
-                  title: Text("dgsig"),
-                  subtitle: Text("sngig"),
-                )
-                // child: ExerciseWidget(
-                //   name: item['name'],
-                //   reps1: item['reps1'].toString(),
-                //   reps2: item['reps2'].toString(),
-                //   reps3: item['reps3'].toString(),
-                //   weight1: item['weight1'].toString(),
-                //   weight2: item['weight2'].toString(),
-                //   weight3: item['weight3'].toString(),
-                //   muscle: item['muscle'],
-                //   screen: 1,
-                // ),
-                ),
+              background:
+                  Container(color: Colors.red, child: const Icon(Icons.delete)),
+              key: Key(item['indecs'].toString()),
+              direction: DismissDirection.endToStart,
+              onDismissed: (direction) async {
+                setState(() {
+                  isLoading = true;
+                });
+                if (deletedItem.isNotEmpty) {
+                  // await DatabaseHelper.instance
+                  //     .deleteLog(deletedItem['indecs']);
+                } else {}
+                setState(() {
+                  deletedItem = data.removeAt(i);
+                  showUndo = true;
+                  isLoading = false;
+                });
+              },
+              child: ExerciseWidget(
+                name: item['name'],
+                reps1: item['reps1'].toString(),
+                reps2: item['reps2'].toString(),
+                reps3: item['reps3'].toString(),
+                weight1: item['weight1'].toString(),
+                weight2: item['weight2'].toString(),
+                weight3: item['weight3'].toString(),
+                muscle: item['muscle'],
+                screen: 1,
+              ),
+            ),
           );
         },
       ),
@@ -273,48 +311,50 @@ class _HomeViewState extends State<HomeView> {
 
   Row floatingActionRow(BuildContext context, double width, double height) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        true
-            ? FloatingActionButton(
-                onPressed: () {
-                  print(FirebaseAuth.instance.currentUser!.email);
-                  // setState(() {
-                  //   data.insert(deletedIndex - 1, deletedItem);
-                  //   showUndo = false;
-                  //   deletedItem = {};
-                  // });
-                },
-                backgroundColor: Colors.orange[400],
-                child: const Icon(Icons.undo),
-                heroTag: "btn1",
+        showUndo
+            ? Padding(
+                padding: EdgeInsets.only(left: width * 0.09),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      data.insert(deletedIndex - 1, deletedItem);
+                      showUndo = false;
+                      deletedItem = {};
+                    });
+                  },
+                  backgroundColor: Colors.orange[400],
+                  child: const Icon(Icons.undo),
+                  heroTag: "btn1",
+                ),
               )
             : const SizedBox(),
-        SizedBox(
-          width: width * 0.63,
-        ),
-        FloatingActionButton(
-          backgroundColor: Colors.blue,
-          child: const Icon(Icons.add),
-          heroTag: "btn2",
-          onPressed: () async {
-            // setState(() {
-            //   showUndo = false;
-            // });
-            // if (deletedItem.isNotEmpty) {
-            //   await DatabaseHelper.instance.deleteLog(deletedItem['indecs']);
-            // }
-            // ignore: use_build_context_synchronously
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return Platform.isIOS
-                    ? cupertinoAddExec(height, width, context)
-                    : androidAddExec(context, width);
-              },
-            );
-          },
+        Padding(
+          padding: EdgeInsets.only(right: 0),
+          child: FloatingActionButton(
+            backgroundColor: Colors.blue,
+            child: const Icon(Icons.add),
+            heroTag: "btn2",
+            onPressed: () async {
+              // setState(() {
+              //   showUndo = false;
+              // });
+              // if (deletedItem.isNotEmpty) {
+              //   await DatabaseHelper.instance.deleteLog(deletedItem['indecs']);
+              // }
+              // ignore: use_build_context_synchronously
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Platform.isIOS
+                      ? cupertinoAddExec(height, width, context)
+                      : androidAddExec(context, width);
+                },
+              );
+            },
+          ),
         ),
       ],
     );

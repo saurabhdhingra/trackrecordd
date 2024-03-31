@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/views/homeView.dart';
 import 'package:trackrecordd/authViews/createAccount.dart';
+import 'package:trackrecordd/widgets/customField.dart';
 import '../utils/constants.dart';
 
 class LoginView extends StatefulWidget {
@@ -46,79 +47,24 @@ class _LoginViewState extends State<LoginView> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Column(
             mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                width: width,
-                height: height * 0.26,
-              ),
-              Container(
-                width: width * 0.9,
-                height: height * 0.06,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
-                  child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        email = value.trim();
-                      });
-                    },
-                    controller: passwordController,
-                    obscureText: false,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter email',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4.0),
-                          topRight: Radius.circular(4.0),
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4.0),
-                          topRight: Radius.circular(4.0),
-                        ),
-                      ),
-                    ),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w300,
-                    ),
+              SizedBox(height: height * 0.05),
+              Column(
+                children: [
+                  CustomTextInputWidget(
+                    width: width * 0.9,
+                    height: height * 0.065,
+                    controller: emailController,
+                    hintText: 'Enter email',
                     keyboardType: TextInputType.emailAddress,
                   ),
-                ),
-              ),
-              SizedBox(
-                width: width,
-                height: height * 0.01,
-              ),
-              Container(
-                width: width * 0.9,
-                height: height * 0.06,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
-                  child: TextField(
-                    controller: emailController,
+                  SizedBox(height: height * 0.01),
+                  CustomTextInputWidget(
+                    width: width * 0.9,
+                    height: height * 0.065,
+                    controller: passwordController,
+                    hintText: 'Password',
                     obscureText: true,
                     onChanged: (value) {
                       setState(() {
@@ -189,29 +135,28 @@ class _LoginViewState extends State<LoginView> {
               SizedBox(
                 height: height * 0.3,
               ),
-              Align(
-                alignment: const AlignmentDirectional(-0.55, 0),
-                child: Row(
-                  children: [
-                    const Text(
-                      '   Don\'t have an account?',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text(
+                    'Don\'t have an account?',
+                    style: TextStyle(
+                      color: Colors.black,
                     ),
-                    TextButton(
-                        child: Text('Sign up',
-                            style: TextStyle(color: Colors.blue[900])),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CreateAccountView(),
-                            ),
-                          );
-                        })
-                  ],
-                ),
+                  ),
+                  TextButton(
+                    child: Text('Sign up',
+                        style: TextStyle(color: Colors.blue[900])),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CreateAccountView(),
+                        ),
+                      );
+                    },
+                  )
+                ],
               ),
             ],
           ),

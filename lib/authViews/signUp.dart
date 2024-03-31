@@ -43,8 +43,12 @@ class _SignupViewState extends State<SignupView> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                padding: EdgeInsets.symmetric(
+                  vertical: height * 0.02,
+                  horizontal: width * 0.05,
+                ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     const Text(
                       '   Already have an account ?',
@@ -79,8 +83,7 @@ class _SignupViewState extends State<SignupView> {
 
   Container createAccountButton(width, height, BuildContext context) {
     return Container(
-      width: width * 0.6,
-      height: height * 0.05,
+      width: width * 0.4,
       decoration: BoxDecoration(
           color: const Color(0xFFFED500),
           shape: BoxShape.rectangle,

@@ -15,13 +15,25 @@ class CreateAccountView extends StatefulWidget {
 }
 
 class _CreateAccountViewState extends State<CreateAccountView> {
-  final _formKey1 = GlobalKey<FormState>();
-  final _formKey2 = GlobalKey<FormState>();
-  final _formKey3 = GlobalKey<FormState>();
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController confirmPasswordController;
 
-  String email = '';
-  String password = '';
-  String confirmPassword = '';
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -45,13 +57,11 @@ class _CreateAccountViewState extends State<CreateAccountView> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              SizedBox(
-                width: width,
-                height: height * 0.23,
-              ),
-              CustomField(
-                setValue: (value) => setState(() => email = value.trim()),
-                formKey: _formKey1,
+              SizedBox(height: height * 0.25, width: width),
+              CustomTextInputWidget(
+                width: width * 0.9,
+                height: height * 0.065,
+                controller: emailController,
                 hintText: 'Email',
               ),
               const Text(
@@ -62,24 +72,24 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                 ),
               ),
               SizedBox(height: height * 0.02),
-              CustomField(
-                setValue: (value) => setState(() => password = value.trim()),
-                formKey: _formKey2,
+              CustomTextInputWidget(
+                width: width * 0.9,
+                height: height * 0.065,
+                controller: passwordController,
                 obscureText: true,
                 hintText: 'Password',
               ),
               SizedBox(height: height * 0.02),
-              CustomField(
-                setValue: (value) =>
-                    setState(() => confirmPassword = value.trim()),
-                formKey: _formKey3,
+              CustomTextInputWidget(
+                width: width * 0.9,
+                height: height * 0.065,
+                controller: confirmPasswordController,
                 obscureText: true,
                 hintText: 'Confirm Password',
               ),
               SizedBox(height: height * 0.02),
               Container(
-                width: 230,
-                height: 40,
+                width: width * 0.4,
                 decoration: BoxDecoration(
                   color: const Color(0xFFFED500),
                   shape: BoxShape.rectangle,
@@ -94,11 +104,13 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                         fontSize: 22),
                   ),
                   onPressed: () {
-                    if (confirmPassword == password) {
+                    if (confirmPasswordController.text ==
+                        passwordController.text) {
                       try {
                         auth
                             .createUserWithEmailAndPassword(
-                                email: email, password: password)
+                                email: emailController.text,
+                                password: passwordController.text)
                             .then(
                           (_) {
                             Navigator.of(context).pushReplacement(
