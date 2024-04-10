@@ -157,9 +157,11 @@ class CustomTextInputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var devHeight = SizeConfig.getHeight(context);
+    var devWidth = SizeConfig.getWidth(context);
     return Container(
-      width: width,
-      height: height,
+      width: width * devWidth,
+      height: height * devHeight,
       padding: EdgeInsets.symmetric(horizontal: width * 0.1),
       decoration: BoxDecoration(
         color: filledColor ?? Colors.white,
@@ -175,7 +177,7 @@ class CustomTextInputWidget extends StatelessWidget {
         keyboardType: keyboardType,
         cursorColor: Colors.black,
         inputFormatters: textFormatters,
-        style: TextStyle(fontSize: width * 0.04, color: Colors.black87),
+        style: TextStyle(fontSize: devWidth * 0.04, color: Colors.black87),
         onFieldSubmitted: (value) => (nextFocusNode != null)
             ? FocusScope.of(context).requestFocus(nextFocusNode)
             : null,
