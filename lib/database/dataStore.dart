@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../models/exercise.dart';
 import '../models/userInfo.dart';
 import 'exceptions.dart';
 
 class UserStore {
-  final CollectionReference userCollection =
-      FirebaseFirestore.instance.collection('User Information');
-
-  Future<void> addBasicDetails({required UserInformation userInfo}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = auth.currentUser;
+  final CollectionReference dataCollection = FirebaseFirestore.instance
+      .collection('')
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection('Exercises');
+  final DocumentReference workout = FirebaseFirestore.instance.collection('Workouts').doc(FirebaseAuth.instance.currentUser?.uid).collection('Workouts').
+  Future<void> addExercise({required Exercise exercise}) async {
     try {
-      final userDocument = userCollection.doc(user?.uid);
-      await userDocument.set(userInfo.toJson());
+      final exerciseDocument = dataCollection.doc();
+
+      await userDocument.set(exercise.toFirestore());
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to add user details', devDetails: '$error');

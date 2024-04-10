@@ -279,39 +279,26 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                   child: TextButton(
                     onPressed: () {
                       UserStore store = new UserStore();
-                      store.addBasicDetails(
-                        userInfo: UserInformation(
-                          firstName: firstNameController.text.trim(),
-                          lastName: lastNameController.text.trim(),
-                          dateOfBirth: dateTimeParser(),
-                          dateJoined: DateTime.now(),
-                          measurements: measurementsParser(),
-                        ),
-                      );
-                      print('Button pressed ...');
-
-                      UserStore store = UserStore();
-                      store.createUser(
-                          userInfo: UserInformation(
-                              firstName: firstNameController.text,
-                              lastName: lastNameController.text,
-                              dateOfBirth: DateTime.parse(
-                                  "${dobYearController.text}-${dobMonthController.text}-${dobDateController.text}"),
+                      store
+                          .addBasicDetails(
+                            userInfo: UserInformation(
+                              firstName: firstNameController.text.trim(),
+                              lastName: lastNameController.text.trim(),
+                              dateOfBirth: dateTimeParser(),
                               dateJoined: DateTime.now(),
-                              measurements: {
-                            "weight": weightController.text,
-                            "height": heightController.text,
-                            "shoulders": shouldersController.text,
-                            "chest": chestController.text,
-                            "waist": waistController.text,
-                            "leftArm": leftArmController.text,
-                            "rightArm": rightArmController.text,
-                            "leftLeg": leftLegController.text
-                          }));
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return const HomeView();
-                      }));
+                              measurements: measurementsParser(),
+                            ),
+                          )
+                          .then(
+                            (value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return const HomeView();
+                                },
+                              ),
+                            ),
+                          );
                     },
                     child: Text(
                       'Next >>',
@@ -380,15 +367,15 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
 
   Map<String, dynamic> measurementsParser() {
     return {
-      "chest": int.parse(chestController.text),
-      "height": int.parse(heightController.text),
-      "leftArm": int.parse(leftArmController.text),
-      "leftLeg": int.parse(leftLegController.text),
-      "rightArm": int.parse(rightArmController.text),
-      "rightLeg": int.parse(rightLegController.text),
-      "shoulders": int.parse(shouldersControler.text),
-      "waist": int.parse(waistController.text),
-      "weight": int.parse(weightController.text),
+      "chest": double.parse(chestController.text),
+      "height": double.parse(heightController.text),
+      "leftArm": double.parse(leftArmController.text),
+      "leftLeg": double.parse(leftLegController.text),
+      "rightArm": double.parse(rightArmController.text),
+      "rightLeg": double.parse(rightLegController.text),
+      "shoulders": double.parse(shouldersController.text),
+      "waist": double.parse(waistController.text),
+      "weight": double.parse(weightController.text),
     };
   }
 }
