@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/database/userFunctions.dart';
+import 'package:trackrecordd/models/userInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -289,6 +291,16 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                   ),
                   child: TextButton(
                     onPressed: () {
+                      UserStore store = new UserStore();
+                      store.addBasicDetails(
+                        userInfo: UserInformation(
+                          firstName: firstNameController.text.trim(),
+                          lastName: lastNameController.text.trim(),
+                          dateOfBirth: dateTimeParser(),
+                          dateJoined: DateTime.now(),
+                          measurements: measurementsParser(),
+                        ),
+                      );
                       print('Button pressed ...');
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
@@ -351,5 +363,26 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
         ),
       ),
     );
+  }
+
+  DateTime dateTimeParser() {
+    int year = int.parse(dobYearController.text);
+    int month = int.parse(dobMonthController.text);
+    int date = int.parse(dobDateController.text);
+    return DateTime(year, month, date);
+  }
+
+  Map<String, dynamic> measurementsParser() {
+    return {
+      "chest": int.parse(chestController.text),
+      "height": int.parse(heightController.text),
+      "leftArm": int.parse(leftArmController.text),
+      "leftLeg": int.parse(leftLegController.text),
+      "rightArm": int.parse(rightArmController.text),
+      "rightLeg": int.parse(rightLegController.text),
+      "shoulders": int.parse(shouldersControler.text),
+      "waist": int.parse(waistController.text),
+      "weight": int.parse(weightController.text),
+    };
   }
 }

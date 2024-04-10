@@ -85,15 +85,20 @@ class _LoginViewState extends State<LoginView> {
                               fontSize: 22),
                         ),
                         onPressed: () {
-                          auth
-                              .signInWithEmailAndPassword(
-                                  email: emailController.text,
-                                  password: passwordController.text)
-                              .then((_) {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeView()));
-                          });
+                          try {
+                            auth
+                                .signInWithEmailAndPassword(
+                                    email: emailController.text,
+                                    password: passwordController.text)
+                                .then((_) {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => const HomeView()));
+                            });
+                          } on FirebaseAuthException catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.message.toString())));
+                          }
                         }),
                   ),
                 ],
