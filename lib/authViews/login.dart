@@ -75,43 +75,41 @@ class _LoginViewState extends State<LoginView> {
                     hintText: 'Password',
                     obscureText: true,
                   ),
-                ],
-              ),
-              SizedBox(height: height * 0.01),
-              Container(
-                width: 230,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFED500),
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.all(Radius.circular(height / 38)),
-                ),
-                child: TextButton(
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22),
+                  SizedBox(height: height * 0.01),
+                  Container(
+                    width: 230,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFED500),
+                      shape: BoxShape.rectangle,
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(height / 38)),
                     ),
-                    onPressed: () {
-                      try {
-                        auth
-                            .signInWithEmailAndPassword(
-                                email: email, password: password)
-                            .then((_) {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => const HomeView()));
-                        });
-                      } catch (e) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(e as String)));
-                      }
-                    }),
-              ),
-              SizedBox(
-                height: height * 0.3,
+                    child: TextButton(
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22),
+                        ),
+                        onPressed: () {
+                          try {
+                            auth
+                                .signInWithEmailAndPassword(
+                                    email: emailController.text,
+                                    password: passwordController.text)
+                                .then((_) {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => const HomeView()));
+                            });
+                          } on FirebaseAuthException catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.message.toString())));
+                          }
+                        }),
+                  ),
+                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

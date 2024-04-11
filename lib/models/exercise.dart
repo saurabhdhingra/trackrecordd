@@ -17,7 +17,7 @@ class Exercise {
         sets: json["sets"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toFirestore() => {
         "date": date,
         "muscleGroup": muscleGroup,
         "sets": sets,
@@ -33,13 +33,5 @@ class Exercise {
       muscleGroup: data?["muscleGroup"],
       sets: data?["sets"],
     );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      "date": date,
-      "muscleGroup": muscleGroup,
-      "sets": sets,
-    };
   }
 }
