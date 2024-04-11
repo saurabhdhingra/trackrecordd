@@ -162,7 +162,7 @@ class CustomTextInputWidget extends StatelessWidget {
     return Container(
       width: width * devWidth,
       height: height * devHeight,
-      padding: EdgeInsets.symmetric(horizontal: width * 0.1),
+      padding: EdgeInsets.symmetric(horizontal: devWidth * 0.05),
       decoration: BoxDecoration(
         color: filledColor ?? Colors.white,
         borderRadius: BorderRadius.circular(25),
@@ -177,13 +177,16 @@ class CustomTextInputWidget extends StatelessWidget {
         keyboardType: keyboardType,
         cursorColor: Colors.black,
         inputFormatters: textFormatters,
+        textAlignVertical: TextAlignVertical.center,
+        textAlign: TextAlign.start,
         style: TextStyle(fontSize: devWidth * 0.04, color: Colors.black87),
         onFieldSubmitted: (value) => (nextFocusNode != null)
             ? FocusScope.of(context).requestFocus(nextFocusNode)
             : null,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: TextStyle(color: Colors.black45, fontSize: width * 0.05),
+          hintStyle:
+              TextStyle(color: Colors.black45, fontSize: devWidth * 0.05),
           contentPadding: EdgeInsets.zero,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
@@ -206,7 +209,6 @@ class CustomTextInputWidget extends StatelessWidget {
             ),
           ),
         ),
-        textAlign: textAlign ?? TextAlign.start,
       ),
     );
   }

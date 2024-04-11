@@ -74,7 +74,7 @@ class _SignupViewState extends State<SignupView> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const LoginView(),
+            builder: (context) => const LoginView(isLogout: false,),
           ),
         );
       },
@@ -83,7 +83,7 @@ class _SignupViewState extends State<SignupView> {
 
   Container createAccountButton(width, height, BuildContext context) {
     return Container(
-      width: width * 0.4,
+      width: width * 0.5,
       decoration: BoxDecoration(
           color: const Color(0xFFFED500),
           shape: BoxShape.rectangle,

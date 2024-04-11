@@ -71,7 +71,9 @@ class _SettingsViewState extends State<SettingsView> {
                     auth.signOut();
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => const LoginView(),
+                        builder: (context) => const LoginView(
+                          isLogout: true,
+                        ),
                       ),
                     );
                   },

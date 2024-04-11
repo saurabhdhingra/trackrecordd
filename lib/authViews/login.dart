@@ -6,7 +6,8 @@ import 'package:trackrecordd/widgets/customField.dart';
 import '../utils/constants.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  final bool isLogout;
+  const LoginView({Key? key, required this.isLogout}) : super(key: key);
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -37,6 +38,13 @@ class _LoginViewState extends State<LoginView> {
     var width = SizeConfig.getWidth(context);
     return Scaffold(
       appBar: AppBar(
+        leading: widget.isLogout
+            ? const SizedBox()
+            : IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.chevron_left)),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -47,58 +55,27 @@ class _LoginViewState extends State<LoginView> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Column(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(height: height * 0.05),
               Column(
                 children: [
                   CustomTextInputWidget(
-                    width: width * 0.9,
-                    height: height * 0.065,
+                    width: 0.9,
+                    height: 0.065,
                     controller: emailController,
                     hintText: 'Enter email',
                     keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: height * 0.01),
                   CustomTextInputWidget(
-                    width: width * 0.9,
-                    height: height * 0.065,
+                    width: 0.9,
+                    height: 0.065,
                     controller: passwordController,
                     hintText: 'Password',
                     obscureText: true,
-                    onChanged: (value) {
-                      setState(() {
-                        password = value.trim();
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Password',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4.0),
-                          topRight: Radius.circular(4.0),
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4.0),
-                          topRight: Radius.circular(4.0),
-                        ),
-                      ),
-                    ),
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w300, color: Colors.grey),
-                    keyboardType: TextInputType.text,
                   ),
-                ),
+                ],
               ),
               SizedBox(height: height * 0.01),
               Container(
@@ -128,7 +105,8 @@ class _LoginViewState extends State<LoginView> {
                                   builder: (context) => const HomeView()));
                         });
                       } catch (e) {
-                        print("Wrong password");
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(e as String)));
                       }
                     }),
               ),

@@ -58,31 +58,36 @@ class _CreateAccountViewState extends State<CreateAccountView> {
             mainAxisSize: MainAxisSize.max,
             children: [
               SizedBox(height: height * 0.25, width: width),
-              CustomTextInputWidget(
-                width: width * 0.9,
-                height: height * 0.065,
-                controller: emailController,
-                hintText: 'Email',
-              ),
-              const Text(
-                'We won\'t judge you even if it is embarassing     ',
-                style: TextStyle(
-                  fontWeight: FontWeight.w300,
-                  color: Colors.black87,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextInputWidget(
+                    width: 0.9,
+                    height: 0.065,
+                    controller: emailController,
+                    hintText: 'Email',
+                  ),
+                  const Text(
+                    '  We won\'t judge you even if it is embarassing     ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: height * 0.02),
               CustomTextInputWidget(
-                width: width * 0.9,
-                height: height * 0.065,
+                width: 0.9,
+                height: 0.065,
                 controller: passwordController,
                 obscureText: true,
                 hintText: 'Password',
               ),
               SizedBox(height: height * 0.02),
               CustomTextInputWidget(
-                width: width * 0.9,
-                height: height * 0.065,
+                width: 0.9,
+                height: 0.065,
                 controller: confirmPasswordController,
                 obscureText: true,
                 hintText: 'Confirm Password',
