@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/views/addView.dart';
 import 'package:trackrecordd/views/recordsView.dart';
 import 'package:trackrecordd/views/settingsView.dart';
 
@@ -459,15 +460,15 @@ class _HomeViewState extends State<HomeView> {
             //     content: Text('Please select an exercise to add.'),
             //   ));
             // } else {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => AddScreen(
-            //       name: addName,
-            //       muscle: addMuscle,
-            //     ),
-            //   ),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddView(
+                    name: "Bench Press", //addName,
+                    muscle: "Chest" //addMuscle,
+                    ),
+              ),
+            );
             // }
           },
         ),

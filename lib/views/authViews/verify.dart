@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/authViews/basicDetails.dart';
+import 'package:trackrecordd/views/authViews/basicDetails.dart';
 import 'package:trackrecordd/utils/uiUtils.dart';
 
-import '../utils/constants.dart';
+import '../../utils/constants.dart';
 import 'basicDetails.dart';
 
 class VerifyView extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/authViews/createAccount.dart';
-import 'package:trackrecordd/authViews/login.dart';
+import 'package:trackrecordd/views/authViews/createAccount.dart';
+import 'package:trackrecordd/views/authViews/login.dart';
 import 'package:trackrecordd/utils/uiUtils.dart';
-import '../utils/constants.dart';
+import '../../utils/constants.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({Key? key}) : super(key: key);

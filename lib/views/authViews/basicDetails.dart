@@ -5,7 +5,7 @@ import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/views/homeView.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 
-import '../database/userFunctions.dart';
+import '../../database/userFunctions.dart';
 
 class BasicDetailsPage extends StatefulWidget {
   const BasicDetailsPage({Key? key}) : super(key: key);

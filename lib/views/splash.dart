@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:trackrecordd/utils/constants.dart';
-import '../authViews/initializer.dart';
+import 'authViews/initializer.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

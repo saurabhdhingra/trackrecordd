@@ -4,7 +4,7 @@ import '../models/exercise.dart';
 import '../models/userInfo.dart';
 import 'exceptions.dart';
 
-class UserStore {
+class ExerciseDataStore {
   final CollectionReference dataCollection = FirebaseFirestore.instance
       .collection('User Information')
       .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -15,7 +15,7 @@ class UserStore {
       .doc(FirebaseAuth.instance.currentUser?.uid)
       .collection('Workouts');
 
-  Future<void> addExercise({required Exercise exercise}) async {
+  Future<String> addExercise({required Exercise exercise}) async {
     try {
       final exerciseDocument = dataCollection.doc();
       await exerciseDocument.set(exercise.toJson());
@@ -23,21 +23,28 @@ class UserStore {
       var data;
       await workoutCollection.doc(workoutId(DateTime.now())).get().then(
         (DocumentSnapshot doc) {
-          data = doc.data() as Map<String, dynamic>;
-          data["exercises"].add(exerciseDocument.id);
+          if (doc.data() == null) {
+            final workoutDocument =
+                workoutCollection.doc(workoutId(DateTime.now()));
+            workoutDocument.set();
+          } else {
+            data = doc.data() as Map<String, dynamic>;
+            data["exercises"].add(exerciseDocument.id);
+          }
         },
       );
 
       await workoutCollection.doc(workoutId(DateTime.now())).set(data);
-
+      return exerciseDocument.id;
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to add user details', devDetails: '$error');
     }
   }
 
-  Future<void> updateExercise({required Exercise exercise, required String id}) async {
-     try {
+  Future<void> updateExercise(
+      {required Exercise exercise, required String id}) async {
+    try {
       final exerciseDocument = dataCollection.doc(id);
       await exerciseDocument.set(exercise.toJson());
     } catch (error) {
@@ -46,7 +53,7 @@ class UserStore {
     }
   }
 
-  Future<void> deleteExercise({required String id, required int index}) async{
+  Future<void> deleteExercise({required String id, required int index}) async {
     try {
       final exerciseDocument = dataCollection.doc(id);
       await exerciseDocument.delete();
@@ -60,25 +67,9 @@ class UserStore {
       );
 
       await workoutCollection.doc(workoutId(DateTime.now())).set(data);
-
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to add user details', devDetails: '$error');
-    }
-  }
-
-  Future<UserInfo?> getUserInformation({required String userId}) async {
-    if (userId.isNotEmpty) {
-      // final userDoc = await userCollection.doc(userId).get();
-
-      if (!userDoc.exists) {
-        return null;
-      }
-
-      final userData = userDoc.data() as Map<String, dynamic>;
-      return UserInfo.fromJson(userData);
-    } else {
-      throw FireStoreException(message: 'User ID passed is empty.');
     }
   }
 }

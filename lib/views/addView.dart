@@ -1,6 +1,8 @@
 // import 'package:trackrecordd/screens/todayScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:trackrecordd/database/exerciseDataStore.dart';
+import 'package:trackrecordd/models/exercise.dart';
 import 'package:trackrecordd/utils/constants.dart';
 // import 'package:trackrecord/database/db.dart';
 import 'package:trackrecordd/utils/functions.dart';
@@ -22,7 +24,7 @@ class AddView extends StatefulWidget {
 }
 
 class _AddViewState extends State<AddView> {
-  List<Map> sets = [
+  List<Map<String, dynamic>> sets = [
     {
       "weight": 0,
       "reps": 0,
@@ -38,6 +40,7 @@ class _AddViewState extends State<AddView> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
+        centerTitle: false,
         iconTheme: Theme.of(context).iconTheme,
         title: Text(
           widget.name,
@@ -57,14 +60,21 @@ class _AddViewState extends State<AddView> {
               ),
               addButton(height, width),
               SizedBox(height: height * 0.01),
-              SubmitButton(onSubmit: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomeView(),
-                  ),
-                );
-              })
+              SubmitButton(
+                onSubmit: () {
+                  Exercise exercise = Exercise(
+                    date: DateTime.now(),
+                    name: widget.name,
+                    muscleGroup: widget.muscle,
+                    sets: sets,
+                  );
+                  ExerciseDataStore dataStore = ExerciseDataStore();
+                  dataStore.addExercise(exercise: exercise).then(
+                        (value) => Navigator.pop(
+                            context, "${exercise.toJson()},$value"),
+                      );
+                },
+              )
             ],
           ),
         ),
@@ -110,14 +120,17 @@ class _AddViewState extends State<AddView> {
             ],
           ),
           CustomField(
+            initialValue: sets[index]["reps"].toString(),
             setValue: (value) => sets[index]["reps"] = value,
             formKey: GlobalKey<FormState>(),
-            unit: "reps",
+            hintText: "Reps",
           ),
           SizedBox(height: height * 0.02),
           CustomField(
+            initialValue: sets[index]["weight"].toString(),
             setValue: (value) => sets[index]["weight"] = value,
             formKey: GlobalKey<FormState>(),
+            hintText: "Weight",
             unit: "kgs",
           ),
         ],
@@ -127,10 +140,15 @@ class _AddViewState extends State<AddView> {
 
   GestureDetector addButton(height, width) {
     return GestureDetector(
-      onTap: () => setState(() => sets.add({
-            "weight": 0,
-            "reps": 0,
-          })),
+      onTap: () => setState(() {
+        sets = sets +
+            [
+              {
+                "weight": 0,
+                "reps": 0,
+              }
+            ];
+      }),
       child: Container(
         width: width * 0.85,
         height: height * 0.08,

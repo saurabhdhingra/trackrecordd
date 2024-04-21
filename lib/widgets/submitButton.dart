@@ -6,12 +6,12 @@ class SubmitButton extends StatelessWidget {
   final VoidCallback onSubmit;
   final String text;
   final bool isEndIndent;
-  const SubmitButton(
-      {Key? key,
-      required this.onSubmit,
-      this.text = "Submit",
-      this.isEndIndent = true})
-      : super(key: key);
+  const SubmitButton({
+    Key? key,
+    required this.onSubmit,
+    this.text = "Submit",
+    this.isEndIndent = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +28,7 @@ class SubmitButton extends StatelessWidget {
             height: height * 0.04,
             width: width * 0.25,
             decoration: BoxDecoration(
-              color: Platform.isIOS
-                  ? const Color.fromRGBO(235, 235, 235, 1)
-                  : Colors.white,
+              color: Colors.blue,
               border: Platform.isIOS
                   ? Border.all(
                       color: Colors.white,
@@ -48,7 +46,10 @@ class SubmitButton extends StatelessWidget {
               child: FittedBox(
                 child: Text(
                   text,
-                  style: TextStyle(fontSize: height * 0.02),
+                  style: TextStyle(
+                    fontSize: height * 0.02,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

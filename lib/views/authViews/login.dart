@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/views/homeView.dart';
-import 'package:trackrecordd/authViews/createAccount.dart';
+import 'package:trackrecordd/views/authViews/createAccount.dart';
 import 'package:trackrecordd/widgets/customField.dart';
-import '../utils/constants.dart';
+import '../../utils/constants.dart';
 
 class LoginView extends StatefulWidget {
   final bool isLogout;

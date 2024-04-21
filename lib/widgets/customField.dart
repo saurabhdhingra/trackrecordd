@@ -67,8 +67,10 @@ class _CustomFieldState extends State<CustomField> {
             border: const OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.black),
                 borderRadius: BorderRadius.all(Radius.circular(10))),
-            hintText: widget.hintText,
-            hintStyle: const TextStyle(color: Colors.black54),
+            label: Text(
+              widget.hintText ?? "",
+              style: const TextStyle(color: Colors.black54),
+            ),
             suffixText: widget.unit,
             // Text(widget.unit ?? "",
             //     style: const TextStyle(

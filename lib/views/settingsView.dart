@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/authViews/login.dart';
+import 'package:trackrecordd/views/authViews/login.dart';
 // import 'package:trackrecord/database/models.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
