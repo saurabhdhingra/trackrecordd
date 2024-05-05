@@ -26,15 +26,28 @@ class ExerciseDataStore {
           if (doc.data() == null) {
             final workoutDocument =
                 workoutCollection.doc(workoutId(DateTime.now()));
-            workoutDocument.set();
+            workoutDocument.set({
+              'date': DateTime.now(),
+              'muscleGroups': [exercise.muscleGroup],
+              'exercises': [exerciseDocument.id]
+            });
           } else {
             data = doc.data() as Map<String, dynamic>;
-            data["exercises"].add(exerciseDocument.id);
+            
+            if (data["exercises"].length <= 10) {
+              data["exercises"].add(exerciseDocument.id);
+            } else {
+              throw Exception("Can't add more than 10 exercises in a day.");
+            }
+
+            if (!data["muscleGroups"].contains(exercise.muscleGroup)) {
+              data["muscleGroups"].add(exercise.muscleGroup);
+            }
+            workoutCollection.doc(workoutId(DateTime.now())).set(data);
           }
         },
       );
 
-      await workoutCollection.doc(workoutId(DateTime.now())).set(data);
       return exerciseDocument.id;
     } catch (error) {
       throw FireStoreException(

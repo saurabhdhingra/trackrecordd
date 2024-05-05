@@ -20,48 +20,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late List<Map<String, dynamic>> data = [
-    {
-      "name": "Pull Over",
-      "weight1": 10,
-      "weight2": 12.5,
-      "weight3": 12.5,
-      "reps1": 15,
-      "reps2": 12,
-      "reps3": 15,
-      "muscle": "Triceps",
-    },
-    {
-      "name": "Bench Press",
-      "weight1": 10,
-      "weight2": 12.5,
-      "weight3": 12.5,
-      "reps1": 15,
-      "reps2": 12,
-      "reps3": 15,
-      "muscle": "Triceps",
-    },
-    {
-      "name": "Lateral Push Down",
-      "weight1": 10,
-      "weight2": 12.5,
-      "weight3": 12.5,
-      "reps1": 15,
-      "reps2": 12,
-      "reps3": 15,
-      "muscle": "Triceps",
-    },
-    {
-      "name": "Pull Over",
-      "weight1": 10,
-      "weight2": 12.5,
-      "weight3": 12.5,
-      "reps1": 15,
-      "reps2": 12,
-      "reps3": 15,
-      "muscle": "Triceps",
-    }
-  ];
+  
   late List<String> exercises = [];
   late List muscles = [];
   late List<Map> androidmuscles = [];

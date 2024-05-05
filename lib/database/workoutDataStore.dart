@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:trackrecordd/models/workout.dart';
+import 'package:trackrecordd/models/workoutDetailed.dart';
 import '../models/exercise.dart';
 import '../models/userInfo.dart';
 import 'exceptions.dart';
@@ -15,61 +17,66 @@ class ExerciseDataStore {
       .doc(FirebaseAuth.instance.currentUser?.uid)
       .collection('Workouts');
 
-  Future<String> addExercise({required Exercise exercise}) async {
+  Future<WorkoutDetails> getWorkoutDetails({required DateTime date}) async {
     try {
-      final exerciseDocument = dataCollection.doc();
-      await exerciseDocument.set(exercise.toJson());
-
       var data;
+      WorkoutDetails result =
+          WorkoutDetails(date: date, muscleGroups: [], exercises: []);
+
       await workoutCollection.doc(workoutId(DateTime.now())).get().then(
         (DocumentSnapshot doc) {
-          if (doc.data() == null) {
-            final workoutDocument =
-                workoutCollection.doc(workoutId(DateTime.now()));
-            workoutDocument.set();
-          } else {
+          if (doc.data() != null) {
             data = doc.data() as Map<String, dynamic>;
-            data["exercises"].add(exerciseDocument.id);
+            List<String> exerciseIds = data["exercises"] as List<String>;
+            List<Exercise> exerciseDetails = [];
+            dataCollection
+                .where(FieldPath.documentId, whereIn: exerciseIds)
+                .get()
+                .then(
+              (querySnapshot) {
+                print("Successfully completed");
+                for (var docSnapshot in querySnapshot.docs) {
+                  var exerciseJson = docSnapshot.data() as Map<String, dynamic>;
+                  exerciseDetails.add(Exercise.fromJson(exerciseJson));
+                }
+              },
+              onError: (e) => print('Error completing: $e'),
+            );
+
+            result = WorkoutDetails(
+                date: date,
+                muscleGroups: data["muscleGroups"],
+                exercises: exerciseDetails);
           }
         },
       );
 
-      await workoutCollection.doc(workoutId(DateTime.now())).set(data);
-      return exerciseDocument.id;
+      return result;
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to add user details', devDetails: '$error');
     }
   }
 
-  Future<void> updateExercise(
-      {required Exercise exercise, required String id}) async {
+  Future<void> updateWorkout(
+      {required Workout workout, required String id}) async {
     try {
-      final exerciseDocument = dataCollection.doc(id);
-      await exerciseDocument.set(exercise.toJson());
+      final workoutDocument = workoutCollection.doc(id);
+      await workoutDocument.set(workout.toFirestore());
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to add user details', devDetails: '$error');
     }
   }
 
-  Future<void> deleteExercise({required String id, required int index}) async {
+  Future<void> deleteWorkout({required String id, required int index}) async {
     try {
-      final exerciseDocument = dataCollection.doc(id);
-      await exerciseDocument.delete();
-
-      var data;
-      await workoutCollection.doc(workoutId(DateTime.now())).get().then(
-        (DocumentSnapshot doc) {
-          data = doc.data() as Map<String, dynamic>;
-          data["exercises"].removeAt(index);
-        },
-      );
-
-      await workoutCollection.doc(workoutId(DateTime.now())).set(data);
+      final workoutDocument = dataCollection.doc(id);
+      await workoutDocument.delete();
     } catch (error) {
       throw FireStoreException(
-          message: 'Failed to add user details', devDetails: '$error');
+          message: 'Failed to delete workout. Please try again.',
+          devDetails: '$error');
     }
   }
 }
