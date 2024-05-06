@@ -58,6 +58,31 @@ class ExerciseDataStore {
     }
   }
 
+  Future<List<Workout>> getWorkoutList({
+    int limit = 15,
+    DocumentSnapshot<Object?>? startAfterDoc,
+  }) async {
+    try {
+      final query =
+          workoutCollection.orderBy('date', descending: false).limit(limit);
+
+      final querySnapshot = startAfterDoc != null
+          ? await query.startAfterDocument(startAfterDoc).get()
+          : await query.get();
+
+      List<Workout> workouts = [];
+
+      for (var docSnapshot in querySnapshot.docs) {
+        var workoutJson = docSnapshot.data() as Map<String, dynamic>;
+        workouts.add(Workout.fromJson(workoutJson));
+      }
+      return workouts;
+    } catch (error) {
+      throw FireStoreException(
+          message: 'Failed to add user details', devDetails: '$error');
+    }
+  }
+
   Future<void> updateWorkout(
       {required Workout workout, required String id}) async {
     try {
