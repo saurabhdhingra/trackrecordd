@@ -6,7 +6,7 @@ import '../models/exercise.dart';
 import '../models/userInfo.dart';
 import 'exceptions.dart';
 
-class ExerciseDataStore {
+class WorkoutDataStore {
   final CollectionReference dataCollection = FirebaseFirestore.instance
       .collection('User Information')
       .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -17,24 +17,27 @@ class ExerciseDataStore {
       .doc(FirebaseAuth.instance.currentUser?.uid)
       .collection('Workouts');
 
-  Future<WorkoutDetails> getWorkoutDetails({required DateTime date}) async {
+  Future<Map<String, dynamic>> getWorkoutDetails(
+      {required DateTime date}) async {
     try {
       var data;
       WorkoutDetails result =
           WorkoutDetails(date: date, muscleGroups: [], exercises: []);
 
+      Workout metaData = Workout(date: date, muscleGroups: [], exercises: []);
+
       await workoutCollection.doc(workoutId(DateTime.now())).get().then(
-        (DocumentSnapshot doc) {
-          if (doc.data() != null) {
+        (DocumentSnapshot doc) async {
+          if (doc.data() != null)  {
             data = doc.data() as Map<String, dynamic>;
-            List<String> exerciseIds = data["exercises"] as List<String>;
+            var array = data["exercises"];
+            List<String> exerciseIds = List<String>.from(array);
             List<Exercise> exerciseDetails = [];
-            dataCollection
+            await dataCollection
                 .where(FieldPath.documentId, whereIn: exerciseIds)
                 .get()
                 .then(
               (querySnapshot) {
-                print("Successfully completed");
                 for (var docSnapshot in querySnapshot.docs) {
                   var exerciseJson = docSnapshot.data() as Map<String, dynamic>;
                   exerciseDetails.add(Exercise.fromJson(exerciseJson));
@@ -43,16 +46,23 @@ class ExerciseDataStore {
               onError: (e) => print('Error completing: $e'),
             );
 
-            result = WorkoutDetails(
-                date: date,
-                muscleGroups: data["muscleGroups"],
-                exercises: exerciseDetails);
+            var muscleArray = data["muscleGroups"];
+            List<String> muscleGroupRes = List<String>.from(muscleArray);
+
+            result = WorkoutDetails.fromJson({
+              "date": data["date"],
+              "exercises": exerciseDetails,
+              "muscleGroups": muscleGroupRes
+            });
+
+            metaData = Workout.fromJson(data);
           }
         },
       );
 
-      return result;
+      return {"details": result, "metaData": metaData};
     } catch (error) {
+      print(error);
       throw FireStoreException(
           message: 'Failed to add user details', devDetails: '$error');
     }
@@ -107,5 +117,6 @@ class ExerciseDataStore {
 }
 
 String workoutId(DateTime date) {
+  print('${date.day}-${date.month}-${date.year}');
   return '${date.day}-${date.month}-${date.year}';
 }

@@ -13,9 +13,9 @@ class Workout {
   });
 
   factory Workout.fromJson(Map<String, dynamic> json) => Workout(
-        date: json["date"],
-        muscleGroups: json["muscleGroups"],
-        exercises: json["exercises"],
+        date: json["date"].toDate(),
+        muscleGroups: List<String>.from(json["muscleGroups"]),
+        exercises: List<String>.from(json["exercises"]),
       );
 
   Map<String, dynamic> toFirestore() => {

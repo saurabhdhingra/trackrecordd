@@ -3,10 +3,15 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/database/exerciseDataStore.dart';
+import 'package:trackrecordd/models/exercise.dart';
+import 'package:trackrecordd/models/workout.dart';
+import 'package:trackrecordd/models/workoutDetailed.dart';
 import 'package:trackrecordd/views/addView.dart';
 import 'package:trackrecordd/views/recordsView.dart';
 import 'package:trackrecordd/views/settingsView.dart';
 
+import '../database/workoutDataStore.dart';
 import '../utils/constants.dart';
 import '../utils/functions.dart';
 import '../utils/uiUtils.dart';
@@ -20,18 +25,47 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  
   late List<String> exercises = [];
+
+  late WorkoutDetails data;
+  late Workout workout;
   late List muscles = [];
   late List<Map> androidmuscles = [];
   late List<Map<String, dynamic>> titleData = [];
-  bool isLoading = false;
+  bool isLoading = true;
   bool showUndo = false;
   int deletedIndex = 0;
-  Map<String, dynamic> deletedItem = {};
+  Exercise? deletedItem;
   String addName = "";
   String addMuscle = "";
   String selectedExercise = "";
+
+  Future<List<Exercise>> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      WorkoutDataStore dataStore = WorkoutDataStore();
+      Map<String, dynamic> result =
+          await dataStore.getWorkoutDetails(date: DateTime.now());
+
+      data = result["details"];
+      workout = result["metaData"];
+      setState(() {
+        isLoading = false;
+      });
+      return data.exercises;
+    } catch (e) {
+      print("Some error occurred.");
+      return [];
+    }
+  }
+
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,39 +108,31 @@ class _HomeViewState extends State<HomeView> {
   Expanded homeViewList() {
     return Expanded(
       child: ListView.builder(
-        itemCount: data.length,
+        itemCount: data.exercises.length,
         itemBuilder: (context, i) {
-          final item = data[i];
+          final item = data.exercises[i];
           return Center(
             child: Dismissible(
               background:
                   Container(color: Colors.red, child: const Icon(Icons.delete)),
-              key: Key(item['indecs'].toString()),
+              key: Key(workout.exercises[i]),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) async {
                 setState(() {
                   isLoading = true;
                 });
-                if (deletedItem.isNotEmpty) {
+                if (deletedItem != null) {
                   // await DatabaseHelper.instance
                   //     .deleteLog(deletedItem['indecs']);
                 } else {}
                 setState(() {
-                  deletedItem = data.removeAt(i);
+                  deletedItem = data.exercises.removeAt(i);
                   showUndo = true;
                   isLoading = false;
                 });
               },
               child: ExerciseWidget(
-                name: item['name'],
-                reps1: item['reps1'].toString(),
-                reps2: item['reps2'].toString(),
-                reps3: item['reps3'].toString(),
-                weight1: item['weight1'].toString(),
-                weight2: item['weight2'].toString(),
-                weight3: item['weight3'].toString(),
-                muscle: item['muscle'],
-                screen: 1,
+                exercise: item,
               ),
             ),
           );
@@ -127,8 +153,8 @@ class _HomeViewState extends State<HomeView> {
             width: width * 0.61,
             child: RichText(
               text: TextSpan(
-                text: titleData.isNotEmpty
-                    ? titleData[0]['muscle'] + '\n'
+                text: workout.muscleGroups.isNotEmpty
+                    ? '${workout.muscleGroups[0]}\n'
                     : 'Add' '\n',
                 style: TextStyle(
                   fontSize: height / 24,
@@ -137,10 +163,10 @@ class _HomeViewState extends State<HomeView> {
                 ),
                 children: <TextSpan>[
                   TextSpan(
-                    text: titleData.isNotEmpty
+                    text: workout.muscleGroups.isNotEmpty
                         ? titleData.length > 1
                             // ignore: prefer_interpolation_to_compose_strings
-                            ? 'and ' + titleData[1]['muscle']
+                            ? 'and ' + workout.muscleGroups[1]
                             : ''
                         : 'exercises',
                     style: TextStyle(
@@ -280,19 +306,26 @@ class _HomeViewState extends State<HomeView> {
                 child: FloatingActionButton(
                   onPressed: () {
                     setState(() {
-                      data.insert(deletedIndex - 1, deletedItem);
+                      data.exercises.insert(
+                          deletedIndex - 1,
+                          deletedItem ??
+                              Exercise(
+                                  date: DateTime.now(),
+                                  name: "",
+                                  muscleGroup: "",
+                                  sets: []));
                       showUndo = false;
-                      deletedItem = {};
+                      deletedItem = null;
                     });
                   },
                   backgroundColor: Colors.orange[400],
-                  child: const Icon(Icons.undo),
+                  child: Icon(Icons.undo),
                   heroTag: "btn1",
                 ),
               )
             : const SizedBox(),
         Padding(
-          padding: EdgeInsets.only(right: 0),
+          padding: const EdgeInsets.only(right: 0),
           child: FloatingActionButton(
             backgroundColor: Colors.blue,
             child: const Icon(Icons.add),

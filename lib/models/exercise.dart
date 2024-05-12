@@ -13,12 +13,16 @@ class Exercise {
     required this.sets,
   });
 
-  factory Exercise.fromJson(Map<String, dynamic> json) => Exercise(
-        date: json["date"],
-        name: json["name"],
-        muscleGroup: json["muscleGroup"],
-        sets: json["sets"],
-      );
+  factory Exercise.fromJson(Map<String, dynamic> json) {
+    var array = json["sets"];
+    List<Map<String, dynamic>> sets = List<Map<String, dynamic>>.from(array);
+    return Exercise(
+      date: json["date"].toDate(),
+      name: json["name"],
+      muscleGroup: json["muscleGroup"],
+      sets: sets,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "date": date,

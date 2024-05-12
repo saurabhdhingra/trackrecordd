@@ -13,7 +13,7 @@ class WorkoutDetails {
   });
 
   factory WorkoutDetails.fromJson(Map<String, dynamic> json) => WorkoutDetails(
-        date: json["date"],
+        date: json["date"].toDate(),
         muscleGroups: json["muscleGroups"],
         exercises: json["exercises"],
       );
