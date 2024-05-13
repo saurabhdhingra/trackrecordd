@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/database/exerciseDataStore.dart';
+import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/models/exercise.dart';
 import 'package:trackrecordd/models/workout.dart';
 import 'package:trackrecordd/models/workoutDetailed.dart';
@@ -65,6 +66,7 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     fetchData();
     super.initState();
+    intialExercisesArray();
   }
 
   @override
