@@ -119,8 +119,10 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                             .then(
                           (_) {
                             Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => VerifyView()));
+                              MaterialPageRoute(
+                                builder: (context) => VerifyView(),
+                              ),
+                            );
                           },
                         );
                       } catch (e) {

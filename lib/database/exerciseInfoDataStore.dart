@@ -7,7 +7,7 @@ import '../models/exerciseInfo.dart';
 import '../models/userInfo.dart';
 import 'exceptions.dart';
 
-class ExerciseDataStore {
+class ExerciseInfoDataStore {
   final CollectionReference exerciseInfoCollection = FirebaseFirestore.instance
       .collection('User Information')
       .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -29,6 +29,19 @@ class ExerciseDataStore {
       throw FireStoreException(
           message: 'Failed to add exercise', devDetails: '$error');
     }
+  }
+
+  Future<void> batchWrite() async {
+    try {
+      var batch = FirebaseFirestore.instance.batch();
+
+      for (Map doc in initialExercises) {
+        var docRef = exerciseInfoCollection.doc();
+        batch.set(docRef, doc);
+      }
+
+      batch.commit();
+    } catch (error) {}
   }
 
   Future<Map<String, List<ExerciseInfo>>> getSortedExercises() async {
@@ -140,7 +153,6 @@ class ExerciseDataStore {
     }
   }
 }
-
 
 List initialExercises = [
   {"muscleGroup": "Chest", "name": "Bench Press"},

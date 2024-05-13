@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/database/userDataStore.dart';
 import 'package:trackrecordd/models/userInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
@@ -278,7 +279,10 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                   ),
                   child: TextButton(
                     onPressed: () {
-                      UserStore store = new UserStore();
+                      UserStore store = UserStore();
+                      ExerciseInfoDataStore exerciseInfoDataStore =
+                          ExerciseInfoDataStore();
+                      exerciseInfoDataStore.batchWrite();
                       store
                           .addBasicDetails(
                             userInfo: UserInformation(

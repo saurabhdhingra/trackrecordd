@@ -32,11 +32,13 @@ class _HomeViewState extends State<HomeView> {
   late Workout workout;
   late List muscles = [];
   late List<Map> androidmuscles = [];
-  late List<Map<String, dynamic>> titleData = [];
+
   bool isLoading = true;
   bool showUndo = false;
+
   int deletedIndex = 0;
   Exercise? deletedItem;
+
   String addName = "";
   String addMuscle = "";
   String selectedExercise = "";
@@ -62,11 +64,15 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  Future<void> batchWrite() async {
+    ExerciseInfoDataStore exerciseInfoDataStore = ExerciseInfoDataStore();
+    await exerciseInfoDataStore.batchWrite();
+  }
+
   @override
   void initState() {
     fetchData();
     super.initState();
-    intialExercisesArray();
   }
 
   @override
@@ -166,7 +172,7 @@ class _HomeViewState extends State<HomeView> {
                 children: <TextSpan>[
                   TextSpan(
                     text: workout.muscleGroups.isNotEmpty
-                        ? titleData.length > 1
+                        ? workout.muscleGroups.length > 1
                             // ignore: prefer_interpolation_to_compose_strings
                             ? 'and ' + workout.muscleGroups[1]
                             : ''
