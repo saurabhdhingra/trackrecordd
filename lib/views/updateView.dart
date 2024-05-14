@@ -114,13 +114,11 @@ class _UpdateViewState extends State<UpdateView> {
           ),
           CustomField(
             setValue: (value) => sets[index]["reps"] = value,
-            formKey: GlobalKey<FormState>(),
             unit: "reps",
           ),
           SizedBox(height: height * 0.02),
           CustomField(
             setValue: (value) => sets[index]["weight"] = value,
-            formKey: GlobalKey<FormState>(),
             unit: "kgs",
           ),
         ],

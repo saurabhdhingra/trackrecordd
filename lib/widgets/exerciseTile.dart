@@ -22,6 +22,7 @@ class ExerciseWidget extends StatelessWidget {
           width: width,
           child: Container(
             width: width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: width * 0.05),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
               shape: BoxShape.rectangle,

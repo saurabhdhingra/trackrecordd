@@ -75,26 +75,27 @@ class _CreateExerciseState extends State<CreateExercise> {
         iconTheme: Theme.of(context).iconTheme,
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: height * 0.01),
-            rowText(width, "Enter the name of the exercise"),
-            SizedBox(height: height * 0.01),
-            CustomField(
-              setValue: (value) => setState(() => exerciseName = value),
-              formKey: _formKey,
-            ),
-            nameInput(width),
-            SizedBox(height: height * 0.01),
-            rowText(width, "Select target muscle"),
-            SizedBox(height: height * 0.01),
-            DropdownSelector(
-              setState: (value) => setState(() => targetMuscle = value),
-              items: muscles,
-              dropDownValue: muscles[targetMuscle],
-            ),
-          ],
+        child: Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: height * 0.01),
+              rowText(width, "Enter the name of the exercise"),
+              SizedBox(height: height * 0.01),
+              CustomField(
+                setValue: (value) => setState(() => exerciseName = value),
+              ),
+              nameInput(width),
+              SizedBox(height: height * 0.01),
+              rowText(width, "Select target muscle"),
+              SizedBox(height: height * 0.01),
+              DropdownSelector(
+                setState: (value) => setState(() => targetMuscle = value),
+                items: muscles,
+                dropDownValue: muscles[targetMuscle],
+              ),
+            ],
+          ),
         ),
       ),
     );

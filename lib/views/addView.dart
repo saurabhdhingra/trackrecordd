@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:trackrecordd/database/exerciseDataStore.dart';
 import 'package:trackrecordd/models/exercise.dart';
+import 'package:trackrecordd/models/exerciseInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
 // import 'package:trackrecord/database/db.dart';
 import 'package:trackrecordd/utils/functions.dart';
@@ -12,24 +13,55 @@ import 'package:trackrecordd/views/homeView.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 import 'package:trackrecordd/widgets/submitButton.dart';
 
-class AddView extends StatefulWidget {
-  final String name;
-  final String muscle;
+import '../widgets/rowText.dart';
 
-  const AddView({Key? key, required this.name, required this.muscle})
-      : super(key: key);
+class AddOrEditView extends StatefulWidget {
+  final Map<String, List> exerciseLists;
+  const AddOrEditView({super.key, required this.exerciseLists});
 
   @override
-  State<AddView> createState() => _AddViewState();
+  State<AddOrEditView> createState() => _AddOrEditViewState();
 }
 
-class _AddViewState extends State<AddView> {
+class _AddOrEditViewState extends State<AddOrEditView> {
+  final _formKey = GlobalKey<FormState>();
+
+  List muscleGroups = [
+    "Chest",
+    "Shoulder",
+    "Back",
+    "Core",
+    "Bicep",
+    "Tricep",
+    "Legs"
+  ];
+
+  List exerciseList = [
+    ExerciseInfo(name: "Select muscle group", muscleGroup: "")
+  ];
+  List exerciseListsData = [];
+
+  int exerciseIndex = -1;
+
+  int muscleIndex = -1;
   List<Map<String, dynamic>> sets = [
     {
       "weight": 0,
       "reps": 0,
     }
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    exerciseListsData.add(widget.exerciseLists["chest"] ?? []);
+    exerciseListsData.add(widget.exerciseLists["shoulder"] ?? []);
+    exerciseListsData.add(widget.exerciseLists["back"] ?? []);
+    exerciseListsData.add(widget.exerciseLists["core"] ?? []);
+    exerciseListsData.add(widget.exerciseLists["bicep"] ?? []);
+    exerciseListsData.add(widget.exerciseLists["tricep"] ?? []);
+    exerciseListsData.add(widget.exerciseLists["legs"] ?? []);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +75,7 @@ class _AddViewState extends State<AddView> {
         centerTitle: false,
         iconTheme: Theme.of(context).iconTheme,
         title: Text(
-          widget.name,
+          "Add Exercise",
           style: TextStyle(
             fontSize: width * 0.06,
           ),
@@ -51,31 +83,143 @@ class _AddViewState extends State<AddView> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: height * 0.01),
-              ...sets.map(
-                (e) => setTile(height, width, sets.indexOf(e)),
-              ),
-              addButton(height, width),
-              SizedBox(height: height * 0.01),
-              SubmitButton(
-                onSubmit: () {
-                  Exercise exercise = Exercise(
-                    date: DateTime.now(),
-                    name: widget.name,
-                    muscleGroup: widget.muscle,
-                    sets: sets,
-                  );
-                  ExerciseDataStore dataStore = ExerciseDataStore();
-                  dataStore.addExercise(exercise: exercise).then(
-                        (value) => Navigator.pop(
-                            context, "${exercise.toJson()},$value"),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const RowText(text: "Target Muscle Group"),
+                Container(
+                  width: width * 0.9,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(height / 50)),
+                  ),
+                  child: ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    primary: false,
+                    itemCount: muscleGroups.length,
+                    itemBuilder: (context, i) {
+                      final item = muscleGroups[i];
+                      return Padding(
+                        padding: EdgeInsets.fromLTRB(
+                            0, height * 0.01, 0, height * 0.01),
+                        child: ListTile(
+                          title: Text(
+                            item,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          trailing: Icon(
+                            muscleIndex == i
+                                ? Icons.radio_button_checked
+                                : Icons.radio_button_off_outlined,
+                            color: muscleIndex == i
+                                ? Colors.blue
+                                : Theme.of(context).colorScheme.secondary,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              muscleIndex = i;
+                              exerciseIndex = -1;
+                              exerciseList = exerciseListsData[i];
+                            });
+                          },
+                        ),
                       );
-                },
-              )
-            ],
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider(
+                        height: 1,
+                        thickness: 1,
+                        indent: width * 0.03,
+                        endIndent: width * 0.03,
+                      );
+                    },
+                  ),
+                ),
+                const RowText(
+                  text: "Exercise",
+                  topPadding: true,
+                ),
+                Container(
+                  width: width * 0.9,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(height / 50)),
+                  ),
+                  child: ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    primary: false,
+                    itemCount: exerciseList.length,
+                    itemBuilder: (context, i) {
+                      final ExerciseInfo item = exerciseList[i];
+                      return Padding(
+                        padding: EdgeInsets.fromLTRB(
+                            0, height * 0.01, 0, height * 0.01),
+                        child: ListTile(
+                          title: Text(
+                            item.name,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          trailing: muscleIndex != -1
+                              ? Icon(
+                                  exerciseIndex == i
+                                      ? Icons.radio_button_checked
+                                      : Icons.radio_button_off_outlined,
+                                  color: exerciseIndex == i
+                                      ? Colors.blue
+                                      : Theme.of(context).colorScheme.secondary,
+                                )
+                              : const SizedBox(),
+                          onTap: () {
+                            setState(() {
+                              exerciseIndex = i;
+                            });
+                          },
+                        ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider(
+                        height: 1,
+                        thickness: 1,
+                        indent: width * 0.03,
+                        endIndent: width * 0.03,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: height * 0.01),
+                ...sets.map(
+                  (e) => setTile(height, width, sets.indexOf(e)),
+                ),
+                addButton(height, width),
+                SizedBox(height: height * 0.01),
+                SubmitButton(
+                  onSubmit: () {
+                    Exercise exercise = Exercise(
+                      date: DateTime.now(),
+                      name: "Bench Press",
+                      muscleGroup: "Chest",
+                      sets: sets,
+                    );
+                    ExerciseDataStore dataStore = ExerciseDataStore();
+                    dataStore.addExercise(exercise: exercise).then(
+                          (value) => Navigator.pop(
+                              context, "${exercise.toJson()},$value"),
+                        );
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -122,14 +266,12 @@ class _AddViewState extends State<AddView> {
           CustomField(
             initialValue: sets[index]["reps"].toString(),
             setValue: (value) => sets[index]["reps"] = value,
-            formKey: GlobalKey<FormState>(),
             hintText: "Reps",
           ),
           SizedBox(height: height * 0.02),
           CustomField(
             initialValue: sets[index]["weight"].toString(),
             setValue: (value) => sets[index]["weight"] = value,
-            formKey: GlobalKey<FormState>(),
             hintText: "Weight",
             unit: "kgs",
           ),
@@ -152,11 +294,11 @@ class _AddViewState extends State<AddView> {
       child: Container(
         width: width * 0.85,
         height: height * 0.08,
-        decoration: const BoxDecoration(
-          color: Color.fromRGBO(235, 235, 235, 1),
-          borderRadius: BorderRadius.all(
-            Radius.circular(20.0),
-          ),
+        margin: EdgeInsets.symmetric(
+            horizontal: width * 0.075, vertical: height * 0.04),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryFixed,
+          borderRadius: const BorderRadius.all(Radius.circular(20.0)),
         ),
         child: const Center(
           child: Icon(Icons.add),
@@ -170,7 +312,7 @@ class _AddViewState extends State<AddView> {
       children: [
         SizedBox(width: width * 0.05),
         Text(
-          widget.name,
+          "Add exercise",
           style: TextStyle(
             fontSize: width * 0.06,
           ),

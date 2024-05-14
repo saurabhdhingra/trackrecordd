@@ -7,12 +7,13 @@ class CustomField extends StatefulWidget {
   final Function(String) setValue;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
-  final GlobalKey<FormState> formKey;
+
   final bool obscureText;
   final String? initialValue;
   final String? hintText;
   final String? unit;
   final int? maxLines;
+
   final List<TextInputFormatter>? textFormatters;
   final TextEditingController? controller;
 
@@ -21,7 +22,6 @@ class CustomField extends StatefulWidget {
   const CustomField({
     Key? key,
     required this.setValue,
-    required this.formKey,
     this.obscureText = false,
     this.keyboardType = TextInputType.visiblePassword,
     this.validator,
@@ -46,38 +46,39 @@ class _CustomFieldState extends State<CustomField> {
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-      child: Form(
-        key: widget.formKey,
-        child: TextFormField(
-          maxLines: widget.maxLines,
-          readOnly: widget.readOnly,
-          controller: widget.controller,
-          initialValue: widget.initialValue,
-          validator: widget.validator,
-          keyboardType: widget.keyboardType,
-          cursorColor: Colors.black,
-          inputFormatters: widget.textFormatters,
-          style: TextStyle(fontSize: width * 0.04, color: Colors.black87),
-          onChanged: (value) {
-            widget.setValue(value);
-          },
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey.shade200,
-            border: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            label: Text(
-              widget.hintText ?? "",
-              style: const TextStyle(color: Colors.black54),
-            ),
-            suffixText: widget.unit,
-            // Text(widget.unit ?? "",
-            //     style: const TextStyle(
-            //         fontWeight: FontWeight.w200, color: Colors.grey))
+      child: TextFormField(
+        maxLines: widget.maxLines,
+        readOnly: widget.readOnly,
+        controller: widget.controller,
+        initialValue: widget.initialValue,
+        validator: widget.validator,
+        keyboardType: widget.keyboardType,
+        cursorColor: Colors.black,
+        inputFormatters: widget.textFormatters,
+        style: TextStyle(
+            fontSize: width * 0.04,
+            color: Theme.of(context).colorScheme.secondary),
+        onChanged: (value) {
+          widget.setValue(value);
+        },
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Theme.of(context).primaryColor,
+          border: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: Theme.of(context).colorScheme.secondary),
+              borderRadius: const BorderRadius.all(Radius.circular(10))),
+          label: Text(
+            widget.hintText ?? "",
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
           ),
-          obscureText: widget.obscureText,
+
+          suffixText: widget.unit,
+          // Text(widget.unit ?? "",
+          //     style: const TextStyle(
+          //         fontWeight: FontWeight.w200, color: Colors.grey))
         ),
+        obscureText: widget.obscureText,
       ),
     );
   }
@@ -181,14 +182,17 @@ class CustomTextInputWidget extends StatelessWidget {
         inputFormatters: textFormatters,
         textAlignVertical: TextAlignVertical.center,
         textAlign: TextAlign.start,
-        style: TextStyle(fontSize: devWidth * 0.04, color: Colors.black87),
+        style: TextStyle(
+            fontSize: devWidth * 0.04,
+            color: Theme.of(context).colorScheme.secondary),
         onFieldSubmitted: (value) => (nextFocusNode != null)
             ? FocusScope.of(context).requestFocus(nextFocusNode)
             : null,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle:
-              TextStyle(color: Colors.black45, fontSize: devWidth * 0.05),
+          hintStyle: TextStyle(
+              color: Theme.of(context).colorScheme.secondary,
+              fontSize: devWidth * 0.05),
           contentPadding: EdgeInsets.zero,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(

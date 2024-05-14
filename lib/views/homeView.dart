@@ -26,12 +26,10 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late List<String> exercises = [];
+  late Map<String, List> exercises;
 
   late WorkoutDetails data;
   late Workout workout;
-  late List muscles = [];
-  late List<Map> androidmuscles = [];
 
   bool isLoading = true;
   bool showUndo = false;
@@ -64,15 +62,21 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  Future<void> batchWrite() async {
-    ExerciseInfoDataStore exerciseInfoDataStore = ExerciseInfoDataStore();
-    await exerciseInfoDataStore.batchWrite();
+  Future<void> fetchexercisesList() async {
+    try {
+      ExerciseInfoDataStore store = ExerciseInfoDataStore();
+      Map<String, List> request = await store.getSortedExercises();
+      exercises = request;
+    } catch (e) {
+      print("Some error occurred while fetching list of exercises");
+    }
   }
 
   @override
   void initState() {
     fetchData();
     super.initState();
+    fetchexercisesList();
   }
 
   @override
@@ -336,153 +340,24 @@ class _HomeViewState extends State<HomeView> {
           padding: const EdgeInsets.only(right: 0),
           child: FloatingActionButton(
             backgroundColor: Colors.blue,
-            child: const Icon(Icons.add),
             heroTag: "btn2",
             onPressed: () async {
+              var result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddOrEditView(exerciseLists: exercises),
+                ),
+              );
               // setState(() {
               //   showUndo = false;
               // });
               // if (deletedItem.isNotEmpty) {
               //   await DatabaseHelper.instance.deleteLog(deletedItem['indecs']);
               // }
-              // ignore: use_build_context_synchronously
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Platform.isIOS
-                      ? cupertinoAddExec(height, width, context)
-                      : androidAddExec(context, width);
-                },
-              );
             },
+            child: const Icon(Icons.add),
           ),
         ),
-      ],
-    );
-  }
-
-  AlertDialog androidAddExec(BuildContext context, double width) {
-    return AlertDialog(
-      title: Text(addExecTitle),
-      content: Text(addExecSubtitle),
-      actions: [
-        DropdownButton<String>(
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-          value: addName,
-          onChanged: (value) {
-            // setState(() {
-            //   addName = exercises[exercises.indexOf(value!)];
-            //   addMuscle = muscles[exercises.indexOf(value)];
-            // });
-            // if (addName == '') {
-            //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //     content: Text('Please select an exercise to add.'),
-            //   ));
-            // } else {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => AddScreen(
-            //       name: addName,
-            //       muscle: addMuscle,
-            //     ),
-            //   ),
-            // );
-            // }
-          },
-          items: exercises
-              .map(
-                (e) => DropdownMenuItem<String>(
-                  value: e,
-                  child: Center(
-                    child: Text(
-                      e.toString(),
-                      style: TextStyle(
-                          fontSize: width * 0.04,
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-        TextButton(
-          child: const Text('Create'),
-          onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => CreateExercise(
-            //       isExercise: true,
-            //     ),
-            //   ),
-            // );
-          },
-        )
-      ],
-    );
-  }
-
-  CupertinoAlertDialog cupertinoAddExec(
-      double height, double width, BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Text(addExecTitle),
-      content: Text(addExecSubtitle),
-      actions: [
-        CupertinoPicker(
-          diameterRatio: 1,
-          useMagnifier: true,
-          magnification: 1.5,
-          itemExtent: height * 0.035,
-          onSelectedItemChanged: (value) {
-            addName = exercises[value];
-            addMuscle = muscles[value];
-          },
-          children: exercises
-              .map(
-                (e) => Center(
-                  child: Text(
-                    e.toString(),
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(
-                        fontSize: width * 0.03,
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-        CupertinoDialogAction(
-          child: const Text('Add'),
-          onPressed: () {
-            // if (addName == '') {
-            //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //     content: Text('Please select an exercise to add.'),
-            //   ));
-            // } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AddView(
-                    name: "Bench Press", //addName,
-                    muscle: "Chest" //addMuscle,
-                    ),
-              ),
-            );
-            // }
-          },
-        ),
-        CupertinoDialogAction(
-          child: const Text('Create'),
-          onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => CreateExercise(isExercise: true),
-            //   ),
-            // );
-          },
-        )
       ],
     );
   }
