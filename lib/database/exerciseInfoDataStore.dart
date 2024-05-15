@@ -61,13 +61,13 @@ class ExerciseInfoDataStore {
           .where('muscleGroup', isEqualTo: "Back")
           .get();
       final querySnapshotShoulder = await exerciseInfoCollection
-          .where('muscleGroup', isEqualTo: "Shoulder")
+          .where('muscleGroup', isEqualTo: "Shoulders")
           .get();
       final querySnapshotBicep = await exerciseInfoCollection
-          .where('muscleGroup', isEqualTo: "Bicep")
+          .where('muscleGroup', isEqualTo: "Biceps")
           .get();
       final querySnapshotTricep = await exerciseInfoCollection
-          .where('muscleGroup', isEqualTo: "Tricep")
+          .where('muscleGroup', isEqualTo: "Triceps")
           .get();
       final querySnapshotLegs = await exerciseInfoCollection
           .where('muscleGroup', isEqualTo: "Legs")

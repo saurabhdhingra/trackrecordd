@@ -8,7 +8,7 @@ import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/models/exercise.dart';
 import 'package:trackrecordd/models/workout.dart';
 import 'package:trackrecordd/models/workoutDetailed.dart';
-import 'package:trackrecordd/views/addView.dart';
+import 'package:trackrecordd/views/addOrEditView.dart';
 import 'package:trackrecordd/views/recordsView.dart';
 import 'package:trackrecordd/views/settingsView.dart';
 
@@ -279,7 +279,9 @@ class _HomeViewState extends State<HomeView> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SettingsView(),
+                  builder: (context) => SettingsView(
+                    exercisesLists: exercises,
+                  ),
                 ),
               );
             },
@@ -348,6 +350,15 @@ class _HomeViewState extends State<HomeView> {
                   builder: (context) => AddOrEditView(exerciseLists: exercises),
                 ),
               );
+              if (result != null && result is Exercise) {
+                ExerciseDataStore store = ExerciseDataStore();
+                await store.addExercise(exercise: result).then((value) {
+                  workout.exercises.add(value);
+                  data.exercises.add(result);
+                  workout.muscleGroups.add(result.muscleGroup);
+                  setState(() {});
+                });
+              }
               // setState(() {
               //   showUndo = false;
               // });

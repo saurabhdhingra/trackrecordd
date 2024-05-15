@@ -4,83 +4,19 @@ import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/utils/functions.dart';
 import 'package:provider/provider.dart';
 
+import '../models/exerciseInfo.dart';
 import 'createExerciseView.dart';
 
 class EditExercisesView extends StatefulWidget {
-  const EditExercisesView({Key? key}) : super(key: key);
+  final Map<String, List> exercisesLists;
+  const EditExercisesView({Key? key, required this.exercisesLists})
+      : super(key: key);
 
   @override
   State<EditExercisesView> createState() => _EditExercisesViewState();
 }
 
 class _EditExercisesViewState extends State<EditExercisesView> {
-  late List exercisesCore = [];
-  late List exercisesChest = [];
-  late List exercisesBack = [];
-  late List exercisesLegs = [];
-  late List exercisesShoulders = [];
-  late List exercisesBiceps = [];
-  late List exercisesTriceps = [];
-
-  bool isLoading = false;
-  bool showUndo = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getData();
-  // }
-
-  // Future getData() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   List<Map<String, dynamic>> exercises =
-  //       await DatabaseHelper.instance.queryExercises();
-  //   List<String> chest = [];
-  //   List<String> back = [];
-  //   List<String> shoulders = [];
-  //   List<String> legs = [];
-  //   List<String> core = [];
-  //   List<String> biceps = [];
-  //   List<String> triceps = [];
-
-  //   for (int i = 0; i < exercises.length; i++) {
-  //     if (exercises[i]['muscle'] == 'Chest') {
-  //       chest.add(exercises[i]['name']);
-  //     }
-  //     if (exercises[i]['muscle'] == 'Back') {
-  //       back.add(exercises[i]['name']);
-  //     }
-  //     if (exercises[i]['muscle'] == 'Shoulders') {
-  //       shoulders.add(exercises[i]['name']);
-  //     }
-  //     if (exercises[i]['muscle'] == 'Core') {
-  //       core.add(exercises[i]['name']);
-  //     }
-  //     if (exercises[i]['muscle'] == 'Triceps') {
-  //       triceps.add(exercises[i]['name']);
-  //     }
-  //     if (exercises[i]['muscle'] == 'Biceps') {
-  //       biceps.add(exercises[i]['name']);
-  //     }
-  //     if (exercises[i]['muscle'] == 'Legs') {
-  //       legs.add(exercises[i]['name']);
-  //     }
-  //   }
-  //   exercisesChest = chest;
-  //   exercisesBack = back;
-  //   exercisesLegs = legs;
-  //   exercisesTriceps = triceps;
-  //   exercisesBiceps = biceps;
-  //   exercisesShoulders = shoulders;
-  //   exercisesCore = core;
-
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     ScrollController _controller = new ScrollController();
@@ -92,19 +28,19 @@ class _EditExercisesViewState extends State<EditExercisesView> {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            showUndo
-                ? FloatingActionButton(
-                    backgroundColor: Colors.orange[400],
-                    child: Icon(Icons.undo),
-                    onPressed: () {},
-                  )
-                : SizedBox(width: 0, height: 0),
-            SizedBox(
-              width: width * 0.63,
-            ),
+            // showUndo
+            //     ? FloatingActionButton(
+            //         backgroundColor: Colors.orange[400],
+            //         child: const Icon(Icons.undo),
+            //         onPressed: () {},
+            //       )
+            //     : const SizedBox(),
+            // SizedBox(
+            //   width: width * 0.63,
+            // ),
             FloatingActionButton(
               backgroundColor: Colors.blue,
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -135,28 +71,32 @@ class _EditExercisesViewState extends State<EditExercisesView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 listTitle(height, 'Chest'),
-                listWidget(width, height, context, _controller, exercisesChest),
+                listWidget(width, height, context, _controller,
+                    widget.exercisesLists["chest"] ?? []),
                 SizedBox(height: height * 0.02),
                 listTitle(height, 'Back'),
-                listWidget(width, height, context, _controller, exercisesBack),
+                listWidget(width, height, context, _controller,
+                    widget.exercisesLists["back"] ?? []),
                 SizedBox(height: height * 0.02),
                 listTitle(height, 'Shoulders'),
-                listWidget(
-                    width, height, context, _controller, exercisesShoulders),
+                listWidget(width, height, context, _controller,
+                    widget.exercisesLists["shoulder"] ?? []),
                 SizedBox(height: height * 0.02),
                 listTitle(height, 'Biceps'),
-                listWidget(
-                    width, height, context, _controller, exercisesBiceps),
+                listWidget(width, height, context, _controller,
+                    widget.exercisesLists["bicep"] ?? []),
                 SizedBox(height: height * 0.02),
                 listTitle(height, 'Triceps'),
-                listWidget(
-                    width, height, context, _controller, exercisesTriceps),
+                listWidget(width, height, context, _controller,
+                    widget.exercisesLists["tricep"] ?? []),
                 SizedBox(height: height * 0.02),
                 listTitle(height, 'Legs'),
-                listWidget(width, height, context, _controller, exercisesLegs),
+                listWidget(width, height, context, _controller,
+                    widget.exercisesLists["legs"] ?? []),
                 SizedBox(height: height * 0.02),
                 listTitle(height, 'Core'),
-                listWidget(width, height, context, _controller, exercisesCore),
+                listWidget(width, height, context, _controller,
+                    widget.exercisesLists["core"] ?? []),
               ],
             ),
           ),
@@ -174,25 +114,37 @@ class _EditExercisesViewState extends State<EditExercisesView> {
       ScrollController controller, List list) {
     return Container(
       width: width * 0.9,
-      height: height * 0.078 * list.length,
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.all(Radius.circular(height / 50)),
       ),
       child: ListView.separated(
-        controller: controller,
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        primary: false,
         itemCount: list.length,
         itemBuilder: (context, i) {
-          final item = list[i];
-          return SizedBox(
-            height: height * 0.06,
+          final ExerciseInfo item = list[i];
+          return Padding(
+            padding: EdgeInsets.fromLTRB(0, height * 0.01, 0, height * 0.01),
             child: ListTile(
-              title: Text(item),
+              title: Text(
+                item.name,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+              onTap: () {
+                // setState(() {
+                //   exerciseIndex = i;
+                // });
+              },
             ),
           );
         },
         separatorBuilder: (BuildContext context, int index) {
           return Divider(
+            height: 1,
             thickness: 1,
             indent: width * 0.03,
             endIndent: width * 0.03,

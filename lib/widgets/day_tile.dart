@@ -1,29 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/utils/constants.dart';
+import 'package:trackrecordd/views/dateView.dart';
 // import 'package:trackrecord/screens/dateScreen.dart';
 
 class DayTile extends StatefulWidget {
   final DateTime day;
-  final String date;
-  final String month;
   final int number;
   final String muscle1;
-  final String muscle2;
-  const DayTile(
-      {Key? key,
-      required this.date,
-      required this.month,
-      required this.number,
-      required this.day,
-      required this.muscle1,
-      required this.muscle2})
-      : super(key: key);
+  final String? muscle2;
+
+  const DayTile({
+    super.key,
+    required this.number,
+    required this.day,
+    required this.muscle1,
+    this.muscle2,
+  });
 
   @override
   State<DayTile> createState() => _DayTileState();
 }
 
 class _DayTileState extends State<DayTile> {
+  List months = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC"
+  ];
   @override
   Widget build(BuildContext context) {
     var height = SizeConfig.getHeight(context);
@@ -43,14 +55,14 @@ class _DayTileState extends State<DayTile> {
                 height: height / 90,
               ),
               Text(
-                widget.date,
+                widget.day.day.toString(),
                 style: TextStyle(
                   fontSize: height / 50,
                   fontWeight: FontWeight.w300,
                 ),
               ),
               Text(
-                widget.month,
+                months[widget.day.month - 1],
                 style: TextStyle(
                   fontSize: height / 55,
                   fontWeight: FontWeight.w900,
@@ -62,16 +74,17 @@ class _DayTileState extends State<DayTile> {
       ),
       title: Text(widget.muscle1 +
           (widget.muscle2 != '' ? " and ${widget.muscle2}" : '')),
-      subtitle: Text('${widget.number} Exercises'),
+      subtitle: Text(
+          '${widget.number}${widget.number == 1 ? "Exercise" : "Exercises"}'),
       trailing: IconButton(
         icon: const Icon(Icons.chevron_right),
         onPressed: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => DatePage(date: widget.day),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DateView(date: widget.day),
+            ),
+          );
         },
       ),
     );

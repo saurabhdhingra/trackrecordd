@@ -17,7 +17,8 @@ import '../widgets/rowText.dart';
 
 class AddOrEditView extends StatefulWidget {
   final Map<String, List> exerciseLists;
-  const AddOrEditView({super.key, required this.exerciseLists});
+  final Exercise? exercise;
+  const AddOrEditView({super.key, required this.exerciseLists, this.exercise});
 
   @override
   State<AddOrEditView> createState() => _AddOrEditViewState();
@@ -28,15 +29,15 @@ class _AddOrEditViewState extends State<AddOrEditView> {
 
   List muscleGroups = [
     "Chest",
-    "Shoulder",
+    "Shoulders",
     "Back",
     "Core",
-    "Bicep",
-    "Tricep",
+    "Biceps",
+    "Triceps",
     "Legs"
   ];
 
-  List exerciseList = [
+  List<ExerciseInfo> exerciseList = [
     ExerciseInfo(name: "Select muscle group", muscleGroup: "")
   ];
   List exerciseListsData = [];
@@ -50,6 +51,18 @@ class _AddOrEditViewState extends State<AddOrEditView> {
       "reps": 0,
     }
   ];
+
+  void setEditDetails() {
+    sets = widget.exercise!.sets;
+    muscleIndex = muscleGroups.indexOf(widget.exercise!.muscleGroup);
+    exerciseList = exerciseListsData[muscleIndex];
+    for (int i = 0; i < exerciseList.length; i++) {
+      if (exerciseList[i].name == widget.exercise!.name) {
+        exerciseIndex = i;
+      }
+    }
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -207,17 +220,21 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                   onSubmit: () {
                     Exercise exercise = Exercise(
                       date: DateTime.now(),
-                      name: "Bench Press",
-                      muscleGroup: "Chest",
+                      name: exerciseList[exerciseIndex].name,
+                      muscleGroup: muscleGroups[muscleIndex],
                       sets: sets,
                     );
-                    ExerciseDataStore dataStore = ExerciseDataStore();
-                    dataStore.addExercise(exercise: exercise).then(
-                          (value) => Navigator.pop(
-                              context, "${exercise.toJson()},$value"),
-                        );
+                    if (muscleIndex != -1 &&
+                        exerciseIndex != -1 &&
+                        int.parse(sets[0]["reps"]) > 0) {
+                      Navigator.pop(context, exercise);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Please enter valid data")));
+                    }
                   },
-                )
+                ),
+                SizedBox(height: height * 0.05)
               ],
             ),
           ),
@@ -297,7 +314,9 @@ class _AddOrEditViewState extends State<AddOrEditView> {
         margin: EdgeInsets.symmetric(
             horizontal: width * 0.075, vertical: height * 0.04),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryFixed,
+          color: Theme.of(context).scaffoldBackgroundColor == Colors.black
+              ? Colors.grey.shade900
+              : Colors.white,
           borderRadius: const BorderRadius.all(Radius.circular(20.0)),
         ),
         child: const Center(

@@ -26,9 +26,9 @@ class WorkoutDataStore {
 
       Workout metaData = Workout(date: date, muscleGroups: [], exercises: []);
 
-      await workoutCollection.doc(workoutId(DateTime.now())).get().then(
+      await workoutCollection.doc(workoutId(date)).get().then(
         (DocumentSnapshot doc) async {
-          if (doc.data() != null)  {
+          if (doc.data() != null) {
             data = doc.data() as Map<String, dynamic>;
             var array = data["exercises"];
             List<String> exerciseIds = List<String>.from(array);
@@ -68,13 +68,13 @@ class WorkoutDataStore {
     }
   }
 
-  Future<List<Workout>> getWorkoutList({
+  Future<Map<String, dynamic>> getWorkoutList({
     int limit = 15,
     DocumentSnapshot<Object?>? startAfterDoc,
   }) async {
     try {
       final query =
-          workoutCollection.orderBy('date', descending: false).limit(limit);
+          workoutCollection.orderBy('date', descending: true).limit(limit);
 
       final querySnapshot = startAfterDoc != null
           ? await query.startAfterDocument(startAfterDoc).get()
@@ -82,11 +82,20 @@ class WorkoutDataStore {
 
       List<Workout> workouts = [];
 
-      for (var docSnapshot in querySnapshot.docs) {
-        var workoutJson = docSnapshot.data() as Map<String, dynamic>;
+      DocumentSnapshot? lastDoc;
+
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        var workoutJson = querySnapshot.docs[i].data() as Map<String, dynamic>;
         workouts.add(Workout.fromJson(workoutJson));
+        if (i == querySnapshot.docs.length - 1) {
+          lastDoc = querySnapshot.docs[i];
+        }
       }
-      return workouts;
+      return {
+        "list": workouts,
+        "limit": workouts.length < limit,
+        "lastDoc": lastDoc
+      };
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to add user details', devDetails: '$error');

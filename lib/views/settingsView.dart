@@ -12,7 +12,9 @@ import 'dart:io' show Platform;
 import 'package:trackrecordd/views/editExercisesView.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  final Map<String, List> exercisesLists;
+  const SettingsView({Key? key, required this.exercisesLists})
+      : super(key: key);
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -224,7 +226,9 @@ class _SettingsViewState extends State<SettingsView> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const EditExercisesView()),
+                  builder: (context) => EditExercisesView(
+                        exercisesLists: widget.exercisesLists,
+                      )),
             );
           },
         ),
