@@ -35,6 +35,7 @@ class WorkoutDataStore {
             List<Exercise> exerciseDetails = [];
             await dataCollection
                 .where(FieldPath.documentId, whereIn: exerciseIds)
+                .orderBy('date', descending: false)
                 .get()
                 .then(
               (querySnapshot) {
