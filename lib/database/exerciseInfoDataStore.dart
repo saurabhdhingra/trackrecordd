@@ -120,12 +120,12 @@ class ExerciseInfoDataStore {
     }
   }
 
-  Future<String> addExercise({required ExerciseInfo exercise}) async {
+  Future<bool> addExercise({required ExerciseInfo exercise}) async {
     try {
       final exerciseDocument = exerciseInfoCollection.doc();
       await exerciseDocument.set(exercise.toJson());
 
-      return exerciseDocument.id;
+      return true;
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to add exercise', devDetails: '$error');

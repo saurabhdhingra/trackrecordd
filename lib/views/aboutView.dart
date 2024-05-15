@@ -6,7 +6,7 @@ import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/utils/functions.dart';
 
 class AboutView extends StatefulWidget {
-  const AboutView({Key? key}) : super(key: key);
+  const AboutView({super.key});
 
   @override
   State<AboutView> createState() => _AboutViewState();
@@ -43,7 +43,6 @@ class _AboutViewState extends State<AboutView> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         iconTheme: Theme.of(context).iconTheme,
         automaticallyImplyLeading: true,
-        actions: [],
         centerTitle: true,
         elevation: 0,
       ),
@@ -57,12 +56,13 @@ class _AboutViewState extends State<AboutView> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+                    padding:
+                        const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                     child: Container(
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: Color(0xFFEEEEEE),
+                        color: const Color(0xFFEEEEEE),
                         image: DecorationImage(
                           fit: BoxFit.fill,
                           image: Image.asset(
@@ -73,7 +73,7 @@ class _AboutViewState extends State<AboutView> {
                       ),
                     ),
                   ),
-                  Column(
+                  const Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -94,7 +94,7 @@ class _AboutViewState extends State<AboutView> {
                   ),
                 ],
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(15, 0, 15, 0),
                 child: Text(
                   'This app was born out of my need to measure and visualize my growth in gym . \n\nGyms are a reality escape and as much as I want this app to help you to monitor and streamline your fitness journey I also want you to be responsible in using it. Comparing your growth with someone else or working out too much can have negative consequencces. \n\nHope you like what I have done. \n\nSaurabh Dhingra',
@@ -132,15 +132,15 @@ class _AboutViewState extends State<AboutView> {
                 ),
                 child: ListTile(
                   onTap: () async {
-                    final url =
+                    const url =
                         'https://eager-burn-a3e.notion.site/PRIVACY-POLICY-c7b9a85947e947c5ab94f0ddac5f601d';
                     openBrowserURL(url: url, inApp: true);
                   },
-                  title: Text(
+                  title: const Text(
                     'Privacy Policy',
                     style: TextStyle(),
                   ),
-                  trailing: Icon(
+                  trailing: const Icon(
                     Icons.lock,
                     size: 20,
                   ),
@@ -156,7 +156,7 @@ class _AboutViewState extends State<AboutView> {
                 ),
                 child: ListTile(
                   onTap: () async {
-                    final url =
+                    const url =
                         'https://play.google.com/store/apps/details?id=com.saurabh.trackrecordd';
                     RenderBox? box = context.findRenderObject() as RenderBox;
                     await Share.share(
@@ -165,11 +165,11 @@ class _AboutViewState extends State<AboutView> {
                         sharePositionOrigin:
                             box.localToGlobal(Offset.zero) & box.size);
                   },
-                  title: Text(
+                  title: const Text(
                     'Share app',
                     style: TextStyle(),
                   ),
-                  trailing: Icon(
+                  trailing: const Icon(
                     Icons.share_outlined,
                     size: 20,
                   ),

@@ -8,6 +8,7 @@ import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/models/exercise.dart';
 import 'package:trackrecordd/models/workout.dart';
 import 'package:trackrecordd/models/workoutDetailed.dart';
+import 'package:trackrecordd/views/aboutView.dart';
 import 'package:trackrecordd/views/addOrEditView.dart';
 import 'package:trackrecordd/views/recordsView.dart';
 import 'package:trackrecordd/views/settingsView.dart';
@@ -274,9 +275,9 @@ class _HomeViewState extends State<HomeView> {
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
-            onTap: () {
+            onTap: () async {
               Navigator.pop(context);
-              Navigator.push(
+              var result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SettingsView(
@@ -284,6 +285,9 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
               );
+              if (result) {
+                fetchexercisesList();
+              }
             },
           ),
           const Divider(
@@ -296,12 +300,12 @@ class _HomeViewState extends State<HomeView> {
             title: const Text('About app'),
             onTap: () {
               Navigator.pop(context);
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => AboutPage(),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AboutView(),
+                ),
+              );
             },
           ),
         ],

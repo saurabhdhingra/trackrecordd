@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 // import 'package:trackrecord/database/db.dart';
 import 'package:trackrecordd/utils/constants.dart';
-import 'package:trackrecordd/utils/functions.dart';
-import 'package:provider/provider.dart';
 
 import '../models/exerciseInfo.dart';
 import 'createExerciseView.dart';
@@ -17,6 +16,17 @@ class EditExercisesView extends StatefulWidget {
 }
 
 class _EditExercisesViewState extends State<EditExercisesView> {
+  bool isEdit = false;
+
+  Map<String, String> tagMap = {
+    "Chest": "chest",
+    "Back": "back",
+    "Shoulders": "shoulder",
+    "Biceps": "bicep",
+    "Triceps": "tricep",
+    "Legs": "legs",
+    "Core": "core",
+  };
   @override
   Widget build(BuildContext context) {
     ScrollController _controller = new ScrollController();
@@ -41,8 +51,8 @@ class _EditExercisesViewState extends State<EditExercisesView> {
             FloatingActionButton(
               backgroundColor: Colors.blue,
               child: const Icon(Icons.add),
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                var result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const CreateExercise(
@@ -50,11 +60,27 @@ class _EditExercisesViewState extends State<EditExercisesView> {
                     ),
                   ),
                 );
+                if (result != null && result is ExerciseInfo) {
+                  ExerciseInfoDataStore store = ExerciseInfoDataStore();
+                  await store.addExercise(exercise: result).then((value) {
+                    if (value) {
+                      widget.exercisesLists[tagMap[result.muscleGroup]]!
+                          .add(result);
+                      setState(() {});
+                    }
+                  });
+                }
               },
             )
           ]),
       appBar: AppBar(
         // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left, size: width * 0.08),
+          onPressed: () {
+            Navigator.pop(context, isEdit);
+          },
+        ),
         backgroundColor: Colors.transparent,
         iconTheme: Theme.of(context).iconTheme,
         automaticallyImplyLeading: true,

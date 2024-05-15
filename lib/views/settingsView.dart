@@ -22,6 +22,7 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final auth = FirebaseAuth.instance;
+  bool isEdit = false;
   bool dark = false;
   void getThemeState() async {
     final prefs = await SharedPreferences.getInstance();
@@ -44,9 +45,15 @@ class _SettingsViewState extends State<SettingsView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left, size: width * 0.08),
+          onPressed: () {
+            Navigator.pop(context, isEdit);
+          },
+        ),
         // title: Text('Settings',
         //     style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
-        shadowColor: Color(0xFFFFFFFF),
+        shadowColor: const Color(0xFFFFFFFF),
         elevation: 0,
         iconTheme: Theme.of(context).iconTheme,
       ),
@@ -68,7 +75,7 @@ class _SettingsViewState extends State<SettingsView> {
                   borderRadius: BorderRadius.all(Radius.circular(height / 38)),
                 ),
                 child: ListTile(
-                  title: Text('Logout'),
+                  title: const Text('Logout'),
                   onTap: () {
                     auth.signOut();
                     Navigator.of(context).pushReplacement(
@@ -222,14 +229,19 @@ class _SettingsViewState extends State<SettingsView> {
         child: ListTile(
           title: const Text('Edit Exercises'),
           trailing: const Icon(Icons.arrow_forward_ios),
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            var result = await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => EditExercisesView(
                         exercisesLists: widget.exercisesLists,
                       )),
             );
+            if (result) {
+              setState(() {
+                isEdit = true;
+              });
+            }
           },
         ),
       ),

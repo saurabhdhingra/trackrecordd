@@ -56,15 +56,13 @@ class _DayTileState extends State<DayTile> {
               ),
               Text(
                 widget.day.day.toString(),
-                style: TextStyle(
-                  fontSize: height / 50,
+                style: const TextStyle(
                   fontWeight: FontWeight.w300,
                 ),
               ),
               Text(
                 months[widget.day.month - 1],
-                style: TextStyle(
-                  fontSize: height / 55,
+                style: const TextStyle(
                   fontWeight: FontWeight.w900,
                 ),
               )
@@ -75,7 +73,7 @@ class _DayTileState extends State<DayTile> {
       title: Text(widget.muscle1 +
           (widget.muscle2 != '' ? " and ${widget.muscle2}" : '')),
       subtitle: Text(
-          '${widget.number}${widget.number == 1 ? "Exercise" : "Exercises"}'),
+          '${widget.number}${widget.number == 1 ? " Exercise" : " Exercises"}'),
       trailing: IconButton(
         icon: const Icon(Icons.chevron_right),
         onPressed: () {

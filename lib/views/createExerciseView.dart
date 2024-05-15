@@ -2,6 +2,8 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 // import 'package:trackrecord/database/db.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
+import 'package:trackrecordd/models/exerciseInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/widgets/dropdownSelector.dart';
 
@@ -20,45 +22,31 @@ class _CreateExerciseState extends State<CreateExercise> {
   String exerciseName = "";
   int targetMuscle = 0;
   final _formKey = GlobalKey<FormState>();
+  final List<String> muscleGroups = [
+    'Chest',
+    'Back',
+    'Shoulders',
+    'Biceps',
+    'Triceps',
+    'Legs',
+    'Core'
+  ];
+  int muscleIndex = -1;
   @override
   Widget build(BuildContext context) {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
-    final List<String> muscles = [
-      'Chest',
-      'Back',
-      'Shoulders',
-      'Biceps',
-      'Triceps',
-      'Legs',
-      'Core'
-    ];
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // if (_formKey.currentState!.validate() && widget.isExercise) {
-          //   DatabaseHelper.instance.insertExercise({
-          //     DatabaseHelper.colExerciseName: exerciseName,
-          //     DatabaseHelper.colTargetMuscle: muscles[targetMuscle]
-          //   });
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => AddScreen(
-          //         name: exerciseName,
-          //         muscle: muscles[targetMuscle],
-          //       ),
-          //     ),
-          //   );
-          // } else if (_formKey.currentState!.validate() &&
-          //     widget.isExercise == false) {
-          //   DatabaseHelper.instance.insertExercise({
-          //     DatabaseHelper.colExerciseName: exerciseName,
-          //     DatabaseHelper.colTargetMuscle: muscles[targetMuscle]
-          //   });
-          //   Navigator.pushReplacement(context,
-          //       MaterialPageRoute(builder: (context) => ExercisesEdit()));
-          // }
+          Navigator.pop(
+            context,
+            ExerciseInfo(
+              name: exerciseName,
+              muscleGroup: muscleGroups[muscleIndex],
+            ),
+          );
         },
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
@@ -70,7 +58,6 @@ class _CreateExerciseState extends State<CreateExercise> {
       ),
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        shadowColor: const Color.fromRGBO(243, 242, 247, 1),
         elevation: 0,
         iconTheme: Theme.of(context).iconTheme,
       ),
@@ -80,20 +67,62 @@ class _CreateExerciseState extends State<CreateExercise> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: height * 0.01),
-              rowText(width, "Enter the name of the exercise"),
-              SizedBox(height: height * 0.01),
               CustomField(
                 setValue: (value) => setState(() => exerciseName = value),
+                hintText: "Name",
               ),
-              nameInput(width),
               SizedBox(height: height * 0.01),
               rowText(width, "Select target muscle"),
               SizedBox(height: height * 0.01),
-              DropdownSelector(
-                setState: (value) => setState(() => targetMuscle = value),
-                items: muscles,
-                dropDownValue: muscles[targetMuscle],
-              ),
+              Container(
+                width: width * 0.9,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.all(Radius.circular(height / 50)),
+                ),
+                child: ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: muscleGroups.length,
+                  itemBuilder: (context, i) {
+                    final item = muscleGroups[i];
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          0, height * 0.01, 0, height * 0.01),
+                      child: ListTile(
+                        title: Text(
+                          item,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                        trailing: Icon(
+                          muscleIndex == i
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_off_outlined,
+                          color: muscleIndex == i
+                              ? Colors.blue
+                              : Theme.of(context).colorScheme.secondary,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            muscleIndex = i;
+                          });
+                        },
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(
+                      height: 1,
+                      thickness: 1,
+                      indent: width * 0.03,
+                      endIndent: width * 0.03,
+                    );
+                  },
+                ),
+              )
             ],
           ),
         ),
