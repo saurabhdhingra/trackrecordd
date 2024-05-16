@@ -50,20 +50,20 @@ class _DayTileState extends State<DayTile> {
         ),
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              SizedBox(
-                height: height / 90,
-              ),
               Text(
                 widget.day.day.toString(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w300,
+                  fontSize: width * 0.03,
                 ),
               ),
               Text(
                 months[widget.day.month - 1],
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w900,
+                  fontSize: width * 0.03,
                 ),
               )
             ],

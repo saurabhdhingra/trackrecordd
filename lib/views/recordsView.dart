@@ -64,6 +64,12 @@ class _RecordsViewState extends State<RecordsView> {
         : Scaffold(
             appBar: AppBar(
               iconTheme: Theme.of(context).iconTheme,
+              leading: IconButton(
+                icon: Icon(Icons.chevron_left, size: width * 0.07),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               shadowColor: const Color(0xFFFFFFFF),
               elevation: 0,

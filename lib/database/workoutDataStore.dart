@@ -69,6 +69,56 @@ class WorkoutDataStore {
     }
   }
 
+  Future<bool> checkAndRemoveMuscleGroup({required String muscleGroup}) async {
+    try {
+      bool isMuscleGroupRemoved = false;
+      int muscleGroupCount = 0;
+      List<String> exerciseIds = [];
+
+      var data;
+      await workoutCollection.doc(workoutId(DateTime.now())).get().then(
+        (DocumentSnapshot doc) async {
+          data = doc.data() as Map<String, dynamic>;
+          var array = data["exercises"];
+          exerciseIds = List<String>.from(array);
+
+          await dataCollection
+              .where(FieldPath.documentId, whereIn: exerciseIds)
+              .orderBy('date', descending: false)
+              .get()
+              .then(
+            (querySnapshot) {
+              for (var docSnapshot in querySnapshot.docs) {
+                var exerciseJson = docSnapshot.data() as Map<String, dynamic>;
+                if (exerciseJson["muscleGroup"] == muscleGroup)
+                  muscleGroupCount++;
+              }
+            },
+            onError: (e) => print('Error completing: $e'),
+          );
+        },
+      );
+
+      if (muscleGroupCount < 2) {
+        data["muscleGroups"]
+            .removeAt(data["muscleGroups"].indexOf(muscleGroup));
+        await updateWorkout(
+            workout: Workout.fromJson(data), id: workoutId(DateTime.now()));
+        isMuscleGroupRemoved = true;
+      }
+
+      if (exerciseIds.length == 1) {
+        await deleteWorkout(id: workoutId(DateTime.now()));
+      }
+
+      return isMuscleGroupRemoved;
+    } catch (error) {
+      print(error);
+      throw FireStoreException(
+          message: 'Failed to add user details', devDetails: '$error');
+    }
+  }
+
   Future<Map<String, dynamic>> getWorkoutList({
     int limit = 15,
     DocumentSnapshot<Object?>? startAfterDoc,
@@ -114,7 +164,7 @@ class WorkoutDataStore {
     }
   }
 
-  Future<void> deleteWorkout({required String id, required int index}) async {
+  Future<void> deleteWorkout({required String id}) async {
     try {
       final workoutDocument = dataCollection.doc(id);
       await workoutDocument.delete();

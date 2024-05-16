@@ -9,7 +9,7 @@ import 'package:trackrecordd/utils/functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io' show Platform;
 
-import 'package:trackrecordd/views/editExercisesView.dart';
+import 'package:trackrecordd/views/allExercisesInfoView.dart';
 
 class SettingsView extends StatefulWidget {
   final Map<String, List> exercisesLists;

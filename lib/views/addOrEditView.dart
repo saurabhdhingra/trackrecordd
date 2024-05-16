@@ -74,6 +74,9 @@ class _AddOrEditViewState extends State<AddOrEditView> {
     exerciseListsData.add(widget.exerciseLists["bicep"] ?? []);
     exerciseListsData.add(widget.exerciseLists["tricep"] ?? []);
     exerciseListsData.add(widget.exerciseLists["legs"] ?? []);
+    if (widget.exercise != null) {
+      setEditDetails();
+    }
   }
 
   @override
@@ -218,15 +221,16 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                 SizedBox(height: height * 0.01),
                 SubmitButton(
                   onSubmit: () {
-                    Exercise exercise = Exercise(
-                      date: DateTime.now(),
-                      name: exerciseList[exerciseIndex].name,
-                      muscleGroup: muscleGroups[muscleIndex],
-                      sets: sets,
-                    );
                     if (muscleIndex != -1 &&
                         exerciseIndex != -1 &&
                         int.parse(sets[0]["reps"]) > 0) {
+                      Exercise exercise = Exercise(
+                        date: DateTime.now(),
+                        name: exerciseList[exerciseIndex].name,
+                        muscleGroup: muscleGroups[muscleIndex],
+                        sets: sets,
+                      );
+
                       Navigator.pop(context, exercise);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

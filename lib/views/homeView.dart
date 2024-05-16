@@ -73,11 +73,42 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  Future<void> deleteExercise(bool isDeleteAction) async {
+    if (deletedItem != null) {
+      ExerciseDataStore store = ExerciseDataStore();
+      String muscleGroup = deletedItem!.muscleGroup;
+      await store
+          .deleteExercise(
+        id: workout.exercises[deletedIndex],
+        index: deletedIndex,
+        muscleGroup: deletedItem!.muscleGroup,
+      )
+          .then((value) {
+        if (value) {
+          workout.muscleGroups
+              .removeAt(workout.muscleGroups.indexOf(muscleGroup));
+        }
+        if (!isDeleteAction) {
+          setState(() {
+            showUndo = false;
+            deletedIndex = -1;
+            deletedItem = null;
+          });
+        }
+      });
+    }
+  }
+
   @override
   void initState() {
     fetchData();
     super.initState();
     fetchexercisesList();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -134,18 +165,47 @@ class _HomeViewState extends State<HomeView> {
                 setState(() {
                   isLoading = true;
                 });
-                if (deletedItem != null) {
-                  // await DatabaseHelper.instance
-                  //     .deleteLog(deletedItem['indecs']);
-                } else {}
+                deleteExercise(true);
                 setState(() {
                   deletedItem = data.exercises.removeAt(i);
+                  deletedIndex = i;
                   showUndo = true;
                   isLoading = false;
                 });
               },
-              child: ExerciseWidget(
-                exercise: item,
+              child: GestureDetector(
+                onTap: () {},
+                onDoubleTap: () async {
+                  var result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return AddOrEditView(
+                          exerciseLists: exercises,
+                          exercise: item,
+                        );
+                      },
+                    ),
+                  );
+
+                  if (result != null && result is Exercise) {
+                    ExerciseDataStore store = ExerciseDataStore();
+                    await store
+                        .updateExercise(
+                            exercise: result, id: workout.exercises[i])
+                        .then((value) {
+                      data.exercises[i] = result;
+                      if (!workout.muscleGroups.contains(result.muscleGroup)) {
+                        workout.muscleGroups.add(result.muscleGroup);
+                      }
+
+                      setState(() {});
+                    });
+                  }
+                },
+                child: ExerciseWidget(
+                  exercise: item,
+                ),
               ),
             ),
           );
@@ -251,6 +311,7 @@ class _HomeViewState extends State<HomeView> {
             title: const Text('Logs'),
             onTap: () {
               Navigator.pop(context);
+              deleteExercise(false);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -277,6 +338,7 @@ class _HomeViewState extends State<HomeView> {
             title: const Text('Settings'),
             onTap: () async {
               Navigator.pop(context);
+              deleteExercise(false);
               var result = await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -300,6 +362,7 @@ class _HomeViewState extends State<HomeView> {
             title: const Text('About app'),
             onTap: () {
               Navigator.pop(context);
+              deleteExercise(false);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -325,7 +388,7 @@ class _HomeViewState extends State<HomeView> {
                   onPressed: () {
                     setState(() {
                       data.exercises.insert(
-                          deletedIndex - 1,
+                          deletedIndex,
                           deletedItem ??
                               Exercise(
                                   date: DateTime.now(),
@@ -337,8 +400,8 @@ class _HomeViewState extends State<HomeView> {
                     });
                   },
                   backgroundColor: Colors.orange[400],
-                  child: Icon(Icons.undo),
                   heroTag: "btn1",
+                  child: const Icon(Icons.undo),
                 ),
               )
             : const SizedBox(),
@@ -363,12 +426,10 @@ class _HomeViewState extends State<HomeView> {
                   setState(() {});
                 });
               }
-              // setState(() {
-              //   showUndo = false;
-              // });
-              // if (deletedItem.isNotEmpty) {
-              //   await DatabaseHelper.instance.deleteLog(deletedItem['indecs']);
-              // }
+              setState(() {
+                showUndo = false;
+              });
+              deleteExercise(false);
             },
             child: const Icon(Icons.add),
           ),
