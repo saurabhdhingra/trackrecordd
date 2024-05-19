@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trackrecordd/database/workoutDataStore.dart';
@@ -111,10 +113,11 @@ class ExerciseDataStore {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getBarChartData(
-      String exerciseName) async {
+  Future<Map<String, dynamic>> getBarChartData(String exerciseName) async {
     try {
       List<Map<String, dynamic>> result = [];
+
+      double maxValue = 0.0;
 
       Query exerciseQuery =
           dataCollection.where('name', isEqualTo: exerciseName);
@@ -122,14 +125,19 @@ class ExerciseDataStore {
       await exerciseQuery.get().then((querySnapshot) {
         for (var docSnapshot in querySnapshot.docs) {
           var data = docSnapshot.data() as Map<String, dynamic>;
+          print(data);
+          double nwd = normalizedWorkDone(data["sets"]);
+
+          maxValue = max(nwd, maxValue);
           result.add({
-            "date": barChartDate(data["date"].toDate()),
-            "value": normalizedWorkDone(data["sets"])
+            "date": data["date"].toDate(),
+            "value": nwd,
           });
         }
       });
+      print(result);
 
-      return result;
+      return {"data": result, "max": maxValue};
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to fetch bar chart data', devDetails: '$error');
@@ -144,26 +152,11 @@ String workoutId(DateTime date) {
 double normalizedWorkDone(List sets) {
   double result = 0;
   for (Map set in sets) {
-    result += double.parse(set["weight"]) * int.parse(set["reps"]);
+    if (set["weight"] is int) {
+      result += int.parse(set["reps"]);
+    } else {
+      result += double.parse(set["weight"]) * int.parse(set["reps"]);
+    }
   }
   return result;
 }
-
-String barChartDate(DateTime date) {
-  return '${date.day}+\n${months[date.month - 1]}';
-}
-
-List months = [
-  "JAN",
-  "FEB",
-  "MAR",
-  "APR",
-  "MAY",
-  "JUN",
-  "JUL",
-  "AUG",
-  "SEP",
-  "OCT",
-  "NOV",
-  "DEC"
-];

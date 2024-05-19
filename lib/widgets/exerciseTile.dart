@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/models/exercise.dart';
-import 'custom_data_cell.dart';
+import 'customDataCell.dart';
 import 'package:trackrecordd/utils/constants.dart';
 
 class ExerciseWidget extends StatelessWidget {

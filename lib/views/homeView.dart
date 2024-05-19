@@ -10,6 +10,7 @@ import 'package:trackrecordd/models/workout.dart';
 import 'package:trackrecordd/models/workoutDetailed.dart';
 import 'package:trackrecordd/views/aboutView.dart';
 import 'package:trackrecordd/views/addOrEditView.dart';
+import 'package:trackrecordd/views/graphView.dart';
 import 'package:trackrecordd/views/recordsView.dart';
 import 'package:trackrecordd/views/settingsView.dart';
 
@@ -162,19 +163,53 @@ class _HomeViewState extends State<HomeView> {
               key: Key(workout.exercises[i]),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) async {
+                deletedItem = data.exercises.removeAt(i);
+                setState(() {});
+                await deleteExercise(true);
+
                 setState(() {
-                  isLoading = true;
-                });
-                deleteExercise(true);
-                setState(() {
-                  deletedItem = data.exercises.removeAt(i);
                   deletedIndex = i;
                   showUndo = true;
-                  isLoading = false;
                 });
               },
               child: GestureDetector(
-                onTap: () {},
+                onTap: () async {
+                  ExerciseDataStore dataStore = ExerciseDataStore();
+                  Map<String, dynamic> result =
+                      await dataStore.getBarChartData(item.name);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return BarGraphView(
+                          exerciseName: item.name,
+                          data: [
+                            {
+                              "date": DateTime.parse('2024-05-17'),
+                              "value": 10.0
+                            },
+                            {
+                              "date": DateTime.parse('2024-05-16'),
+                              "value": 1.0
+                            },
+                            {
+                              "date": DateTime.parse('2024-05-15'),
+                              "value": 4.0
+                            },
+                            {
+                              "date": DateTime.parse('2024-05-14'),
+                              "value": 10.0
+                            },
+                            {"date": DateTime.parse('2024-05-13'), "value": 7.0}
+                          ],
+                          //  result["data"],
+                          maxValue: result["max"],
+                        );
+                      },
+                    ),
+                  );
+                },
                 onDoubleTap: () async {
                   var result = await Navigator.push(
                     context,

@@ -7,7 +7,7 @@ import 'package:trackrecordd/database/workoutDataStore.dart';
 import 'package:trackrecordd/models/workout.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/utils/functions.dart';
-import 'package:trackrecordd/widgets/day_tile.dart';
+import 'package:trackrecordd/widgets/dayTile.dart';
 
 class RecordsView extends StatefulWidget {
   const RecordsView({Key? key}) : super(key: key);

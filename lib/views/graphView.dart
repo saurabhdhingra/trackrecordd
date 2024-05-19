@@ -1,20 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/widgets.dart';
+import 'package:trackrecordd/widgets/dayTileGraph.dart';
 
 import '../utils/constants.dart';
 
 class BarGraphView extends StatelessWidget {
-  const BarGraphView({super.key});
+  final List<Map<String, dynamic>> data;
+  final String exerciseName;
+  final double maxValue;
+  const BarGraphView(
+      {super.key,
+      required this.exerciseName,
+      required this.data,
+      required this.maxValue});
 
   @override
   Widget build(BuildContext context) {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(exerciseName),
+        elevation: 0,
+        centerTitle: false,
+      ),
       body: SingleChildScrollView(
         child: Column(
-          children: [],
+          children: [
+            SizedBox(
+              height: height * 0.23,
+              child: MyBarGraph(maxValue: maxValue, values: data),
+            ),
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              primary: false,
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return DayTileGraph(
+                  day: data[index]["date"],
+                  value: data[index]["value"],
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -37,17 +68,64 @@ class MyBarGraph extends StatefulWidget {
 
 class _MyBarGraphState extends State<MyBarGraph> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var width = SizeConfig.getWidth(context);
     return BarChart(
       BarChartData(
         maxY: widget.maxValue,
         minY: 0,
-        barGroups: widget.values.map((e) {
-          return BarChartGroupData(
-            x: e["date"],
-            barRods: [BarChartRodData(toY: e["value"])],
-          );
-        }).toList(),
+        gridData: const FlGridData(show: false),
+        borderData: FlBorderData(show: false),
+        titlesData: const FlTitlesData(
+          show: true,
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+        ),
+        barGroups: List.generate(
+          widget.values.length,
+          (index) => BarChartGroupData(
+            x: index + 1,
+            barRods: [
+              BarChartRodData(
+                toY: widget.values[index]["value"],
+                color: Colors.grey[800],
+                width: 25,
+                borderRadius: BorderRadius.circular(4),
+                backDrawRodData: BackgroundBarChartRodData(
+                  color: Colors.grey[200],
+                  show: true,
+                  toY: widget.maxValue + 20,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget getBottomTitles(double value, TitleMeta meta) {
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: Text(
+        widget.values[value.toInt()]["date"],
+        style: const TextStyle(
+          color: Color.fromRGBO(0, 0, 0, 0.541),
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
       ),
     );
   }
