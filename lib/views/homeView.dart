@@ -184,25 +184,7 @@ class _HomeViewState extends State<HomeView> {
                       builder: (context) {
                         return BarGraphView(
                           exerciseName: item.name,
-                          data: [
-                            {
-                              "date": DateTime.parse('2024-05-17'),
-                              "value": 10.0
-                            },
-                            {
-                              "date": DateTime.parse('2024-05-16'),
-                              "value": 1.0
-                            },
-                            {
-                              "date": DateTime.parse('2024-05-15'),
-                              "value": 4.0
-                            },
-                            {
-                              "date": DateTime.parse('2024-05-14'),
-                              "value": 10.0
-                            },
-                            {"date": DateTime.parse('2024-05-13'), "value": 7.0}
-                          ],
+                          data: result["data"],
                           //  result["data"],
                           maxValue: result["max"],
                         );
