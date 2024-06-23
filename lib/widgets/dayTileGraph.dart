@@ -5,13 +5,14 @@ import 'package:trackrecordd/views/dateView.dart';
 
 class DayTileGraph extends StatefulWidget {
   final DateTime day;
-
+  final int index;
   final double value;
 
   const DayTileGraph({
     super.key,
     required this.day,
     required this.value,
+    required this.index,
   });
 
   @override
@@ -67,7 +68,8 @@ class _DayTileGraphState extends State<DayTileGraph> {
           ),
         ),
       ),
-      title: Text('${widget.value.toString()} Normalized Training Score'),
+      title: Text(
+          ' ${widget.index.toString()}.   ${widget.value.toString()}   CTS'),
     );
   }
 }

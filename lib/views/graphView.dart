@@ -40,11 +40,24 @@ class BarGraphView extends StatelessWidget {
               itemCount: data.length,
               itemBuilder: (context, index) {
                 return DayTileGraph(
+                  index: index + 1,
                   day: data[index]["date"],
                   value: data[index]["value"],
                 );
               },
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: width * 0.06, vertical: height * 0.02),
+              child: Text(
+                "CTS stands for Consolidated Training Score which is a metric to self evaluate the work done or the effort put during an exercise. \n\nIt is calculated by summing up of the products of repitions and weight in each set.",
+                style: TextStyle(
+                  fontSize: width * 0.04,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.black54,
+                ),
+              ),
+            )
           ],
         ),
       ),
