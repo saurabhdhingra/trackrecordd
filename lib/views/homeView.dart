@@ -366,7 +366,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
               );
-              if (result) {
+              if (result ?? false) {
                 fetchexercisesList();
               }
             },
