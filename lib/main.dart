@@ -6,17 +6,21 @@ import 'package:trackrecordd/views/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
-  runApp(const MyApp());
+  );
+
+  final ThemeProvider themeProvider = ThemeProvider();
+  themeProvider.getTheme();
+
+  runApp(MyApp(themeProvider: themeProvider));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final ThemeProvider themeProvider;
+  const MyApp({Key? key, required this.themeProvider}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -25,7 +29,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (context) => ThemeProvider(),
+        create: (context) => widget.themeProvider,
         builder: (context, _) {
           final themeProvider = Provider.of<ThemeProvider>(context);
           return MaterialApp(

@@ -4,6 +4,9 @@ import 'package:flutter/services.dart';
 import '../../../utils/constants.dart';
 
 class CustomField extends StatefulWidget {
+  final double? width;
+  final double? height;
+
   final Function(String) setValue;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
@@ -14,6 +17,9 @@ class CustomField extends StatefulWidget {
   final String? unit;
   final int? maxLines;
 
+  final FocusNode? focusNode;
+  final FocusNode? nextFocusNode;
+
   final List<TextInputFormatter>? textFormatters;
   final TextEditingController? controller;
 
@@ -21,6 +27,8 @@ class CustomField extends StatefulWidget {
 
   const CustomField({
     Key? key,
+    this.width,
+    this.height,
     required this.setValue,
     this.obscureText = false,
     this.keyboardType = TextInputType.visiblePassword,
@@ -32,6 +40,8 @@ class CustomField extends StatefulWidget {
     this.maxLines = 1,
     this.textFormatters,
     this.unit,
+    this.focusNode,
+    this.nextFocusNode,
   }) : super(key: key);
 
   @override
@@ -41,44 +51,48 @@ class CustomField extends StatefulWidget {
 class _CustomFieldState extends State<CustomField> {
   @override
   Widget build(BuildContext context) {
-    var width = SizeConfig.getWidth(context);
-    var height = SizeConfig.getHeight(context);
+    var devHeight = SizeConfig.getHeight(context);
+    var devWidth = SizeConfig.getWidth(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-      child: TextFormField(
-        maxLines: widget.maxLines,
-        readOnly: widget.readOnly,
-        controller: widget.controller,
-        initialValue: widget.initialValue,
-        validator: widget.validator,
-        keyboardType: widget.keyboardType,
-        cursorColor: Colors.black,
-        inputFormatters: widget.textFormatters,
-        style: TextStyle(
-            fontSize: width * 0.04,
-            color: Theme.of(context).colorScheme.secondary),
-        onChanged: (value) {
-          widget.setValue(value);
-        },
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Theme.of(context).primaryColor,
-          border: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: Theme.of(context).colorScheme.secondary),
-              borderRadius: const BorderRadius.all(Radius.circular(10))),
-          label: Text(
-            widget.hintText ?? "",
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-          ),
+      padding: EdgeInsets.symmetric(horizontal: devWidth * 0.05),
+      child: SizedBox(
+        width: (widget.width != null) ? widget.width! * devWidth : null,
+        height: (widget.height != null) ? widget.height! * devHeight : null,
+        child: TextFormField(
+          maxLines: widget.maxLines,
+          readOnly: widget.readOnly,
+          controller: widget.controller,
+          initialValue: widget.initialValue,
+          validator: widget.validator,
+          keyboardType: widget.keyboardType,
+          cursorColor: Colors.black,
+          inputFormatters: widget.textFormatters,
+          style: TextStyle(
+              fontSize: devWidth * 0.04,
+              color: Theme.of(context).colorScheme.secondary),
+          onChanged: (value) {
+            widget.setValue(value);
+          },
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Theme.of(context).primaryColor,
+            border: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Theme.of(context).colorScheme.secondary),
+                borderRadius: const BorderRadius.all(Radius.circular(10))),
+            label: Text(
+              widget.hintText ?? "",
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ),
 
-          suffixText: widget.unit,
-          // Text(widget.unit ?? "",
-          //     style: const TextStyle(
-          //         fontWeight: FontWeight.w200, color: Colors.grey))
+            suffixText: widget.unit,
+            // Text(widget.unit ?? "",
+            //     style: const TextStyle(
+            //         fontWeight: FontWeight.w200, color: Colors.grey))
+          ),
+          obscureText: widget.obscureText,
         ),
-        obscureText: widget.obscureText,
       ),
     );
   }
