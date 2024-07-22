@@ -15,23 +15,17 @@ class CreateAccountView extends StatefulWidget {
 }
 
 class _CreateAccountViewState extends State<CreateAccountView> {
-  late TextEditingController emailController;
-  late TextEditingController passwordController;
-  late TextEditingController confirmPasswordController;
+  String email = "";
+  String password = "";
+  String confirmPassword = "";
 
   @override
   void initState() {
     super.initState();
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
-    confirmPasswordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -61,14 +55,15 @@ class _CreateAccountViewState extends State<CreateAccountView> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomTextInputWidget(
+                  CustomField(
                     width: 0.9,
                     height: 0.065,
-                    controller: emailController,
                     hintText: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    setValue: (value) => email = value,
                   ),
                   const Text(
-                    '  We won\'t judge you even if it is embarassing     ',
+                    '        We won\'t judge you even if it is embarassing     ',
                     style: TextStyle(
                       fontWeight: FontWeight.w300,
                       color: Colors.black87,
@@ -77,20 +72,20 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                 ],
               ),
               SizedBox(height: height * 0.02),
-              CustomTextInputWidget(
+              CustomField(
                 width: 0.9,
                 height: 0.065,
-                controller: passwordController,
                 obscureText: true,
                 hintText: 'Password',
+                setValue: (value) => password = value,
               ),
               SizedBox(height: height * 0.02),
-              CustomTextInputWidget(
+              CustomField(
                 width: 0.9,
                 height: 0.065,
-                controller: confirmPasswordController,
                 obscureText: true,
                 hintText: 'Confirm Password',
+                setValue: (value) => confirmPassword = value,
               ),
               SizedBox(height: height * 0.02),
               Container(
@@ -109,13 +104,11 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                         fontSize: 22),
                   ),
                   onPressed: () {
-                    if (confirmPasswordController.text ==
-                        passwordController.text) {
+                    if (confirmPassword == password) {
                       try {
                         auth
                             .createUserWithEmailAndPassword(
-                                email: emailController.text,
-                                password: passwordController.text)
+                                email: email, password: password)
                             .then(
                           (_) {
                             Navigator.of(context).pushReplacement(

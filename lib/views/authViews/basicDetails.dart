@@ -85,22 +85,20 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               alignedText(height, 'Date of birth 👶 *'),
               Row(
                 mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(width: width * 0.1),
                   CustomField(
                     width: 0.15,
                     height: 0.06,
                     setValue: (value) => dobDate = value,
                     hintText: "Date",
                   ),
-                  SizedBox(width: width * 0.175),
                   CustomField(
-                    width: 0.15,
+                    width: 0.175,
                     height: 0.06,
                     setValue: (value) => dobMonth = value,
                     hintText: "Month",
                   ),
-                  SizedBox(width: width * 0.15),
                   CustomField(
                     width: 0.2,
                     height: 0.06,
@@ -113,8 +111,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               alignedText(height, 'Measurements 📝'),
               Row(
                 mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(width: width * 0.16),
                   Column(
                     children: [
                       const Text(
@@ -128,7 +126,6 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(width: width * 0.3),
                   Column(
                     children: [
                       const Text(
@@ -146,8 +143,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(width: width * 0.08),
                   Column(
                     children: [
                       const Text(
@@ -161,7 +158,6 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(width: width * 0.13),
                   Column(
                     children: [
                       const Text(
@@ -175,7 +171,6 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(width: width * 0.13),
                   Column(
                     children: [
                       const Text(
@@ -193,8 +188,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(width: width * 0.17),
                   Column(
                     children: [
                       const Text(
@@ -208,7 +203,6 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(width: width * 0.3),
                   Column(
                     children: [
                       const Text(
@@ -226,8 +220,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(width: width * 0.17),
                   Column(
                     children: [
                       const Text(
@@ -241,7 +235,6 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(width: width * 0.3),
                   Column(
                     children: [
                       const Text(
@@ -372,15 +365,15 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
 
   Map<String, dynamic> measurementsParser() {
     return {
-      "chest": double.parse(chest),
-      "height": double.parse(height),
-      "leftArm": double.parse(leftArm),
-      "leftLeg": double.parse(leftLeg),
-      "rightArm": double.parse(rightArm),
-      "rightLeg": double.parse(rightLeg),
-      "shoulders": double.parse(shoulders),
-      "waist": double.parse(waist),
-      "weight": double.parse(weight),
+      "chest": double.parse(chest != "" ? chest : "0"),
+      "height": double.parse(height != "" ? height : "0"),
+      "leftArm": double.parse(leftArm != "" ? leftArm : "0"),
+      "leftLeg": double.parse(leftLeg != "" ? leftLeg : "0"),
+      "rightArm": double.parse(rightArm != "" ? rightArm : "0"),
+      "rightLeg": double.parse(rightLeg != "" ? rightLeg : "0"),
+      "shoulders": double.parse(shoulders != "" ? shoulders : "0"),
+      "waist": double.parse(waist != "" ? waist : "0"),
+      "weight": double.parse(weight != "" ? weight : "0"),
     };
   }
 }
