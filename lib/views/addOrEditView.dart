@@ -1,6 +1,7 @@
 // import 'package:trackrecordd/screens/todayScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:trackrecordd/bloc/events.dart';
 import 'package:trackrecordd/database/exerciseDataStore.dart';
 import 'package:trackrecordd/models/exercise.dart';
 import 'package:trackrecordd/models/exerciseInfo.dart';
@@ -74,8 +75,12 @@ class _AddOrEditViewState extends State<AddOrEditView> {
     exerciseListsData.add(widget.exerciseLists["bicep"] ?? []);
     exerciseListsData.add(widget.exerciseLists["tricep"] ?? []);
     exerciseListsData.add(widget.exerciseLists["legs"] ?? []);
+
     if (widget.exercise != null) {
       setEditDetails();
+      _mapEditExerciseToState(EditExercise());
+    } else {
+      _mapAddExerciseToState(AddExercise());
     }
   }
 
@@ -344,3 +349,10 @@ class _AddOrEditViewState extends State<AddOrEditView> {
     );
   }
 }
+
+class EditExercise {}
+
+class AddExercise {}
+
+void _mapEditExerciseToState(EditExercise event) {}
+void _mapAddExerciseToState(AddExercise event) {}

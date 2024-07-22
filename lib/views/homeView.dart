@@ -17,8 +17,9 @@ import 'package:trackrecordd/views/settingsView.dart';
 import '../database/workoutDataStore.dart';
 import '../utils/constants.dart';
 import '../utils/functions.dart';
-import '../utils/uiUtils.dart';
 import '../widgets/exerciseTile.dart';
+import '../bloc/bloc.dart';
+import '../bloc/events.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -97,6 +98,7 @@ class _HomeViewState extends State<HomeView> {
           });
         }
       });
+      _mapRemoveExerciseToState(RemoveExercise());
     }
   }
 
@@ -364,7 +366,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
               );
-              if (result) {
+              if (result ?? false) {
                 fetchexercisesList();
               }
             },
@@ -455,3 +457,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+
+void _mapRemoveExerciseToState(RemoveExercise event) {}
+
+class RemoveExercise {}
