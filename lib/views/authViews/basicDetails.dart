@@ -85,25 +85,25 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               alignedText(height, 'Date of birth 👶 *'),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   CustomField(
-                    width: 0.15,
+                    width: 0.2,
                     height: 0.06,
                     setValue: (value) => dobDate = value,
-                    hintText: "Date",
+                    hintText: "DD",
                   ),
                   CustomField(
-                    width: 0.175,
+                    width: 0.21,
                     height: 0.06,
                     setValue: (value) => dobMonth = value,
-                    hintText: "Month",
+                    hintText: "MM",
                   ),
                   CustomField(
                     width: 0.2,
                     height: 0.06,
                     setValue: (value) => dobYear = value,
-                    hintText: "Year",
+                    hintText: "YY",
                   ),
                 ],
               ),
@@ -111,7 +111,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               alignedText(height, 'Measurements 📝'),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
                     children: [
@@ -143,7 +143,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
                     children: [
@@ -188,7 +188,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
                     children: [
@@ -220,7 +220,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
                     children: [
@@ -251,63 +251,79 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                 ],
               ),
               SizedBox(height: height * 0.02),
-              const Align(
-                alignment: AlignmentDirectional(0.7, 0),
-                child: Text(
-                  '* mandatory',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-              SizedBox(
-                height: height * 0.02,
-              ),
-              Align(
-                alignment: const AlignmentDirectional(0.75, 0),
-                child: Container(
-                  width: width * 0.4,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFED500),
-                    shape: BoxShape.rectangle,
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(height / 38)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: width * 0.05),
+                    child: const Text(
+                      '* mandatory',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
-                  child: TextButton(
-                    onPressed: () {
-                      UserStore store = UserStore();
-                      ExerciseInfoDataStore exerciseInfoDataStore =
-                          ExerciseInfoDataStore();
-                      exerciseInfoDataStore.batchWrite();
-                      store
-                          .addBasicDetails(
-                            userInfo: UserInformation(
-                              firstName: firstName,
-                              lastName: lastName,
-                              dateOfBirth: dateTimeParser(),
-                              dateJoined: DateTime.now(),
-                              measurements: measurementsParser(),
-                            ),
-                          )
-                          .then(
-                            (value) => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const HomeView();
-                                },
-                              ),
-                            ),
-                          );
-                    },
-                    child: Text(
-                      'Next >>',
-                      style: TextStyle(
-                        fontSize: height * 0.025,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                ],
+              ),
+              SizedBox(height: height * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    width: width * 0.4,
+                    margin: EdgeInsets.only(right: width * 0.05),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFED500),
+                      shape: BoxShape.rectangle,
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(height / 38)),
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        if (firstName != "" &&
+                            lastName != "" &&
+                            dateTimeParser() != null &&
+                            measurementsParser() != null) {
+                          UserStore store = UserStore();
+                          ExerciseInfoDataStore exerciseInfoDataStore =
+                              ExerciseInfoDataStore();
+                          exerciseInfoDataStore.batchWrite();
+                          store
+                              .addBasicDetails(
+                                userInfo: UserInformation(
+                                  firstName: firstName,
+                                  lastName: lastName,
+                                  dateOfBirth:
+                                      dateTimeParser() ?? DateTime.now(),
+                                  dateJoined: DateTime.now(),
+                                  measurements: measurementsParser(),
+                                ),
+                              )
+                              .then(
+                                (value) => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return const HomeView();
+                                    },
+                                  ),
+                                ),
+                              );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Please enter valid values")));
+                        }
+                      },
+                      child: Text(
+                        'Next >>',
+                        style: TextStyle(
+                          fontSize: height * 0.025,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
@@ -356,24 +372,33 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
     );
   }
 
-  DateTime dateTimeParser() {
+  DateTime? dateTimeParser() {
     int year = int.parse(dobYear);
     int month = int.parse(dobMonth);
     int date = int.parse(dobDate);
-    return DateTime(year, month, date);
+
+    DateTime? result = DateTime.tryParse('$date-$month-$year');
+    if (result == null) print("date error");
+    return result;
   }
 
-  Map<String, dynamic> measurementsParser() {
-    return {
-      "chest": double.parse(chest != "" ? chest : "0"),
-      "height": double.parse(height != "" ? height : "0"),
-      "leftArm": double.parse(leftArm != "" ? leftArm : "0"),
-      "leftLeg": double.parse(leftLeg != "" ? leftLeg : "0"),
-      "rightArm": double.parse(rightArm != "" ? rightArm : "0"),
-      "rightLeg": double.parse(rightLeg != "" ? rightLeg : "0"),
-      "shoulders": double.parse(shoulders != "" ? shoulders : "0"),
-      "waist": double.parse(waist != "" ? waist : "0"),
-      "weight": double.parse(weight != "" ? weight : "0"),
-    };
+  Map<String, dynamic>? measurementsParser() {
+    Map<String, dynamic>? result;
+    try {
+      result = {
+        "chest": double.parse(chest),
+        "height": double.parse(height),
+        "leftArm": double.tryParse(leftArm),
+        "leftLeg": double.tryParse(leftLeg),
+        "rightArm": double.tryParse(rightArm),
+        "rightLeg": double.tryParse(rightLeg),
+        "shoulders": double.tryParse(shoulders),
+        "waist": double.tryParse(waist),
+        "weight": double.tryParse(weight),
+      };
+    } catch (e) {
+      print("measurement error");
+    }
+    return result;
   }
 }

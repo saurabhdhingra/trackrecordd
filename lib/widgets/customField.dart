@@ -77,6 +77,7 @@ class _CustomFieldState extends State<CustomField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Theme.of(context).primaryColor,
+
             border: OutlineInputBorder(
                 borderSide:
                     BorderSide(color: Theme.of(context).colorScheme.secondary),
