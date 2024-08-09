@@ -61,7 +61,7 @@ class _VerifyViewState extends State<VerifyView> {
                       leading: Icon(
                         CupertinoIcons.mail,
                         size: width * 0.1,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       title: Text(
                         "${user!.email}",

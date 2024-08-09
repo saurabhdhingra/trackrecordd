@@ -15,23 +15,27 @@ class CreateAccountView extends StatefulWidget {
 }
 
 class _CreateAccountViewState extends State<CreateAccountView> {
-  late TextEditingController emailController;
-  late TextEditingController passwordController;
-  late TextEditingController confirmPasswordController;
+  // late TextEditingController emailController;
+  // late TextEditingController passwordController;
+  // late TextEditingController confirmPasswordController;
+
+  String email = "";
+  String password = "";
+  String confirm = "";
 
   @override
   void initState() {
     super.initState();
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
-    confirmPasswordController = TextEditingController();
+    // emailController = TextEditingController();
+    // passwordController = TextEditingController();
+    // confirmPasswordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
+    // emailController.dispose();
+    // passwordController.dispose();
+    // confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -61,12 +65,16 @@ class _CreateAccountViewState extends State<CreateAccountView> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomTextInputWidget(
-                    width: 0.9,
-                    height: 0.065,
-                    controller: emailController,
-                    hintText: 'Email',
+                  CustomField(
+                    setValue: (value) => setState(() => email = value),
+                    hintText: "Email",
                   ),
+                  // CustomTextInputWidget(
+                  //   width: 0.9,
+                  //   height: 0.065,
+                  //   controller: emailController,
+                  //   hintText: 'Email',
+                  // ),
                   const Text(
                     '  We won\'t judge you even if it is embarassing     ',
                     style: TextStyle(
@@ -77,21 +85,31 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                 ],
               ),
               SizedBox(height: height * 0.02),
-              CustomTextInputWidget(
-                width: 0.9,
-                height: 0.065,
-                controller: passwordController,
+              CustomField(
+                setValue: (value) => setState(() => password = value),
+                hintText: "Password",
                 obscureText: true,
-                hintText: 'Password',
               ),
+              // CustomTextInputWidget(
+              //   width: 0.9,
+              //   height: 0.065,
+              //   controller: passwordController,
+              //   obscureText: true,
+              //   hintText: 'Password',
+              // ),
               SizedBox(height: height * 0.02),
-              CustomTextInputWidget(
-                width: 0.9,
-                height: 0.065,
-                controller: confirmPasswordController,
+              CustomField(
+                setValue: (value) => setState(() => confirm = value),
+                hintText: "Confirm Password",
                 obscureText: true,
-                hintText: 'Confirm Password',
               ),
+              // CustomTextInputWidget(
+              //   width: 0.9,
+              //   height: 0.065,
+              //   controller: confirmPasswordController,
+              //   obscureText: true,
+              //   hintText: 'Confirm Password',
+              // ),
               SizedBox(height: height * 0.02),
               Container(
                 width: width * 0.4,
@@ -109,13 +127,11 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                         fontSize: 22),
                   ),
                   onPressed: () {
-                    if (confirmPasswordController.text ==
-                        passwordController.text) {
+                    if (confirm == password) {
                       try {
                         auth
                             .createUserWithEmailAndPassword(
-                                email: emailController.text,
-                                password: passwordController.text)
+                                email: email, password: password)
                             .then(
                           (_) {
                             Navigator.of(context).pushReplacement(
