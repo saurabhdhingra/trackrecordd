@@ -56,25 +56,31 @@ class _LoginViewState extends State<LoginView> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Column(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(height: height * 0.05),
               Column(
                 children: [
-                  CustomTextInputWidget(
+                  CustomField(
                     width: 0.9,
                     height: 0.065,
                     controller: emailController,
                     hintText: 'Enter email',
                     keyboardType: TextInputType.emailAddress,
+                    setValue: (String value) {
+                      setState(() => email = value);
+                    },
                   ),
                   SizedBox(height: height * 0.01),
-                  CustomTextInputWidget(
+                  CustomField(
                     width: 0.9,
                     height: 0.065,
                     controller: passwordController,
                     hintText: 'Password',
                     obscureText: true,
+                    setValue: (String value) {
+                      setState(() => password = value);
+                    },
                   ),
                   SizedBox(height: height * 0.01),
                   Container(
@@ -86,29 +92,31 @@ class _LoginViewState extends State<LoginView> {
                           BorderRadius.all(Radius.circular(height / 38)),
                     ),
                     child: TextButton(
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22),
-                        ),
-                        onPressed: () {
-                          try {
-                            auth
-                                .signInWithEmailAndPassword(
-                                    email: emailController.text,
-                                    password: passwordController.text)
-                                .then((_) {
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (context) => const BasicDetailsPage()));
-                            });
-                          } on FirebaseAuthException catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(e.message.toString())));
-                          }
-                        }),
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22),
+                      ),
+                      onPressed: () {
+                        try {
+                          auth
+                              .signInWithEmailAndPassword(
+                                  email: emailController.text,
+                                  password: passwordController.text)
+                              .then((_) {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const BasicDetailsPage()));
+                          });
+                        } on FirebaseAuthException catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.message.toString())));
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),

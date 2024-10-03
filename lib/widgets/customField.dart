@@ -199,7 +199,7 @@ class CustomTextInputWidget extends StatelessWidget {
         textAlign: TextAlign.start,
         style: TextStyle(
             fontSize: devWidth * 0.04,
-            color: Theme.of(context).colorScheme.secondary),
+            color: Theme.of(context).colorScheme.primary),
         onFieldSubmitted: (value) => (nextFocusNode != null)
             ? FocusScope.of(context).requestFocus(nextFocusNode)
             : null,

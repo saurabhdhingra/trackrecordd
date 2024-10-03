@@ -279,8 +279,10 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                     child: TextButton(
                       onPressed: () {
                         if (firstName != "" &&
-                            lastName != "" &&
-                            dateTimeParser() != null &&
+                            lastName != ""
+                            // &&
+                            // dateTimeParser() != null
+                            &&
                             measurementsParser() != null) {
                           UserStore store = UserStore();
                           ExerciseInfoDataStore exerciseInfoDataStore =
@@ -291,8 +293,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                                 userInfo: UserInformation(
                                   firstName: firstName,
                                   lastName: lastName,
-                                  dateOfBirth:
-                                      dateTimeParser() ?? DateTime.now(),
+                                  dateOfBirth: DateTime.now(),
                                   dateJoined: DateTime.now(),
                                   measurements: measurementsParser(),
                                 ),
@@ -379,26 +380,28 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
 
     DateTime? result = DateTime.tryParse('$date-$month-$year');
     if (result == null) print("date error");
-    return result;
+    return null;
   }
 
   Map<String, dynamic>? measurementsParser() {
     Map<String, dynamic>? result;
-    try {
-      result = {
-        "chest": double.parse(chest),
-        "height": double.parse(height),
-        "leftArm": double.tryParse(leftArm),
-        "leftLeg": double.tryParse(leftLeg),
-        "rightArm": double.tryParse(rightArm),
-        "rightLeg": double.tryParse(rightLeg),
-        "shoulders": double.tryParse(shoulders),
-        "waist": double.tryParse(waist),
-        "weight": double.tryParse(weight),
-      };
-    } catch (e) {
-      print("measurement error");
-    }
-    return result;
+    // try {
+
+    // } catch (e) {
+    //   print("measurement error");
+    // }
+
+    // result = {
+    //   "chest": double.parse(chest),
+    //   "height": double.parse(height),
+    //   "leftArm": double.tryParse(leftArm),
+    //   "leftLeg": double.tryParse(leftLeg),
+    //   "rightArm": double.tryParse(rightArm),
+    //   "rightLeg": double.tryParse(rightLeg),
+    //   "shoulders": double.tryParse(shoulders),
+    //   "waist": double.tryParse(waist),
+    //   "weight": double.tryParse(weight),
+    // };
+    return {};
   }
 }
