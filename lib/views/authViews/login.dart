@@ -64,7 +64,6 @@ class _LoginViewState extends State<LoginView> {
                   CustomField(
                     width: 0.9,
                     height: 0.065,
-                    controller: emailController,
                     hintText: 'Enter email',
                     keyboardType: TextInputType.emailAddress,
                     setValue: (String value) {
@@ -75,7 +74,6 @@ class _LoginViewState extends State<LoginView> {
                   CustomField(
                     width: 0.9,
                     height: 0.065,
-                    controller: passwordController,
                     hintText: 'Password',
                     obscureText: true,
                     setValue: (String value) {
