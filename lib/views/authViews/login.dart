@@ -97,21 +97,56 @@ class _LoginViewState extends State<LoginView> {
                             fontWeight: FontWeight.bold,
                             fontSize: 22),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         try {
-                          auth
-                              .signInWithEmailAndPassword(
-                                  email: emailController.text,
-                                  password: passwordController.text)
-                              .then((_) {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const BasicDetailsPage()));
-                          });
+                          // Sign in with Firebase using email and password
+                          await auth.signInWithEmailAndPassword(
+                            email: email.trim(),
+                            password: password.trim(),
+                          );
+
+                          // If successful, navigate to BasicDetailsPage
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (context) => const BasicDetailsPage()),
+                          );
                         } on FirebaseAuthException catch (e) {
+                          // Handle specific FirebaseAuth errors
+                          String errorMessage;
+
+                          switch (e.code) {
+                            case 'invalid-email':
+                              errorMessage = 'The email address is not valid.';
+                              break;
+                            case 'user-disabled':
+                              errorMessage =
+                                  'This user account has been disabled.';
+                              break;
+                            case 'user-not-found':
+                              errorMessage = 'No user found for that email.';
+                              break;
+                            case 'wrong-password':
+                              errorMessage =
+                                  'Incorrect password. Please try again.';
+                              break;
+                            default:
+                              errorMessage =
+                                  'An unknown error occurred : ${e.code}. Please try again later.';
+                              break;
+                          }
+
+                          // Display the error message in a SnackBar
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(e.message.toString())));
+                              SnackBar(content: Text(errorMessage)));
+                        } catch (e) {
+                          // Handle any other exceptions (e.g., network issues)
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text(
+                                'An unexpected error occurred. Please check your internet connection and try again.'),
+                          ));
                         }
                       },
                     ),

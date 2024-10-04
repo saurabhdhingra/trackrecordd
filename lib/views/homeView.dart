@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,9 @@ import 'package:trackrecordd/views/graphView.dart';
 import 'package:trackrecordd/views/recordsView.dart';
 import 'package:trackrecordd/views/settingsView.dart';
 
+import '../database/userDataStore.dart';
 import '../database/workoutDataStore.dart';
+import '../models/userInfo.dart';
 import '../utils/constants.dart';
 import '../utils/functions.dart';
 import '../widgets/exerciseTile.dart';
@@ -43,6 +45,29 @@ class _HomeViewState extends State<HomeView> {
   String addName = "";
   String addMuscle = "";
   String selectedExercise = "";
+
+  String? firstName;
+  DateTime? dateJoined;
+
+  Future<void> fetchUserData() async {
+    UserStore userStore = UserStore();
+    const userId = 'user-id-here'; // Replace with actual userId
+
+    try {
+      final UserInformation? userInfo =
+          await userStore.getUserInformation(userId: userId);
+      if (userInfo != null) {
+        setState(() {
+          firstName = userInfo.firstName;
+          dateJoined = userInfo.dateJoined;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching user data: ${e.toString()}')),
+      );
+    }
+  }
 
   Future<List<Exercise>> fetchData() async {
     setState(() {
@@ -105,8 +130,9 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     fetchData();
-    super.initState();
+    fetchUserData();
     fetchexercisesList();
+    super.initState();
   }
 
   @override
@@ -312,19 +338,22 @@ class _HomeViewState extends State<HomeView> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           SizedBox(height: height * 0.1),
-          // DrawerHeader(
-          //   decoration: BoxDecoration(
-          //     color: Color(0xFF77EEA3),
-          //   ),
-          //   child: ListTile(
-          //     title:
-          //         Text('Name', style: TextStyle(color: Colors.black)),
-          //     subtitle: Text('Joined Nov 2021',
-          //         style: TextStyle(color: Colors.grey.shade800)),
-          //     leading: CircleAvatar(
-          //         backgroundImage: AssetImage('images/user.jpg')),
-          //   ),
-          // ),
+          SizedBox(
+            height: 100,
+            child: DrawerHeader(
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.zero,
+              child: ListTile(
+                title: Text(firstName ?? 'Loading...'),
+                subtitle: Text(
+                  dateJoined != null
+                      ? 'Joined ${DateFormat.yMMMd().format(dateJoined!)}'
+                      : 'Loading...',
+                  style: TextStyle(color: Colors.grey.shade800),
+                ),
+              ),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.paste),
             title: const Text('Logs'),

@@ -4,6 +4,7 @@ import 'package:trackrecordd/database/userDataStore.dart';
 import 'package:trackrecordd/models/userInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/views/homeView.dart';
+import 'package:trackrecordd/widgets/customDatePicker.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 
 import '../../database/userDataStore.dart';
@@ -19,6 +20,8 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
   final FocusNode dateNode = FocusNode(debugLabel: "date");
   final FocusNode monthNode = FocusNode(debugLabel: "date");
   final FocusNode yearNode = FocusNode(debugLabel: "date");
+
+  DateTime dateOfBirth = DateTime.now();
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -54,211 +57,77 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
   Widget build(BuildContext context) {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
+    var theme = Theme.of(context); // Access the theme
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              SizedBox(
-                height: height * 0.02,
-              ),
+              SizedBox(height: height * 0.02),
               Align(
                 alignment: const AlignmentDirectional(-0.7, 0),
                 child: Text(
                   'Enter your details',
-                  style: TextStyle(
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontSize: height * 0.035,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: theme.colorScheme.onBackground,
                   ),
                 ),
               ),
               SizedBox(height: height * 0.02),
-              alignedText(height, 'Name *'),
+              alignedText(theme, height, 'Name *'),
               CustomField(setValue: (value) => firstName = value),
               SizedBox(height: height * 0.02),
-              alignedText(height, 'Last Name *'),
+              alignedText(theme, height, 'Last Name *'),
               CustomField(setValue: (value) => lastName = value),
               SizedBox(height: height * 0.02),
-              alignedText(height, 'Date of birth 👶 *'),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CustomField(
-                    width: 0.2,
-                    height: 0.06,
-                    setValue: (value) => dobDate = value,
-                    hintText: "DD",
-                  ),
-                  CustomField(
-                    width: 0.21,
-                    height: 0.06,
-                    setValue: (value) => dobMonth = value,
-                    hintText: "MM",
-                  ),
-                  CustomField(
-                    width: 0.2,
-                    height: 0.06,
-                    setValue: (value) => dobYear = value,
-                    hintText: "YY",
-                  ),
-                ],
-              ),
+              alignedText(theme, height, 'Date of birth 👶 *'),
+              CustomDatePickerField(
+                  selectedDate: dateOfBirth, dateController: dobDateController),
               SizedBox(height: height * 0.02),
-              alignedText(height, 'Measurements 📝'),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      const Text(
-                        'Weight🏋️ *',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => weight = value,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text(
-                        'Height🙆‍♂️ *',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => height = value,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      const Text(
-                        'Shoulders',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => shoulders = value,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text(
-                        'Chest',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => chest = value,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text(
-                        'Waist',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => waist = value,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      const Text(
-                        'Left 💪',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => leftArm = value,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text(
-                        'Right 💪',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => rightArm = value,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      const Text(
-                        'Left 🦵',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => leftLeg = value,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text(
-                        'Right 🦵',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      CustomField(
-                        width: 0.2,
-                        height: 0.06,
-                        setValue: (value) => rightLeg = value,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              alignedText(theme, height, 'Measurements 📝'),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Weight🏋️ *'),
+              CustomField(setValue: (value) => weight = value),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Height🙆‍♂️ *'),
+              CustomField(setValue: (value) => height = value),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Shoulders'),
+              CustomField(setValue: (value) => shoulders = value),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Chest'),
+              CustomField(setValue: (value) => chest = value),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Waist'),
+              CustomField(setValue: (value) => waist = value),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Left 💪'),
+              CustomField(setValue: (value) => leftArm = value),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Right 💪'),
+              CustomField(setValue: (value) => rightArm = value),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Left 🦵'),
+              CustomField(setValue: (value) => leftLeg = value),
+              SizedBox(height: height * 0.02),
+              alignedText(theme, height, 'Right 🦵'),
+              CustomField(setValue: (value) => rightLeg = value),
               SizedBox(height: height * 0.02),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: width * 0.05),
-                    child: const Text(
+                    child: Text(
                       '* mandatory',
-                      style: TextStyle(color: Colors.black),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
                   ),
                 ],
@@ -271,7 +140,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                     width: width * 0.4,
                     margin: EdgeInsets.only(right: width * 0.05),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFED500),
+                      color: theme.colorScheme.primary,
                       shape: BoxShape.rectangle,
                       borderRadius:
                           BorderRadius.all(Radius.circular(height / 38)),
@@ -279,10 +148,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                     child: TextButton(
                       onPressed: () {
                         if (firstName != "" &&
-                            lastName != ""
-                            // &&
-                            // dateTimeParser() != null
-                            &&
+                            lastName != "" &&
                             measurementsParser() != null) {
                           UserStore store = UserStore();
                           ExerciseInfoDataStore exerciseInfoDataStore =
@@ -310,16 +176,17 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                               );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Please enter valid values")));
+                            const SnackBar(
+                                content: Text("Please enter valid values")),
+                          );
                         }
                       },
                       child: Text(
                         'Next >>',
-                        style: TextStyle(
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: theme.colorScheme.onPrimary,
                           fontSize: height * 0.025,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -359,15 +226,15 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
     );
   }
 
-  Align alignedText(height, String text) {
+  Align alignedText(ThemeData theme, double height, String text) {
     return Align(
       alignment: const AlignmentDirectional(-0.85, 0),
       child: Text(
         text,
-        style: TextStyle(
+        style: theme.textTheme.titleMedium?.copyWith(
           fontSize: height * 0.02,
           fontWeight: FontWeight.w500,
-          color: Colors.black87,
+          color: theme.colorScheme.onBackground,
         ),
       ),
     );

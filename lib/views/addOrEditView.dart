@@ -1,16 +1,9 @@
-// import 'package:trackrecordd/screens/todayScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:trackrecordd/bloc/events.dart';
-import 'package:trackrecordd/database/exerciseDataStore.dart';
+import 'package:flutter/services.dart';
 import 'package:trackrecordd/models/exercise.dart';
 import 'package:trackrecordd/models/exerciseInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
-// import 'package:trackrecord/database/db.dart';
-import 'package:trackrecordd/utils/functions.dart';
-import 'dart:io' show Platform;
-
-import 'package:trackrecordd/views/homeView.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 import 'package:trackrecordd/widgets/submitButton.dart';
 
@@ -143,6 +136,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                                 : Theme.of(context).colorScheme.secondary,
                           ),
                           onTap: () {
+                            HapticFeedback.heavyImpact();
                             setState(() {
                               muscleIndex = i;
                               exerciseIndex = -1;
@@ -153,11 +147,10 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) {
-                      return Divider(
+                      return const Divider(
                         height: 1,
                         thickness: 1,
-                        indent: width * 0.03,
-                        endIndent: width * 0.03,
+                        color: Colors.black38,
                       );
                     },
                   ),
@@ -201,6 +194,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                                 )
                               : const SizedBox(),
                           onTap: () {
+                            HapticFeedback.heavyImpact();
                             setState(() {
                               exerciseIndex = i;
                             });
@@ -209,11 +203,10 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) {
-                      return Divider(
+                      return const Divider(
                         height: 1,
                         thickness: 1,
-                        indent: width * 0.03,
-                        endIndent: width * 0.03,
+                        color: Colors.black38,
                       );
                     },
                   ),
@@ -228,7 +221,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                   onSubmit: () {
                     if (muscleIndex != -1 &&
                         exerciseIndex != -1 &&
-                        int.parse(sets[0]["reps"]) > 0) {
+                        allSetsHaveNonZeroReps(sets)) {
                       Exercise exercise = Exercise(
                         date: DateTime.now(),
                         name: exerciseList[exerciseIndex].name,
@@ -253,11 +246,11 @@ class _AddOrEditViewState extends State<AddOrEditView> {
   }
 
   Divider divider(width) {
-    return Divider(
-        height: 0.01,
-        thickness: 2,
-        indent: width * 0.05,
-        endIndent: width * 0.05);
+    return const Divider(
+      height: 1,
+      thickness: 1,
+      color: Colors.black38,
+    );
   }
 
   SizedBox setTile(height, width, int index) {
@@ -308,15 +301,18 @@ class _AddOrEditViewState extends State<AddOrEditView> {
 
   GestureDetector addButton(height, width) {
     return GestureDetector(
-      onTap: () => setState(() {
-        sets = sets +
-            [
-              {
-                "weight": 0,
-                "reps": 0,
-              }
-            ];
-      }),
+      onTap: () {
+        HapticFeedback.heavyImpact();
+        setState(() {
+          sets = sets +
+              [
+                {
+                  "weight": 0,
+                  "reps": 0,
+                }
+              ];
+        });
+      },
       child: Container(
         width: width * 0.85,
         height: height * 0.08,
@@ -347,6 +343,26 @@ class _AddOrEditViewState extends State<AddOrEditView> {
         ),
       ],
     );
+  }
+
+  bool allSetsHaveNonZeroReps(List<Map<String, dynamic>> sets) {
+    for (var set in sets) {
+      var reps = set['reps'];
+
+      if (reps is String) {
+        int? parsedReps = int.tryParse(reps);
+        if (parsedReps == null || parsedReps == 0) {
+          return false;
+        }
+      } else if (reps is int) {
+        if (reps == 0) {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

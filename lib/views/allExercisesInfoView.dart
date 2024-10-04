@@ -169,11 +169,10 @@ class _EditExercisesViewState extends State<EditExercisesView> {
           );
         },
         separatorBuilder: (BuildContext context, int index) {
-          return Divider(
+          return const Divider(
             height: 1,
             thickness: 1,
-            indent: width * 0.03,
-            endIndent: width * 0.03,
+            color: Colors.black38,
           );
         },
       ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:trackrecordd/views/privacyPolicy.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/utils/functions.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class AboutView extends StatefulWidget {
   const AboutView({super.key});
@@ -14,20 +15,17 @@ class AboutView extends StatefulWidget {
 
 class _AboutViewState extends State<AboutView> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  String version = "";
+
+  void getVersionInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+  }
 
   @override
   void initState() {
     super.initState();
-  }
-
-  Future openBrowserURL({
-    required String url,
-    bool inApp = false,
-  }) async {
-    if (await canLaunch(url)) {
-      await launch(url,
-          forceSafariVC: inApp, forceWebView: inApp, enableJavaScript: true);
-    }
+    getVersionInfo();
   }
 
   @override
@@ -73,20 +71,20 @@ class _AboutViewState extends State<AboutView> {
                       ),
                     ),
                   ),
-                  const Column(
+                  Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'TrackRecord',
                         style: TextStyle(
                           fontSize: 25,
                         ),
                       ),
                       Text(
-                        'Version 1.0.5 Beta',
-                        style: TextStyle(
+                        'Version $version Beta',
+                        style: const TextStyle(
                           fontWeight: FontWeight.w300,
                         ),
                       ),
@@ -95,7 +93,7 @@ class _AboutViewState extends State<AboutView> {
                 ],
               ),
               const Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(15, 0, 15, 0),
+                padding: EdgeInsetsDirectional.fromSTEB(15, 0, 15, 20),
                 child: Text(
                   'This app was born out of my need to measure and visualize my growth in gym . \n\nGyms are a reality escape and as much as I want this app to help you to monitor and streamline your fitness journey I also want you to be responsible in using it. Comparing your growth with someone else or working out too much can have negative consequencces. \n\nHope you like what I have done. \n\nSaurabh Dhingra',
                   textAlign: TextAlign.start,
@@ -132,9 +130,14 @@ class _AboutViewState extends State<AboutView> {
                 ),
                 child: ListTile(
                   onTap: () async {
-                    const url =
-                        'https://eager-burn-a3e.notion.site/PRIVACY-POLICY-c7b9a85947e947c5ab94f0ddac5f601d';
-                    openBrowserURL(url: url, inApp: true);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const PrivacyPolicyPage();
+                        },
+                      ),
+                    );
                   },
                   title: const Text(
                     'Privacy Policy',

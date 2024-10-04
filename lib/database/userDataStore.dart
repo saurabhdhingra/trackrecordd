@@ -19,16 +19,18 @@ class UserStore {
     }
   }
 
-  Future<UserInfo?> getUserInformation({required String userId}) async {
+  Future<UserInformation?> getUserInformation({required String userId}) async {
     if (userId.isNotEmpty) {
       final userDoc = await userCollection.doc(userId).get();
 
       if (!userDoc.exists) {
+        print("User Doc doesn't exist.");
         return null;
       }
 
       final userData = userDoc.data() as Map<String, dynamic>;
-      return UserInfo.fromJson(userData);
+
+      return UserInformation.fromJson(userData);
     } else {
       throw FireStoreException(message: 'User ID passed is empty.');
     }

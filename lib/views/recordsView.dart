@@ -2,6 +2,7 @@
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/database/workoutDataStore.dart';
 import 'package:trackrecordd/models/workout.dart';
@@ -77,13 +78,33 @@ class _RecordsViewState extends State<RecordsView> {
             body: SafeArea(
               child: SingleChildScrollView(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     data.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'Nothing to show',
-                              style: TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold),
+                        ? SizedBox(
+                            height: height * 0.9,
+                            child: Center(
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                    text: 'Nothing to show,',
+                                    style: const TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: "\nrecord your",
+                                        style:
+                                            const TextStyle(color: Colors.blue),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap =
+                                              () => Navigator.of(context).pop(),
+                                      ),
+                                      const TextSpan(text: "\nfirst workout")
+                                    ]),
+                              ),
                             ),
                           )
                         : ListView.builder(
