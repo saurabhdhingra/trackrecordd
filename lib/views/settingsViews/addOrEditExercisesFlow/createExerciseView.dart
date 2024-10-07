@@ -6,8 +6,9 @@ import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/models/exerciseInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/widgets/dropdownSelector.dart';
+import 'package:trackrecordd/widgets/submitButton.dart';
 
-import '../widgets/customField.dart';
+import '../../../widgets/customField.dart';
 // import 'addScreen.dart';
 
 class CreateExercise extends StatefulWidget {
@@ -38,24 +39,6 @@ class _CreateExerciseState extends State<CreateExercise> {
     var width = SizeConfig.getWidth(context);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          Navigator.pop(
-            context,
-            ExerciseInfo(
-              name: exerciseName,
-              muscleGroup: muscleGroups[muscleIndex],
-            ),
-          );
-        },
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.transparent,
-        elevation: 0,
-        child: const Text(
-          'Add',
-          style: TextStyle(color: Color.fromRGBO(13, 125, 255, 1)),
-        ),
-      ),
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
@@ -124,6 +107,19 @@ class _CreateExerciseState extends State<CreateExercise> {
                       );
                     },
                   ),
+                ),
+                SizedBox(height: height * 0.02),
+                SubmitButton(
+                  onSubmit: () async {
+                    Navigator.pop(
+                      context,
+                      ExerciseInfo(
+                        name: exerciseName,
+                        muscleGroup: muscleGroups[muscleIndex],
+                      ),
+                    );
+                  },
+                  text: "Add",
                 )
               ],
             ),

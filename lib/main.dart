@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/utils/functions.dart';
-import 'package:trackrecordd/views/splash.dart';
+import 'package:trackrecordd/views/authViews/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -43,4 +43,3 @@ class _MyAppState extends State<MyApp> {
         },
       );
 }
-

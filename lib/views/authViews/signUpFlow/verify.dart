@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/views/authViews/basicDetails.dart';
+import 'package:trackrecordd/views/authViews/detailsFlow/basicDetails.dart';
 import 'package:trackrecordd/utils/uiUtils.dart';
 
-import '../../utils/constants.dart';
-import 'basicDetails.dart';
+import '../../../utils/constants.dart';
+import '../detailsFlow/basicDetails.dart';
 
 class VerifyView extends StatefulWidget {
   @override
@@ -51,7 +51,9 @@ class _VerifyViewState extends State<VerifyView> {
               Container(
                 width: width * 0.95,
                 decoration: BoxDecoration(
-                  border: Border.all(),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                   borderRadius: BorderRadius.all(Radius.circular(height / 38)),
                 ),
                 child: Column(
@@ -71,7 +73,6 @@ class _VerifyViewState extends State<VerifyView> {
                     ),
                     Divider(
                       thickness: 2,
-                      color: Colors.black,
                       endIndent: width * 0.025,
                       indent: width * 0.025,
                     ),

@@ -83,6 +83,10 @@ class _CustomFieldState extends State<CustomField> {
                     BorderSide(color: Theme.of(context).colorScheme.secondary),
                 borderRadius:
                     BorderRadius.all(Radius.circular(devWidth * 0.05))),
+            focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Colors.yellow),
+                borderRadius:
+                    BorderRadius.all(Radius.circular(devWidth * 0.05))),
             label: Text(
               widget.hintText ?? "",
               style: TextStyle(color: Theme.of(context).colorScheme.secondary),
@@ -133,105 +137,105 @@ class _CustomFieldState extends State<CustomField> {
   // }
 }
 
-class CustomTextInputWidget extends StatelessWidget {
-  const CustomTextInputWidget({
-    super.key,
-    required this.width,
-    required this.height,
-    this.filledColor,
-    this.borderColor,
-    this.focusedBorderColor,
-    this.textAlign,
-    required this.controller,
-    this.validator,
-    this.keyboardType,
-    this.obscureText,
-    this.initialValue,
-    this.hintText,
-    this.unit,
-    this.maxLines,
-    this.textFormatters,
-    this.focusNode,
-    this.nextFocusNode,
-  });
+// class CustomTextInputWidget extends StatelessWidget {
+//   const CustomTextInputWidget({
+//     super.key,
+//     required this.width,
+//     required this.height,
+//     this.filledColor,
+//     this.borderColor,
+//     this.focusedBorderColor,
+//     this.textAlign,
+//     required this.controller,
+//     this.validator,
+//     this.keyboardType,
+//     this.obscureText,
+//     this.initialValue,
+//     this.hintText,
+//     this.unit,
+//     this.maxLines,
+//     this.textFormatters,
+//     this.focusNode,
+//     this.nextFocusNode,
+//   });
 
-  final double width;
-  final double height;
-  final FocusNode? focusNode;
-  final FocusNode? nextFocusNode;
+//   final double width;
+//   final double height;
+//   final FocusNode? focusNode;
+//   final FocusNode? nextFocusNode;
 
-  final Color? filledColor;
-  final Color? borderColor;
-  final Color? focusedBorderColor;
-  final TextAlign? textAlign;
-  final TextEditingController controller;
-  final String? Function(String?)? validator;
-  final TextInputType? keyboardType;
-  final bool? obscureText;
-  final String? initialValue;
-  final String? hintText;
-  final String? unit;
-  final int? maxLines;
-  final List<TextInputFormatter>? textFormatters;
+//   final Color? filledColor;
+//   final Color? borderColor;
+//   final Color? focusedBorderColor;
+//   final TextAlign? textAlign;
+//   final TextEditingController controller;
+//   final String? Function(String?)? validator;
+//   final TextInputType? keyboardType;
+//   final bool? obscureText;
+//   final String? initialValue;
+//   final String? hintText;
+//   final String? unit;
+//   final int? maxLines;
+//   final List<TextInputFormatter>? textFormatters;
 
-  @override
-  Widget build(BuildContext context) {
-    var devHeight = SizeConfig.getHeight(context);
-    var devWidth = SizeConfig.getWidth(context);
-    return Container(
-      width: width * devWidth,
-      height: height * devHeight,
-      padding: EdgeInsets.symmetric(horizontal: devWidth * 0.05),
-      decoration: BoxDecoration(
-        color: filledColor ?? Colors.white,
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.black),
-      ),
-      child: TextFormField(
-        controller: controller,
-        obscureText: obscureText ?? false,
-        obscuringCharacter: 'x',
-        initialValue: initialValue,
-        validator: validator,
-        keyboardType: keyboardType,
-        cursorColor: Colors.black,
-        inputFormatters: textFormatters,
-        textAlignVertical: TextAlignVertical.center,
-        textAlign: TextAlign.start,
-        style: TextStyle(
-            fontSize: devWidth * 0.04,
-            color: Theme.of(context).colorScheme.primary),
-        onFieldSubmitted: (value) => (nextFocusNode != null)
-            ? FocusScope.of(context).requestFocus(nextFocusNode)
-            : null,
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(
-              color: Theme.of(context).colorScheme.secondary,
-              fontSize: devWidth * 0.05),
-          contentPadding: EdgeInsets.zero,
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: borderColor ?? const Color(0x00000000),
-              width: 1,
-            ),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(4.0),
-              topRight: Radius.circular(4.0),
-            ),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: focusedBorderColor ?? const Color(0x00000000),
-              width: 1,
-            ),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(4.0),
-              topRight: Radius.circular(4.0),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     var devHeight = SizeConfig.getHeight(context);
+//     var devWidth = SizeConfig.getWidth(context);
+//     return Container(
+//       width: width * devWidth,
+//       height: height * devHeight,
+//       padding: EdgeInsets.symmetric(horizontal: devWidth * 0.05),
+//       decoration: BoxDecoration(
+//         color: filledColor ?? Colors.white,
+//         borderRadius: BorderRadius.circular(25),
+//         border: Border.all(color: Colors.black),
+//       ),
+//       child: TextFormField(
+//         controller: controller,
+//         obscureText: obscureText ?? false,
+//         obscuringCharacter: 'x',
+//         initialValue: initialValue,
+//         validator: validator,
+//         keyboardType: keyboardType,
+//         cursorColor: Colors.black,
+//         inputFormatters: textFormatters,
+//         textAlignVertical: TextAlignVertical.center,
+//         textAlign: TextAlign.start,
+//         style: TextStyle(
+//             fontSize: devWidth * 0.04,
+//             color: Theme.of(context).colorScheme.primary),
+//         onFieldSubmitted: (value) => (nextFocusNode != null)
+//             ? FocusScope.of(context).requestFocus(nextFocusNode)
+//             : null,
+//         decoration: InputDecoration(
+//           hintText: hintText,
+//           hintStyle: TextStyle(
+//               color: Theme.of(context).colorScheme.secondary,
+//               fontSize: devWidth * 0.05),
+//           contentPadding: EdgeInsets.zero,
+//           enabledBorder: UnderlineInputBorder(
+//             borderSide: BorderSide(
+//               color: borderColor ?? const Color(0x00000000),
+//               width: 1,
+//             ),
+//             borderRadius: const BorderRadius.only(
+//               topLeft: Radius.circular(4.0),
+//               topRight: Radius.circular(4.0),
+//             ),
+//           ),
+//           focusedBorder: UnderlineInputBorder(
+//             borderSide: BorderSide(
+//               color: focusedBorderColor ?? const Color(0x00000000),
+//               width: 1,
+//             ),
+//             borderRadius: const BorderRadius.only(
+//               topLeft: Radius.circular(4.0),
+//               topRight: Radius.circular(4.0),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

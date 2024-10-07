@@ -4,11 +4,11 @@ import 'package:trackrecordd/models/exercise.dart';
 import 'package:trackrecordd/models/workout.dart';
 import 'package:trackrecordd/models/workoutDetailed.dart';
 
-import '../database/workoutDataStore.dart';
-import '../utils/constants.dart';
-import '../utils/functions.dart';
+import '../../database/workoutDataStore.dart';
+import '../../utils/constants.dart';
+import '../../utils/functions.dart';
 
-import '../widgets/exerciseTile.dart';
+import '../../widgets/exerciseTile.dart';
 
 class DateView extends StatefulWidget {
   final DateTime date;

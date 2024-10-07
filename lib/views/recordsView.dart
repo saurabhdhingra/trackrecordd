@@ -1,13 +1,9 @@
-// import 'package:fl_chart/fl_chart.dart';
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/database/workoutDataStore.dart';
 import 'package:trackrecordd/models/workout.dart';
 import 'package:trackrecordd/utils/constants.dart';
-import 'package:trackrecordd/utils/functions.dart';
 import 'package:trackrecordd/widgets/dayTile.dart';
 
 class RecordsView extends StatefulWidget {
@@ -89,9 +85,12 @@ class _RecordsViewState extends State<RecordsView> {
                                 textAlign: TextAlign.center,
                                 text: TextSpan(
                                     text: 'Nothing to show,',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 30,
                                       fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     ),
                                     children: [
                                       TextSpan(

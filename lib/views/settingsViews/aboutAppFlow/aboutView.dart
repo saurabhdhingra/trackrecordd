@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:trackrecordd/views/privacyPolicy.dart';
+import 'package:trackrecordd/views/settingsViews/aboutAppFlow/privacyPolicy.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/utils/functions.dart';
 import 'package:package_info_plus/package_info_plus.dart';

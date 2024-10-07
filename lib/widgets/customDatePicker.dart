@@ -1,91 +1,147 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'dart:io' show Platform;
+import 'package:flutter/cupertino.dart';
 
 import '../utils/constants.dart';
 
 class CustomDatePickerField extends StatefulWidget {
-  DateTime selectedDate;
+  final DateTime? selectedDate;
   final TextEditingController dateController;
-  CustomDatePickerField(
-      {super.key, required this.selectedDate, required this.dateController});
+
+  const CustomDatePickerField({
+    Key? key,
+    this.selectedDate,
+    required this.dateController,
+  }) : super(key: key);
 
   @override
   _CustomDatePickerFieldState createState() => _CustomDatePickerFieldState();
 }
 
 class _CustomDatePickerFieldState extends State<CustomDatePickerField> {
-  Future<void> _pickDate(BuildContext context) async {
-    if (Platform.isAndroid) {
-      // Android date picker
-      DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: widget.selectedDate,
-        firstDate: DateTime(1950),
-        lastDate: DateTime(2100),
-      );
+  DateTime? _selectedDate;
 
-      if (pickedDate != null && pickedDate != widget.selectedDate) {
-        setState(() {
-          widget.selectedDate = pickedDate;
-          widget.dateController.text = "${pickedDate.toLocal()}".split(' ')[0];
-        });
-      }
-    } else if (Platform.isIOS) {
-      // iOS Cupertino date picker
-      showCupertinoModalPopup(
-        context: context,
-        builder: (_) => Container(
-          height: 250,
-          color: Colors.white,
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = widget.selectedDate ?? DateTime.now();
+    widget.dateController.text = _formatDate(_selectedDate!);
+  }
+
+  String _formatDate(DateTime date) {
+    return "${date.day}/${date.month}/${date.year}";
+  }
+
+  Future<void> _pickDate(BuildContext context) async {
+    if (Platform.isIOS) {
+      await _showCupertinoDatePicker(context);
+    } else {
+      await _showMaterialDatePicker(context);
+    }
+  }
+
+  Future<void> _showMaterialDatePicker(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime(2010, 01, 01),
+      firstDate: DateTime(1940),
+      lastDate: DateTime(2012),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context)
+                .colorScheme
+                .copyWith(primary: Theme.of(context).colorScheme.secondary),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context)
+                    .colorScheme
+                    .secondary, // Button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+        widget.dateController.text = _formatDate(pickedDate);
+      });
+    }
+  }
+
+  Future<void> _showCupertinoDatePicker(BuildContext context) async {
+    DateTime pickedDate = _selectedDate ?? DateTime.now();
+
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height * 0.35,
+          decoration: BoxDecoration(
+            color: Theme.of(context).highlightColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
+            ),
+          ),
           child: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.done),
+                  )
+                ],
+              ),
               SizedBox(
-                height: 200,
+                height: MediaQuery.of(context).copyWith().size.height * 0.25,
                 child: CupertinoDatePicker(
-                  initialDateTime: widget.selectedDate,
                   mode: CupertinoDatePickerMode.date,
-                  onDateTimeChanged: (DateTime picked) {
+                  initialDateTime: pickedDate,
+                  onDateTimeChanged: (DateTime newDate) {
                     setState(() {
-                      widget.selectedDate = picked;
-                      widget.dateController.text =
-                          "${picked.toLocal()}".split(' ')[0];
+                      _selectedDate = newDate;
+                      widget.dateController.text = _formatDate(newDate);
                     });
                   },
                 ),
               ),
-              CupertinoButton(
-                child: const Text(
-                  "Done",
-                  style: TextStyle(
-                    color: Colors.black87,
-                  ),
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              )
             ],
           ),
-        ),
-      );
-    }
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-      child: TextField(
-        controller: widget.dateController,
-        readOnly: true,
+      child: GestureDetector(
         onTap: () => _pickDate(context),
-        decoration: InputDecoration(
-          hintText: 'Select Date',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
+        child: AbsorbPointer(
+          child: TextFormField(
+            controller: widget.dateController,
+            decoration: InputDecoration(
+              fillColor: Theme.of(context).primaryColor,
+              hintText: 'Select Date',
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
           ),
-          suffixIcon: const Icon(Icons.calendar_today),
         ),
       ),
     );

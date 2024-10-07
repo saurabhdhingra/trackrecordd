@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/views/authViews/basicDetails.dart';
-import 'package:trackrecordd/views/homeView.dart';
-import 'package:trackrecordd/views/authViews/createAccount.dart';
+import 'package:trackrecordd/views/authViews/detailsFlow/basicDetails.dart';
+import 'package:trackrecordd/views/todayFlow/homeView.dart';
+import 'package:trackrecordd/views/authViews/signUpFlow/signUp.dart';
 import 'package:trackrecordd/widgets/customField.dart';
-import '../../utils/constants.dart';
+import '../../../utils/constants.dart';
 
 class LoginView extends StatefulWidget {
   final bool isLogout;
@@ -46,11 +46,8 @@ class _LoginViewState extends State<LoginView> {
                   Navigator.pop(context);
                 },
                 icon: const Icon(Icons.chevron_left)),
-        backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
       ),
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -156,12 +153,7 @@ class _LoginViewState extends State<LoginView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Text(
-                    'Don\'t have an account?',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
+                  const Text('Don\'t have an account?'),
                   TextButton(
                     child: Text('Sign up',
                         style: TextStyle(color: Colors.blue[900])),
@@ -169,7 +161,7 @@ class _LoginViewState extends State<LoginView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CreateAccountView(),
+                          builder: (context) => const SignUpView(),
                         ),
                       );
                     },

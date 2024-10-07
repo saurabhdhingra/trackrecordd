@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/utils/constants.dart';
-import 'package:trackrecordd/views/dateView.dart';
+import 'package:trackrecordd/views/dayFlow/dateView.dart';
 // import 'package:trackrecord/screens/dateScreen.dart';
 
 class DayTile extends StatefulWidget {

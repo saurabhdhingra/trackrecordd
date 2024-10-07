@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/views/authViews/basicDetails.dart';
-import 'package:trackrecordd/views/authViews/verify.dart';
+import 'package:trackrecordd/views/authViews/detailsFlow/basicDetails.dart';
+import 'package:trackrecordd/views/authViews/signUpFlow/verify.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 
-class CreateAccountView extends StatefulWidget {
-  const CreateAccountView({Key? key}) : super(key: key);
+class SignUpView extends StatefulWidget {
+  const SignUpView({super.key});
 
   @override
-  State<CreateAccountView> createState() => _CreateAccountViewState();
+  State<SignUpView> createState() => _SignUpViewState();
 }
 
-class _CreateAccountViewState extends State<CreateAccountView> {
+class _SignUpViewState extends State<SignUpView> {
   // late TextEditingController emailController;
   // late TextEditingController passwordController;
   // late TextEditingController confirmPasswordController;
@@ -50,12 +50,7 @@ class _CreateAccountViewState extends State<CreateAccountView> {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      backgroundColor: Colors.white,
+      appBar: AppBar(elevation: 0),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -76,10 +71,7 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                       padding: EdgeInsets.symmetric(horizontal: width * 0.07),
                       child: const Text(
                         'We won\'t judge you even if it is embarassing',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black87,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.w300),
                       ),
                     ),
                   ],
@@ -114,18 +106,23 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                           fontSize: 22),
                     ),
                     onPressed: () {
+                      print("Verify clicked");
                       if (password.trim() == "" || password.isEmpty) {
+                        print("Password Empty condition");
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text('Please enter a password')));
-                      }
-                      if (!isPasswordValid(password)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    'Password must be at least 8 characters long and include '
-                                    'uppercase, lowercase, digit, and special character (@#\$%^&*)')));
+                      } else {
+                        if (!isPasswordValid(password)) {
+                          print("Password not valid condition");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'Password must be at least 8 characters long and include '
+                                      'uppercase, lowercase, digit, and special character (@#\$%^&*)')));
+                        }
                         if (confirm == password) {
+                          print("Account creation condition");
                           try {
                             auth
                                 .createUserWithEmailAndPassword(
@@ -140,15 +137,16 @@ class _CreateAccountViewState extends State<CreateAccountView> {
                               },
                             );
                           } catch (e) {
+                            print("Firebase Auth Exception");
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(e.toString()),
                             ));
                           }
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      'Password not confirmed correctly')));
+                          print("Password not confirmed condition");
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text(
+                                  'Password not confirmed correctly. Please enter the same password twice.')));
                         }
                       }
                     },
@@ -158,20 +156,13 @@ class _CreateAccountViewState extends State<CreateAccountView> {
             ),
             Column(
               children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: width * 0.9,
-                      child: const Text(
-                        '** Password must be at least 8 characters long and include '
-                        'uppercase, lowercase, digit, and special character (@#\$%^&*)',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
-                  ],
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                  child: const Text(
+                    'Password must be at least 8 characters long and include '
+                    'uppercase, lowercase, digit, and special character (@#\$%^&*)',
+                    style: TextStyle(fontWeight: FontWeight.w300),
+                  ),
                 ),
                 SizedBox(height: height * 0.02),
               ],

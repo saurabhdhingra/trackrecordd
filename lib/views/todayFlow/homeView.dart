@@ -8,23 +8,23 @@ import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/models/exercise.dart';
 import 'package:trackrecordd/models/workout.dart';
 import 'package:trackrecordd/models/workoutDetailed.dart';
-import 'package:trackrecordd/views/aboutView.dart';
-import 'package:trackrecordd/views/addOrEditView.dart';
+import 'package:trackrecordd/views/settingsViews/aboutAppFlow/aboutView.dart';
+import 'package:trackrecordd/views/todayFlow/addOrEditView.dart';
 import 'package:trackrecordd/views/graphView.dart';
 import 'package:trackrecordd/views/recordsView.dart';
-import 'package:trackrecordd/views/settingsView.dart';
+import 'package:trackrecordd/views/settingsViews/settingsView.dart';
 
-import '../database/userDataStore.dart';
-import '../database/workoutDataStore.dart';
-import '../models/userInfo.dart';
-import '../utils/constants.dart';
-import '../utils/functions.dart';
-import '../widgets/exerciseTile.dart';
-import '../bloc/bloc.dart';
-import '../bloc/events.dart';
+import '../../database/userDataStore.dart';
+import '../../database/workoutDataStore.dart';
+import '../../models/userInfo.dart';
+import '../../utils/constants.dart';
+import '../../utils/functions.dart';
+import '../../widgets/exerciseTile.dart';
+import '../authViews/signInFlow/login.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  final UserInformation userInformation;
+  const HomeView({super.key, required this.userInformation});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -48,26 +48,6 @@ class _HomeViewState extends State<HomeView> {
 
   String? firstName;
   DateTime? dateJoined;
-
-  Future<void> fetchUserData() async {
-    UserStore userStore = UserStore();
-    const userId = 'user-id-here'; // Replace with actual userId
-
-    try {
-      final UserInformation? userInfo =
-          await userStore.getUserInformation(userId: userId);
-      if (userInfo != null) {
-        setState(() {
-          firstName = userInfo.firstName;
-          dateJoined = userInfo.dateJoined;
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching user data: ${e.toString()}')),
-      );
-    }
-  }
 
   Future<List<Exercise>> fetchData() async {
     setState(() {
@@ -130,8 +110,9 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     fetchData();
-    fetchUserData();
     fetchexercisesList();
+    firstName = widget.userInformation.firstName;
+    dateJoined = widget.userInformation.dateJoined;
     super.initState();
   }
 
@@ -159,7 +140,7 @@ class _HomeViewState extends State<HomeView> {
               elevation: 0,
               iconTheme: Theme.of(context).iconTheme,
             ),
-            drawer: sideMenu(height, context),
+            drawer: sideMenu(height, width, context),
             body: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -332,28 +313,25 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Drawer sideMenu(height, BuildContext context) {
+  Drawer sideMenu(height, width, BuildContext context) {
+    final auth = FirebaseAuth.instance;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           SizedBox(height: height * 0.1),
-          SizedBox(
-            height: 100,
-            child: DrawerHeader(
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.zero,
-              child: ListTile(
-                title: Text(firstName ?? 'Loading...'),
-                subtitle: Text(
-                  dateJoined != null
-                      ? 'Joined ${DateFormat.yMMMd().format(dateJoined!)}'
-                      : 'Loading...',
-                  style: TextStyle(color: Colors.grey.shade800),
-                ),
-              ),
+          ListTile(
+            title: Text(firstName ?? 'Loading...',
+                style: TextStyle(fontSize: width * 0.06)),
+            subtitle: Text(
+              dateJoined != null
+                  ? 'Joined ${DateFormat.yMMMd().format(dateJoined!)}'
+                  : 'Loading...',
+              style: TextStyle(
+                  color: Colors.grey.shade800, fontSize: width * 0.045),
             ),
           ),
+          const Divider(thickness: 1),
           ListTile(
             leading: const Icon(Icons.paste),
             title: const Text('Logs'),
@@ -400,11 +378,7 @@ class _HomeViewState extends State<HomeView> {
               }
             },
           ),
-          const Divider(
-            thickness: 3,
-            indent: 10,
-            endIndent: 10,
-          ),
+          const Divider(thickness: 1),
           ListTile(
             leading: const Icon(Icons.info_outline_rounded),
             title: const Text('About app'),
@@ -415,6 +389,20 @@ class _HomeViewState extends State<HomeView> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const AboutView(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
+            onTap: () {
+              auth.signOut();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const LoginView(
+                    isLogout: true,
+                  ),
                 ),
               );
             },

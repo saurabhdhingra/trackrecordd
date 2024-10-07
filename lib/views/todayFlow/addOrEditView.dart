@@ -7,7 +7,7 @@ import 'package:trackrecordd/utils/constants.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 import 'package:trackrecordd/widgets/submitButton.dart';
 
-import '../widgets/rowText.dart';
+import '../../widgets/rowText.dart';
 
 class AddOrEditView extends StatefulWidget {
   final Map<String, List> exerciseLists;
@@ -89,7 +89,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
         centerTitle: false,
         iconTheme: Theme.of(context).iconTheme,
         title: Text(
-          "Add Exercise",
+          "${widget.exercise != null ? "Edit" : "Add"} Exercise",
           style: TextStyle(
             fontSize: width * 0.06,
           ),
@@ -286,6 +286,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
             initialValue: sets[index]["reps"].toString(),
             setValue: (value) => sets[index]["reps"] = value,
             hintText: "Reps",
+            keyboardType: const TextInputType.numberWithOptions(),
           ),
           SizedBox(height: height * 0.02),
           CustomField(
@@ -293,6 +294,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
             setValue: (value) => sets[index]["weight"] = value,
             hintText: "Weight",
             unit: "kgs",
+            keyboardType: const TextInputType.numberWithOptions(),
           ),
         ],
       ),

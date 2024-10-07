@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:trackrecordd/utils/constants.dart';
-import 'authViews/initializer.dart';
+import 'initializer.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -35,8 +35,9 @@ class _SplashScreenState extends State<SplashScreen> {
         child: SizedBox(
           width: width,
           height: height,
-          child:const RiveAnimation.asset(
+          child: const RiveAnimation.asset(
             'images/trackrecord.riv',
+            fit: BoxFit.fill,
           ),
         ),
       ),

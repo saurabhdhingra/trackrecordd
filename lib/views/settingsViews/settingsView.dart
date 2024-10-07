@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/views/authViews/login.dart';
+import 'package:trackrecordd/views/authViews/signInFlow/login.dart';
 // import 'package:trackrecord/database/models.dart';
 import 'package:trackrecordd/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,7 +9,7 @@ import 'package:trackrecordd/utils/functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io' show Platform;
 
-import 'package:trackrecordd/views/allExercisesInfoView.dart';
+import 'package:trackrecordd/views/settingsViews/addOrEditExercisesFlow/allExercisesInfoView.dart';
 
 class SettingsView extends StatefulWidget {
   final Map<String, List> exercisesLists;
@@ -227,7 +227,7 @@ class _SettingsViewState extends State<SettingsView> {
           borderRadius: BorderRadius.all(Radius.circular(height / 38)),
         ),
         child: ListTile(
-          title: const Text('Edit Exercises'),
+          title: const Text('Exercises List'),
           trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () async {
             var result = await Navigator.push(

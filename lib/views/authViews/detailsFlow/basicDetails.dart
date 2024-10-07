@@ -1,13 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/database/userDataStore.dart';
 import 'package:trackrecordd/models/userInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
-import 'package:trackrecordd/views/homeView.dart';
+import 'package:trackrecordd/views/todayFlow/homeView.dart';
 import 'package:trackrecordd/widgets/customDatePicker.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 
-import '../../database/userDataStore.dart';
+import '../../../database/userDataStore.dart';
 
 class BasicDetailsPage extends StatefulWidget {
   const BasicDetailsPage({Key? key}) : super(key: key);
@@ -21,7 +23,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
   final FocusNode monthNode = FocusNode(debugLabel: "date");
   final FocusNode yearNode = FocusNode(debugLabel: "date");
 
-  DateTime dateOfBirth = DateTime.now();
+  DateTime dateOfBirth = DateTime(2010, 01, 01);
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -53,6 +55,27 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
   String leftLeg = "";
   String rightLeg = "";
 
+  late ScrollController _scrollController;
+
+  bool showAppBarContent = false;
+
+  void runAnimation1() {
+    if (_scrollController.position.extentBefore >
+        MediaQuery.of(context).size.height * 0.3) {
+      setState(() => showAppBarContent = true);
+    } else {
+      setState(() => showAppBarContent = false);
+    }
+  }
+
+  @override
+  void initState() {
+    _scrollController = new ScrollController();
+    _scrollController.addListener(() => runAnimation1());
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = SizeConfig.getHeight(context);
@@ -60,9 +83,16 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
     var theme = Theme.of(context); // Access the theme
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+          title: showAppBarContent
+              ? Text(
+                  'Enter your details',
+                  style: TextStyle(color: Theme.of(context).highlightColor),
+                )
+              : null),
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -89,7 +119,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               CustomDatePickerField(
                   selectedDate: dateOfBirth, dateController: dobDateController),
               SizedBox(height: height * 0.02),
-              alignedText(theme, height, 'Measurements 📝'),
+              alignedText(theme, height * 1.2, 'Measurements 📝'),
               SizedBox(height: height * 0.02),
               alignedText(theme, height, 'Weight🏋️ *'),
               CustomField(setValue: (value) => weight = value),
@@ -106,16 +136,16 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
               alignedText(theme, height, 'Waist'),
               CustomField(setValue: (value) => waist = value),
               SizedBox(height: height * 0.02),
-              alignedText(theme, height, 'Left 💪'),
+              alignedText(theme, height, 'Left Arm 💪'),
               CustomField(setValue: (value) => leftArm = value),
               SizedBox(height: height * 0.02),
-              alignedText(theme, height, 'Right 💪'),
+              alignedText(theme, height, 'Right Arm 💪'),
               CustomField(setValue: (value) => rightArm = value),
               SizedBox(height: height * 0.02),
-              alignedText(theme, height, 'Left 🦵'),
+              alignedText(theme, height, 'Left Leg 🦵'),
               CustomField(setValue: (value) => leftLeg = value),
               SizedBox(height: height * 0.02),
-              alignedText(theme, height, 'Right 🦵'),
+              alignedText(theme, height, 'Right Leg 🦵'),
               CustomField(setValue: (value) => rightLeg = value),
               SizedBox(height: height * 0.02),
               Row(
@@ -140,7 +170,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                     width: width * 0.4,
                     margin: EdgeInsets.only(right: width * 0.05),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
+                      color: Colors.yellow,
                       shape: BoxShape.rectangle,
                       borderRadius:
                           BorderRadius.all(Radius.circular(height / 38)),
@@ -159,7 +189,7 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                                 userInfo: UserInformation(
                                   firstName: firstName,
                                   lastName: lastName,
-                                  dateOfBirth: DateTime.now(),
+                                  dateOfBirth: dateOfBirth,
                                   dateJoined: DateTime.now(),
                                   measurements: measurementsParser(),
                                 ),
@@ -169,7 +199,15 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) {
-                                      return const HomeView();
+                                      return HomeView(
+                                        userInformation: UserInformation(
+                                          firstName: firstName,
+                                          lastName: lastName,
+                                          dateJoined: DateTime.now(),
+                                          dateOfBirth: dateOfBirth,
+                                          measurements: {},
+                                        ),
+                                      );
                                     },
                                   ),
                                 ),
@@ -184,15 +222,16 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                       child: Text(
                         'Next >>',
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: theme.colorScheme.onPrimary,
                           fontSize: height * 0.025,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
+              SizedBox(height: height * 0.02),
             ],
           ),
         ),
@@ -240,35 +279,21 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
     );
   }
 
-  DateTime? dateTimeParser() {
-    int year = int.parse(dobYear);
-    int month = int.parse(dobMonth);
-    int date = int.parse(dobDate);
-
-    DateTime? result = DateTime.tryParse('$date-$month-$year');
-    if (result == null) print("date error");
-    return null;
-  }
-
   Map<String, dynamic>? measurementsParser() {
     Map<String, dynamic>? result;
-    // try {
 
-    // } catch (e) {
-    //   print("measurement error");
-    // }
+    result = {
+      "chest": double.tryParse(chest),
+      "height": double.tryParse(height),
+      "leftArm": double.tryParse(leftArm),
+      "leftLeg": double.tryParse(leftLeg),
+      "rightArm": double.tryParse(rightArm),
+      "rightLeg": double.tryParse(rightLeg),
+      "shoulders": double.tryParse(shoulders),
+      "waist": double.tryParse(waist),
+      "weight": double.tryParse(weight),
+    };
 
-    // result = {
-    //   "chest": double.parse(chest),
-    //   "height": double.parse(height),
-    //   "leftArm": double.tryParse(leftArm),
-    //   "leftLeg": double.tryParse(leftLeg),
-    //   "rightArm": double.tryParse(rightArm),
-    //   "rightLeg": double.tryParse(rightLeg),
-    //   "shoulders": double.tryParse(shoulders),
-    //   "waist": double.tryParse(waist),
-    //   "weight": double.tryParse(weight),
-    // };
-    return {};
+    return result;
   }
 }

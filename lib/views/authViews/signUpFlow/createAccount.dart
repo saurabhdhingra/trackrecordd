@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:trackrecordd/views/authViews/createAccount.dart';
-import 'package:trackrecordd/views/authViews/login.dart';
+import 'package:trackrecordd/views/authViews/signUpFlow/signUp.dart';
+import 'package:trackrecordd/views/authViews/signInFlow/login.dart';
 import 'package:trackrecordd/utils/uiUtils.dart';
-import '../../utils/constants.dart';
+import '../../../utils/constants.dart';
 
-class SignupView extends StatefulWidget {
-  const SignupView({Key? key}) : super(key: key);
+class CreateAccountView extends StatefulWidget {
+  const CreateAccountView({super.key});
 
   @override
-  State<SignupView> createState() => _SignupViewState();
+  State<CreateAccountView> createState() => _CreateAccountViewState();
 }
 
-class _SignupViewState extends State<SignupView> {
+class _CreateAccountViewState extends State<CreateAccountView> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -19,7 +19,6 @@ class _SignupViewState extends State<SignupView> {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -33,7 +32,6 @@ class _SignupViewState extends State<SignupView> {
                   Text(
                     'Track your workouts with us',
                     style: TextStyle(
-                      color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: width * 0.06,
                     ),
@@ -50,12 +48,7 @@ class _SignupViewState extends State<SignupView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Text(
-                      '   Already have an account ?',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
+                    const Text('Already have an account ?'),
                     loginButton(context)
                   ],
                 ),
@@ -74,7 +67,9 @@ class _SignupViewState extends State<SignupView> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const LoginView(isLogout: false,),
+            builder: (context) => const LoginView(
+              isLogout: false,
+            ),
           ),
         );
       },
@@ -101,7 +96,7 @@ class _SignupViewState extends State<SignupView> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CreateAccountView(),
+              builder: (context) => const SignUpView(),
             ),
           );
         },

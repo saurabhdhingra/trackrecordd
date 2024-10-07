@@ -23,7 +23,7 @@ class MyThemes {
       size: 24,
     ),
     appBarTheme: const AppBarTheme(
-      color: Color(0xFF1D1C1E),
+      color: Colors.black,
       iconTheme: IconThemeData(color: Colors.white),
       elevation: 2,
       titleTextStyle: TextStyle(
@@ -80,11 +80,7 @@ class MyThemes {
         return Colors.grey;
       }),
     ),
-    datePickerTheme: const DatePickerThemeData(
-      backgroundColor: Colors.white,
-      dayStyle: TextStyle(color: Colors.black),
-      todayBackgroundColor: WidgetStatePropertyAll(Colors.yellow),
-    ),
+
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStateProperty.all(Colors.black),
@@ -161,11 +157,7 @@ class MyThemes {
         return Colors.grey;
       }),
     ),
-    datePickerTheme: const DatePickerThemeData(
-      backgroundColor: Colors.black,
-      dayStyle: TextStyle(color: Colors.white),
-      todayBackgroundColor: WidgetStatePropertyAll(Colors.yellow),
-    ),
+
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStateProperty.all(Colors.white),

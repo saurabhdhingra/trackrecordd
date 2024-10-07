@@ -3,7 +3,7 @@ import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 // import 'package:trackrecord/database/db.dart';
 import 'package:trackrecordd/utils/constants.dart';
 
-import '../models/exerciseInfo.dart';
+import '../../../models/exerciseInfo.dart';
 import 'createExerciseView.dart';
 
 class EditExercisesView extends StatefulWidget {

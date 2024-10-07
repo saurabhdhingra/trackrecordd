@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserInformation {
@@ -19,8 +21,8 @@ class UserInformation {
       UserInformation(
           firstName: json["firstName"],
           lastName: json["lastName"],
-          dateOfBirth: json["dateOfBirth"],
-          dateJoined: json["dateJoined"],
+          dateOfBirth: json["dateOfBirth"].toDate(),
+          dateJoined: json["dateJoined"].toDate(),
           measurements: json["measurements"]);
 
   Map<String, dynamic> toJson() => {
@@ -39,8 +41,8 @@ class UserInformation {
     return UserInformation(
         firstName: data?["firstName"],
         lastName: data?["lastName"],
-        dateOfBirth: data?["dateOfBirth"],
-        dateJoined: data?["dateOfJoined"],
+        dateOfBirth: data?["dateOfBirth"].toDate(),
+        dateJoined: data?["dateJoined"].toDate(),
         measurements: data?["measurements"]);
   }
 
