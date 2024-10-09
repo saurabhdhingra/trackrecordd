@@ -48,12 +48,12 @@ class WorkoutDataStore {
             );
 
             var muscleArray = data["muscleGroups"];
-            List<String> muscleGroupRes = List<String>.from(muscleArray);
+            Set<String> muscleGroupRes = Set<String>.from(muscleArray);
 
             result = WorkoutDetails.fromJson({
               "date": data["date"],
               "exercises": exerciseDetails,
-              "muscleGroups": muscleGroupRes
+              "muscleGroups": muscleGroupRes.toList()
             });
 
             metaData = Workout.fromJson(data);

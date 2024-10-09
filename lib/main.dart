@@ -8,19 +8,30 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   final ThemeProvider themeProvider = ThemeProvider();
+  final ShowcaseActionProvider actionProvider = ShowcaseActionProvider();
+
   themeProvider.getTheme();
 
-  runApp(MyApp(themeProvider: themeProvider));
+  runApp(MyApp(
+    themeProvider: themeProvider,
+    actionProvider: actionProvider,
+  ));
 }
 
 class MyApp extends StatefulWidget {
   final ThemeProvider themeProvider;
-  const MyApp({Key? key, required this.themeProvider}) : super(key: key);
+  final ShowcaseActionProvider actionProvider;
+  const MyApp({
+    super.key,
+    required this.themeProvider,
+    required this.actionProvider,
+  });
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -28,8 +39,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (context) => widget.themeProvider,
+  Widget build(BuildContext context) => MultiProvider(
+        providers: [
+          Provider(create: (_) => widget.themeProvider),
+          Provider(create: (_) => widget.actionProvider),
+        ],
         builder: (context, _) {
           final themeProvider = Provider.of<ThemeProvider>(context);
           return MaterialApp(

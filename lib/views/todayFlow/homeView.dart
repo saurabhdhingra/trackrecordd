@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:trackrecordd/database/exerciseDataStore.dart';
 import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/models/exercise.dart';
@@ -13,6 +14,7 @@ import 'package:trackrecordd/views/todayFlow/addOrEditView.dart';
 import 'package:trackrecordd/views/graphView.dart';
 import 'package:trackrecordd/views/recordsView.dart';
 import 'package:trackrecordd/views/settingsViews/settingsView.dart';
+import 'package:trackrecordd/widgets/showcaseView.dart';
 
 import '../../database/userDataStore.dart';
 import '../../database/workoutDataStore.dart';
@@ -35,6 +37,11 @@ class _HomeViewState extends State<HomeView> {
 
   late WorkoutDetails data;
   late Workout workout;
+
+  final GlobalKey addFAB = GlobalKey();
+  final GlobalKey undoFAB = GlobalKey();
+  final GlobalKey setTile = GlobalKey();
+  final GlobalKey menuDrw = GlobalKey();
 
   bool isLoading = true;
   bool showUndo = false;
@@ -126,6 +133,9 @@ class _HomeViewState extends State<HomeView> {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
 
+    final actionProvider = Provider.of<ShowcaseActionProvider>(context);
+    final double action = actionProvider.currAction;
+
     return isLoading
         ? const Center(
             child: CircularProgressIndicator(
@@ -133,7 +143,8 @@ class _HomeViewState extends State<HomeView> {
             ),
           )
         : Scaffold(
-            floatingActionButton: floatingActionRow(context, width, height),
+            floatingActionButton:
+                floatingActionRow(context, width, height, action),
             appBar: AppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               shadowColor: const Color.fromRGBO(243, 242, 247, 1),
@@ -412,7 +423,8 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Row floatingActionRow(BuildContext context, double width, double height) {
+  Row floatingActionRow(
+      BuildContext context, double width, double height, double action) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -420,24 +432,29 @@ class _HomeViewState extends State<HomeView> {
         showUndo
             ? Padding(
                 padding: EdgeInsets.only(left: width * 0.09),
-                child: FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      data.exercises.insert(
-                          deletedIndex,
-                          deletedItem ??
-                              Exercise(
-                                  date: DateTime.now(),
-                                  name: "",
-                                  muscleGroup: "",
-                                  sets: []));
-                      showUndo = false;
-                      deletedItem = null;
-                    });
-                  },
-                  backgroundColor: Colors.orange[400],
-                  heroTag: "btn1",
-                  child: const Icon(Icons.undo),
+                child: ShowCaseView(
+                  enabled: action == 0,
+                  globalKey: addFAB,
+                  description: "Click here to add your first exercise",
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      setState(() {
+                        data.exercises.insert(
+                            deletedIndex,
+                            deletedItem ??
+                                Exercise(
+                                    date: DateTime.now(),
+                                    name: "",
+                                    muscleGroup: "",
+                                    sets: []));
+                        showUndo = false;
+                        deletedItem = null;
+                      });
+                    },
+                    backgroundColor: Colors.orange[400],
+                    heroTag: "btn1",
+                    child: const Icon(Icons.undo),
+                  ),
                 ),
               )
             : const SizedBox(),
@@ -458,7 +475,9 @@ class _HomeViewState extends State<HomeView> {
                 await store.addExercise(exercise: result).then((value) {
                   workout.exercises.add(value);
                   data.exercises.add(result);
-                  workout.muscleGroups.add(result.muscleGroup);
+                  if (!workout.muscleGroups.contains(result.muscleGroup)) {
+                    workout.muscleGroups.add(result.muscleGroup);
+                  }
                   setState(() {});
                 });
               }

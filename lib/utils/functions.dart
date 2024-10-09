@@ -45,3 +45,20 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+class ShowcaseActionProvider extends ChangeNotifier {
+  double currAction = 0;
+
+  void getCurrentAction() async {
+    final prefs = await SharedPreferences.getInstance();
+    currAction = prefs.getDouble('action') ?? 0;
+    notifyListeners();
+  }
+
+  void setNewAction(double action) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('action', action);
+    currAction = action;
+    notifyListeners();
+  }
+}

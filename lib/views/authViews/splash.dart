@@ -32,12 +32,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return Scaffold(
       body: Center(
-        child: SizedBox(
+        child: Container(
           width: width,
           height: height,
+          color: Colors.white,
           child: const RiveAnimation.asset(
             'images/trackrecord.riv',
-            fit: BoxFit.fill,
           ),
         ),
       ),
