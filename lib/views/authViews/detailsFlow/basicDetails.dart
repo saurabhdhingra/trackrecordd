@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/database/userDataStore.dart';
 import 'package:trackrecordd/models/userInfo.dart';
@@ -10,6 +12,7 @@ import 'package:trackrecordd/widgets/customDatePicker.dart';
 import 'package:trackrecordd/widgets/customField.dart';
 
 import '../../../database/userDataStore.dart';
+import '../../../utils/functions.dart';
 
 class BasicDetailsPage extends StatefulWidget {
   const BasicDetailsPage({Key? key}) : super(key: key);
@@ -81,6 +84,9 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
     var theme = Theme.of(context); // Access the theme
+
+    final ShowcaseActionProvider actionProvider =
+        Provider.of<ShowcaseActionProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -198,15 +204,20 @@ class BasicDetailsPageState extends State<BasicDetailsPage> {
                                 (value) => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) {
-                                      return HomeView(
-                                        userInformation: UserInformation(
-                                          firstName: firstName,
-                                          lastName: lastName,
-                                          dateJoined: DateTime.now(),
-                                          dateOfBirth: dateOfBirth,
-                                          measurements: {},
-                                        ),
+                                    builder: (_) {
+                                      return ShowCaseWidget(
+                                        builder: (context) {
+                                          return HomeView(
+                                            action: actionProvider.currAction,
+                                            userInformation: UserInformation(
+                                              firstName: firstName,
+                                              lastName: lastName,
+                                              dateJoined: DateTime.now(),
+                                              dateOfBirth: dateOfBirth,
+                                              measurements: {},
+                                            ),
+                                          );
+                                        },
                                       );
                                     },
                                   ),

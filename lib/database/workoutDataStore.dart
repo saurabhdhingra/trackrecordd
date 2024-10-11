@@ -33,20 +33,22 @@ class WorkoutDataStore {
             var array = data["exercises"];
             List<String> exerciseIds = List<String>.from(array);
             List<Exercise> exerciseDetails = [];
-            await dataCollection
-                .where(FieldPath.documentId, whereIn: exerciseIds)
-                .orderBy('date', descending: false)
-                .get()
-                .then(
-              (querySnapshot) {
-                for (var docSnapshot in querySnapshot.docs) {
-                  var exerciseJson = docSnapshot.data() as Map<String, dynamic>;
-                  exerciseDetails.add(Exercise.fromJson(exerciseJson));
-                }
-              },
-              onError: (e) => print('Error completing: $e'),
-            );
-
+            if (exerciseIds.isNotEmpty) {
+              await dataCollection
+                  .where(FieldPath.documentId, whereIn: exerciseIds)
+                  .orderBy('date', descending: false)
+                  .get()
+                  .then(
+                (querySnapshot) {
+                  for (var docSnapshot in querySnapshot.docs) {
+                    var exerciseJson =
+                        docSnapshot.data() as Map<String, dynamic>;
+                    exerciseDetails.add(Exercise.fromJson(exerciseJson));
+                  }
+                },
+                onError: (e) => print('Error completing: $e'),
+              );
+            }
             var muscleArray = data["muscleGroups"];
             Set<String> muscleGroupRes = Set<String>.from(muscleArray);
 

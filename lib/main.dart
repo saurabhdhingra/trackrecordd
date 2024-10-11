@@ -8,7 +8,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -17,6 +17,7 @@ void main() async {
   final ShowcaseActionProvider actionProvider = ShowcaseActionProvider();
 
   themeProvider.getTheme();
+  actionProvider.getCurrentAction();
 
   runApp(MyApp(
     themeProvider: themeProvider,
@@ -41,8 +42,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
-          Provider(create: (_) => widget.themeProvider),
-          Provider(create: (_) => widget.actionProvider),
+          ListenableProvider(create: (_) => widget.themeProvider),
+          ListenableProvider(create: (_) => widget.actionProvider),
         ],
         builder: (context, _) {
           final themeProvider = Provider.of<ThemeProvider>(context);

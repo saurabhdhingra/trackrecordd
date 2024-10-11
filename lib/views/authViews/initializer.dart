@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:trackrecordd/views/authViews/detailsFlow/basicDetails.dart';
 import 'package:trackrecordd/views/authViews/signUpFlow/createAccount.dart';
 import 'package:trackrecordd/views/todayFlow/homeView.dart';
@@ -6,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../database/userDataStore.dart';
 import '../../models/userInfo.dart';
+import '../../utils/functions.dart';
 
 class InitializerWidget extends StatefulWidget {
   const InitializerWidget({super.key});
@@ -24,15 +27,19 @@ class _InitializerWidgetState extends State<InitializerWidget> {
   Future<void> fetchUserData() async {
     UserStore userStore = UserStore();
     FirebaseAuth authInstance = FirebaseAuth.instance;
-    String? userId = authInstance.currentUser!.uid;
 
     try {
+      String userId = authInstance.currentUser!.uid;
       final UserInformation? userInfo =
           await userStore.getUserInformation(userId: userId);
       _userInformation = userInfo;
+      print(_userInformation!.dateJoined);
     } catch (e) {
       print('Error fetching user data: ${e.toString()}');
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -41,11 +48,12 @@ class _InitializerWidgetState extends State<InitializerWidget> {
     _auth = FirebaseAuth.instance;
     _user = _auth.currentUser;
     fetchUserData();
-    isLoading = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    final ShowcaseActionProvider actionProvider =
+        Provider.of<ShowcaseActionProvider>(context);
     return isLoading
         ? const Scaffold(
             body: Center(
@@ -56,14 +64,17 @@ class _InitializerWidgetState extends State<InitializerWidget> {
             ? const CreateAccountView()
             : _userInformation == null
                 ? const BasicDetailsPage()
-                : HomeView(
-                    userInformation: _userInformation ??
-                        UserInformation(
-                          firstName: "",
-                          lastName: "",
-                          dateOfBirth: DateTime.now(),
-                          dateJoined: DateTime.now(),
-                        ),
+                : ShowCaseWidget(
+                    builder: (context) => HomeView(
+                      action: actionProvider.currAction,
+                      userInformation: _userInformation ??
+                          UserInformation(
+                            firstName: "",
+                            lastName: "",
+                            dateOfBirth: DateTime.now(),
+                            dateJoined: DateTime.now(),
+                          ),
+                    ),
                   );
   }
 }

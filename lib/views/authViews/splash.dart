@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Container(
           width: width,
           height: height,
-          color: Colors.white,
+          color: const Color(0xFFF4F2F7),
           child: const RiveAnimation.asset(
             'images/trackrecord.riv',
           ),

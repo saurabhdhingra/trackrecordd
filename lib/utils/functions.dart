@@ -49,10 +49,11 @@ class ThemeProvider extends ChangeNotifier {
 class ShowcaseActionProvider extends ChangeNotifier {
   double currAction = 0;
 
-  void getCurrentAction() async {
+  Future<double> getCurrentAction() async {
     final prefs = await SharedPreferences.getInstance();
     currAction = prefs.getDouble('action') ?? 0;
     notifyListeners();
+    return currAction;
   }
 
   void setNewAction(double action) async {

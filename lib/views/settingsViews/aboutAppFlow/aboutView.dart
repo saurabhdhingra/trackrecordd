@@ -83,7 +83,7 @@ class _AboutViewState extends State<AboutView> {
                         ),
                       ),
                       Text(
-                        'Version $version Beta',
+                        'Version ${version} Beta',
                         style: const TextStyle(
                           fontWeight: FontWeight.w300,
                         ),

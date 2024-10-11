@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trackrecordd/views/authViews/detailsFlow/basicDetails.dart';
+import 'package:trackrecordd/views/authViews/initializer.dart';
 import 'package:trackrecordd/views/todayFlow/homeView.dart';
 import 'package:trackrecordd/views/authViews/signUpFlow/signUp.dart';
 import 'package:trackrecordd/widgets/customField.dart';
@@ -105,7 +106,8 @@ class _LoginViewState extends State<LoginView> {
                           // If successful, navigate to BasicDetailsPage
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                                builder: (context) => const BasicDetailsPage()),
+                                builder: (context) =>
+                                    const InitializerWidget()),
                           );
                         } on FirebaseAuthException catch (e) {
                           // Handle specific FirebaseAuth errors

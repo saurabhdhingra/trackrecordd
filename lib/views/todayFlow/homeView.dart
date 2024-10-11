@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:trackrecordd/database/exerciseDataStore.dart';
 import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/models/exercise.dart';
@@ -16,7 +17,6 @@ import 'package:trackrecordd/views/recordsView.dart';
 import 'package:trackrecordd/views/settingsViews/settingsView.dart';
 import 'package:trackrecordd/widgets/showcaseView.dart';
 
-import '../../database/userDataStore.dart';
 import '../../database/workoutDataStore.dart';
 import '../../models/userInfo.dart';
 import '../../utils/constants.dart';
@@ -26,7 +26,12 @@ import '../authViews/signInFlow/login.dart';
 
 class HomeView extends StatefulWidget {
   final UserInformation userInformation;
-  const HomeView({super.key, required this.userInformation});
+  final double action;
+  const HomeView({
+    super.key,
+    required this.userInformation,
+    required this.action,
+  });
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -67,9 +72,11 @@ class _HomeViewState extends State<HomeView> {
 
       data = result["details"];
       workout = result["metaData"];
+
       setState(() {
         isLoading = false;
       });
+
       return data.exercises;
     } catch (e) {
       print("Some error occurred.");
@@ -101,21 +108,33 @@ class _HomeViewState extends State<HomeView> {
         if (value) {
           workout.muscleGroups
               .removeAt(workout.muscleGroups.indexOf(muscleGroup));
-        }
-        if (!isDeleteAction) {
-          setState(() {
-            showUndo = false;
-            deletedIndex = -1;
-            deletedItem = null;
-          });
+          WorkoutDataStore workoutDataStore = WorkoutDataStore();
+          workoutDataStore.updateWorkout(
+              workout: workout, id: workoutId(DateTime.now()));
         }
       });
-      _mapRemoveExerciseToState(RemoveExercise());
+    }
+
+    if (!isDeleteAction) {
+      setState(() {
+        showUndo = false;
+        deletedIndex = -1;
+        deletedItem = null;
+      });
     }
   }
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        if (widget.action == 0) {
+          ShowCaseWidget.of(context).startShowCase([addFAB]);
+        } else if (widget.action == 5) {
+          ShowCaseWidget.of(context).startShowCase([setTile]);
+        }
+      },
+    );
     fetchData();
     fetchexercisesList();
     firstName = widget.userInformation.firstName;
@@ -133,18 +152,19 @@ class _HomeViewState extends State<HomeView> {
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
 
-    final actionProvider = Provider.of<ShowcaseActionProvider>(context);
+    final ShowcaseActionProvider actionProvider =
+        Provider.of<ShowcaseActionProvider>(context);
     final double action = actionProvider.currAction;
 
     return isLoading
-        ? const Center(
+        ? Center(
             child: CircularProgressIndicator(
-              color: Color(0xFF403F3C),
+              color: Theme.of(context).colorScheme.secondary,
             ),
           )
         : Scaffold(
-            floatingActionButton:
-                floatingActionRow(context, width, height, action),
+            floatingActionButton: floatingActionRow(
+                context, width, height, action, actionProvider),
             appBar: AppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               shadowColor: const Color.fromRGBO(243, 242, 247, 1),
@@ -163,14 +183,14 @@ class _HomeViewState extends State<HomeView> {
                   SizedBox(
                     height: height / 40,
                   ),
-                  homeViewList(),
+                  homeViewList(action),
                 ],
               ),
             ),
           );
   }
 
-  Expanded homeViewList() {
+  Expanded homeViewList(double action) {
     return Expanded(
       child: ListView.builder(
         itemCount: data.exercises.length,
@@ -180,7 +200,7 @@ class _HomeViewState extends State<HomeView> {
             child: Dismissible(
               background:
                   Container(color: Colors.red, child: const Icon(Icons.delete)),
-              key: Key(workout.exercises[i]),
+              key: UniqueKey(),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) async {
                 deletedItem = data.exercises.removeAt(i);
@@ -240,8 +260,14 @@ class _HomeViewState extends State<HomeView> {
                     });
                   }
                 },
-                child: ExerciseWidget(
-                  exercise: item,
+                child: ShowCaseView(
+                  globalKey: setTile,
+                  enabled: i == 0,
+                  description:
+                      'Double tap to edit.\nLong press for statistics.\nSwipe left to delete.',
+                  child: ExerciseWidget(
+                    exercise: item,
+                  ),
                 ),
               ),
             ),
@@ -280,9 +306,10 @@ class _HomeViewState extends State<HomeView> {
                             : ''
                         : 'exercises',
                     style: TextStyle(
-                        fontSize: height / 24,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.grey),
+                      fontSize: height / 24,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),
@@ -423,8 +450,8 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Row floatingActionRow(
-      BuildContext context, double width, double height, double action) {
+  Row floatingActionRow(BuildContext context, double width, double height,
+      double action, ShowcaseActionProvider provider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -432,61 +459,64 @@ class _HomeViewState extends State<HomeView> {
         showUndo
             ? Padding(
                 padding: EdgeInsets.only(left: width * 0.09),
-                child: ShowCaseView(
-                  enabled: action == 0,
-                  globalKey: addFAB,
-                  description: "Click here to add your first exercise",
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      setState(() {
-                        data.exercises.insert(
-                            deletedIndex,
-                            deletedItem ??
-                                Exercise(
-                                    date: DateTime.now(),
-                                    name: "",
-                                    muscleGroup: "",
-                                    sets: []));
-                        showUndo = false;
-                        deletedItem = null;
-                      });
-                    },
-                    backgroundColor: Colors.orange[400],
-                    heroTag: "btn1",
-                    child: const Icon(Icons.undo),
-                  ),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      data.exercises.insert(
+                          deletedIndex,
+                          deletedItem ??
+                              Exercise(
+                                  date: DateTime.now(),
+                                  name: "",
+                                  muscleGroup: "",
+                                  sets: []));
+                      showUndo = false;
+                      deletedItem = null;
+                    });
+                  },
+                  backgroundColor: Colors.orange[400],
+                  heroTag: "btn1",
+                  child: const Icon(Icons.undo),
                 ),
               )
             : const SizedBox(),
         Padding(
           padding: const EdgeInsets.only(right: 0),
-          child: FloatingActionButton(
-            backgroundColor: Colors.blue,
-            heroTag: "btn2",
-            onPressed: () async {
-              var result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddOrEditView(exerciseLists: exercises),
-                ),
-              );
-              if (result != null && result is Exercise) {
-                ExerciseDataStore store = ExerciseDataStore();
-                await store.addExercise(exercise: result).then((value) {
-                  workout.exercises.add(value);
-                  data.exercises.add(result);
-                  if (!workout.muscleGroups.contains(result.muscleGroup)) {
+          child: ShowCaseView(
+            enabled: action == 0,
+            globalKey: addFAB,
+            description: "Click here to add your first exercise",
+            child: FloatingActionButton(
+              backgroundColor: Colors.blue,
+              heroTag: "btn2",
+              onPressed: () async {
+                if (action == 0) {
+                  provider.setNewAction(1);
+                }
+                var result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AddOrEditView(exerciseLists: exercises),
+                  ),
+                );
+                if (result != null && result is Exercise) {
+                  ExerciseDataStore store = ExerciseDataStore();
+                  await store.addExercise(exercise: result).then((value) {
+                    workout.exercises.add(value);
+                    data.exercises.add(result);
                     workout.muscleGroups.add(result.muscleGroup);
-                  }
-                  setState(() {});
+                    // TODO : add muscleList func
+                    setState(() {});
+                  });
+                }
+                setState(() {
+                  showUndo = false;
                 });
-              }
-              setState(() {
-                showUndo = false;
-              });
-              deleteExercise(false);
-            },
-            child: const Icon(Icons.add),
+                deleteExercise(false);
+              },
+              child: const Icon(Icons.add),
+            ),
           ),
         ),
       ],
@@ -494,6 +524,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-void _mapRemoveExerciseToState(RemoveExercise event) {}
-
-class RemoveExercise {}
+String workoutId(DateTime date) {
+  print('${date.day}-${date.month}-${date.year}');
+  return '${date.day}-${date.month}-${date.year}';
+}
