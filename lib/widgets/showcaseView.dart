@@ -10,6 +10,7 @@ class ShowCaseView extends StatelessWidget {
     required this.child,
     this.shapeBorder = const CircleBorder(),
     required this.enabled,
+    this.onComplete,
   });
 
   final bool enabled;
@@ -18,6 +19,7 @@ class ShowCaseView extends StatelessWidget {
   final String description;
   final Widget child;
   final ShapeBorder shapeBorder;
+  final Function? onComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,8 @@ class ShowCaseView extends StatelessWidget {
             key: globalKey,
             title: title,
             description: description,
+            onTargetClick: (onComplete == null) ? null : onComplete!(),
+            disposeOnTap: (onComplete != null) ? true : null,
             child: child,
           )
         : child;

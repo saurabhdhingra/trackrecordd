@@ -50,8 +50,8 @@ class ShowcaseActionProvider extends ChangeNotifier {
   double currAction = 0;
 
   Future<double> getCurrentAction() async {
-    final prefs = await SharedPreferences.getInstance();
-    currAction = prefs.getDouble('action') ?? 0;
+    // final prefs = await SharedPreferences.getInstance();
+    // currAction = prefs.getDouble('action') ?? 0;
     notifyListeners();
     return currAction;
   }

@@ -45,7 +45,7 @@ class _HomeViewState extends State<HomeView> {
 
   final GlobalKey addFAB = GlobalKey();
   final GlobalKey undoFAB = GlobalKey();
-  final GlobalKey setTile = GlobalKey();
+  final GlobalKey exeTile = GlobalKey();
   final GlobalKey menuDrw = GlobalKey();
 
   bool isLoading = true;
@@ -130,8 +130,8 @@ class _HomeViewState extends State<HomeView> {
       (timeStamp) {
         if (widget.action == 0) {
           ShowCaseWidget.of(context).startShowCase([addFAB]);
-        } else if (widget.action == 5) {
-          ShowCaseWidget.of(context).startShowCase([setTile]);
+        } else if (widget.action == 6) {
+          ShowCaseWidget.of(context).startShowCase([exeTile, menuDrw]);
         }
       },
     );
@@ -170,6 +170,13 @@ class _HomeViewState extends State<HomeView> {
               shadowColor: const Color.fromRGBO(243, 242, 247, 1),
               elevation: 0,
               iconTheme: Theme.of(context).iconTheme,
+              leading: ShowCaseView(
+                globalKey: menuDrw,
+                description:
+                    "Open menu for settings, adding new exercises, privacy policy, theme settings and knowing more the app.",
+                enabled: action == 5,
+                child: const Icon(Icons.menu),
+              ),
             ),
             drawer: sideMenu(height, width, context),
             body: SafeArea(
@@ -240,6 +247,7 @@ class _HomeViewState extends State<HomeView> {
                         return AddOrEditView(
                           exerciseLists: exercises,
                           exercise: item,
+                          action: 10,
                         );
                       },
                     ),
@@ -261,8 +269,8 @@ class _HomeViewState extends State<HomeView> {
                   }
                 },
                 child: ShowCaseView(
-                  globalKey: setTile,
-                  enabled: i == 0,
+                  globalKey: exeTile,
+                  enabled: i == 0 && action == 5,
                   description:
                       'Double tap to edit.\nLong press for statistics.\nSwipe left to delete.',
                   child: ExerciseWidget(
@@ -490,16 +498,49 @@ class _HomeViewState extends State<HomeView> {
               backgroundColor: Colors.blue,
               heroTag: "btn2",
               onPressed: () async {
+                var result;
                 if (action == 0) {
                   provider.setNewAction(1);
+                  setState(() {
+                    action = 1;
+                  });
+                  result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return ShowCaseWidget(
+                          builder: (context) => AddOrEditView(
+                            exerciseLists: exercises,
+                            action: 1,
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                  if (result != null && result is Exercise) {
+                    ShowCaseWidget.of(context)
+                        .startShowCase([exeTile, menuDrw]);
+                    provider.setNewAction(6);
+                    setState(() {
+                      action = 6;
+                    });
+                  }
+                } else {
+                  result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return ShowCaseWidget(
+                          builder: (context) => AddOrEditView(
+                            exerciseLists: exercises,
+                            action: 1,
+                          ),
+                        );
+                      },
+                    ),
+                  );
                 }
-                var result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AddOrEditView(exerciseLists: exercises),
-                  ),
-                );
+
                 if (result != null && result is Exercise) {
                   ExerciseDataStore store = ExerciseDataStore();
                   await store.addExercise(exercise: result).then((value) {
