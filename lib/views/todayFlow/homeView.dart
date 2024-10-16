@@ -79,7 +79,6 @@ class _HomeViewState extends State<HomeView> {
 
       return data.exercises;
     } catch (e) {
-      print("Some error occurred.");
       return [];
     }
   }
