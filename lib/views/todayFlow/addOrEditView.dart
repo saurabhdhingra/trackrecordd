@@ -58,6 +58,9 @@ class _AddOrEditViewState extends State<AddOrEditView> {
   final GlobalKey addBtnK = GlobalKey();
   final GlobalKey subButnK = GlobalKey();
 
+  late ShowcaseActionProvider actionProvider;
+  late double action;
+
   int exerciseIndex = -1;
 
   int muscleIndex = -1;
@@ -81,20 +84,25 @@ class _AddOrEditViewState extends State<AddOrEditView> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    actionProvider = Provider.of<ShowcaseActionProvider>(context);
+    action = actionProvider.currAction;
+  }
+
+  @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         if (widget.action == 1) {
-          ShowCaseWidget.of(context)
-              .startShowCase([tarMusc, tarExer, setTil, addBtn, subButn]);
+          ShowCaseWidget.of(context).startShowCase([tarMusc]);
+        } else if (widget.action == 2) {
+          ShowCaseWidget.of(context).startShowCase([tarExer]);
+        } else if (widget.action == 3) {
+          ShowCaseWidget.of(context).startShowCase([setTil, addBtn]);
+        } else if (widget.action == 4) {
+          ShowCaseWidget.of(context).startShowCase([subButn]);
         }
-        // else if (widget.action == 2) {
-        //   ShowCaseWidget.of(context).startShowCase([tarExer]);
-        // } else if (widget.action == 3) {
-        //   ShowCaseWidget.of(context).startShowCase([setTil, addBtn]);
-        // } else if (widget.action == 4) {
-        //   ShowCaseWidget.of(context).startShowCase([subButn]);
-        // }
       },
     );
     super.initState();
@@ -189,24 +197,24 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                                   : Theme.of(context).colorScheme.secondary,
                             ),
                             onTap: () {
-                              // if (action == 1) {
-                              //   actionProvider.setNewAction(2);
+                              if (action == 1) {
+                                actionProvider.setNewAction(2);
 
-                              //   Scrollable.ensureVisible(
-                              //           tarExerK.currentContext!,
-                              //           duration:
-                              //               const Duration(milliseconds: 2000),
-                              //           curve: Curves.easeIn)
-                              //       .then(
-                              //     (value) {
-                              //       ShowCaseWidget.of(context)
-                              //           .startShowCase([tarExer]);
-                              //     },
-                              //   );
-                              //   setState(() {
-                              //     action = 2;
-                              //   });
-                              // }
+                                Scrollable.ensureVisible(
+                                        tarExerK.currentContext!,
+                                        duration:
+                                            const Duration(milliseconds: 2000),
+                                        curve: Curves.easeIn)
+                                    .then(
+                                  (value) {
+                                    ShowCaseWidget.of(context)
+                                        .startShowCase([tarExer]);
+                                  },
+                                );
+                                setState(() {
+                                  action = 2;
+                                });
+                              }
                               HapticFeedback.heavyImpact();
                               setState(() {
                                 muscleIndex = i;
@@ -234,7 +242,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                 SizedBox(
                   key: tarExerK,
                   child: ShowCaseView(
-                    enabled: action == 1,
+                    enabled: action == 2,
                     globalKey: tarExer,
                     description:
                         "Select the exercise that you are doing. If you don't see it here, there's a provision  to add your own exercises in settings.",
@@ -283,24 +291,24 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                                     )
                                   : const SizedBox(),
                               onTap: () {
-                                // if (action == 2) {
-                                //   actionProvider.setNewAction(3);
+                                if (action == 2) {
+                                  actionProvider.setNewAction(3);
 
-                                //   Scrollable.ensureVisible(
-                                //           addBtnK.currentContext!,
-                                //           duration: const Duration(
-                                //               milliseconds: 2000),
-                                //           curve: Curves.easeIn)
-                                //       .then(
-                                //     (value) {
-                                //       ShowCaseWidget.of(context)
-                                //           .startShowCase([setTil, addBtn]);
-                                //     },
-                                //   );
-                                //   setState(() {
-                                //     action = 3;
-                                //   });
-                                // }
+                                  Scrollable.ensureVisible(
+                                          addBtnK.currentContext!,
+                                          duration: const Duration(
+                                              milliseconds: 2000),
+                                          curve: Curves.easeIn)
+                                      .then(
+                                    (value) {
+                                      ShowCaseWidget.of(context)
+                                          .startShowCase([setTil, addBtn]);
+                                    },
+                                  );
+                                  setState(() {
+                                    action = 3;
+                                  });
+                                }
                                 HapticFeedback.heavyImpact();
                                 setState(() {
                                   exerciseIndex = i;
@@ -328,7 +336,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                 SizedBox(
                   key: addBtnK,
                   child: ShowCaseView(
-                    enabled: action == 1,
+                    enabled: action == 3,
                     globalKey: addBtn,
                     description: "Click to add another set",
                     // onComplete: () {
@@ -345,7 +353,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                 SizedBox(
                   key: subButnK,
                   child: ShowCaseView(
-                    enabled: action == 1,
+                    enabled: action == 4,
                     globalKey: subButn,
                     description:
                         "Click to add this exercise to today's workout.",
@@ -354,12 +362,12 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                     // },
                     child: SubmitButton(
                       onSubmit: () {
-                        // if (action == 4) {
-                        //   actionProvider.setNewAction(5);
-                        //   setState(() {
-                        //     action = 5;
-                        //   });
-                        // }
+                        if (action == 4) {
+                          actionProvider.setNewAction(5);
+                          setState(() {
+                            action = 5;
+                          });
+                        }
                         if (muscleIndex != -1 &&
                             exerciseIndex != -1 &&
                             allSetsHaveNonZeroReps(sets)) {
@@ -400,7 +408,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
   Widget setTile(height, width, int index, double action,
       ShowcaseActionProvider provider) {
     return ShowCaseView(
-      enabled: action == 1 && index == 0,
+      enabled: action == 3 && index == 0,
       key: setTilK,
       globalKey: setTil,
       description: "Add details of your set here.",
@@ -463,19 +471,18 @@ class _AddOrEditViewState extends State<AddOrEditView> {
       height, width, action, ShowcaseActionProvider provider) {
     return GestureDetector(
       onTap: () {
-        // if (action == 1) {
-        //   provider.setNewAction(4);
-
-        //   Scrollable.ensureVisible(subButnK.currentContext!,
-        //           duration: const Duration(milliseconds: 2000),
-        //           curve: Curves.easeIn)
-        //       .then((value) {
-        //     ShowCaseWidget.of(context).startShowCase([subButn]);
-        //   });
-        //   setState(() {
-        //     action = 4;
-        //   });
-        // }
+        if (action == 3) {
+          provider.setNewAction(4);
+          Scrollable.ensureVisible(subButnK.currentContext!,
+                  duration: const Duration(milliseconds: 2000),
+                  curve: Curves.easeIn)
+              .then((value) {
+            ShowCaseWidget.of(context).startShowCase([subButn]);
+          });
+          setState(() {
+            action = 4;
+          });
+        }
         HapticFeedback.heavyImpact();
         setState(() {
           sets = sets +
