@@ -26,6 +26,7 @@ class ShowCaseView extends StatelessWidget {
     return enabled
         ? Showcase(
             key: globalKey,
+            targetBorderRadius: BorderRadius.circular(20),
             title: title,
             description: description,
             onTargetClick: (onComplete == null) ? null : onComplete!(),
