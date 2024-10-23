@@ -40,7 +40,7 @@ class _EditExercisesViewState extends State<EditExercisesView> {
 
   @override
   Widget build(BuildContext context) {
-    ScrollController _controller = new ScrollController();
+    ScrollController controller = ScrollController();
     var height = SizeConfig.getHeight(context);
     var width = SizeConfig.getWidth(context);
 
