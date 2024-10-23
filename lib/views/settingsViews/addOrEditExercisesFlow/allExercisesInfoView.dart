@@ -27,6 +27,17 @@ class _EditExercisesViewState extends State<EditExercisesView> {
     "Legs": "legs",
     "Core": "core",
   };
+
+  Map<String, bool> expMap = {
+    "Chest": false,
+    "Back": false,
+    "Shoulders": false,
+    "Biceps": false,
+    "Triceps": false,
+    "Legs": false,
+    "Core": false,
+  };
+
   @override
   Widget build(BuildContext context) {
     ScrollController _controller = new ScrollController();
@@ -84,7 +95,7 @@ class _EditExercisesViewState extends State<EditExercisesView> {
         backgroundColor: Colors.transparent,
         iconTheme: Theme.of(context).iconTheme,
         automaticallyImplyLeading: true,
-        actions: [],
+
         centerTitle: true,
         elevation: 0,
       ),
@@ -96,32 +107,25 @@ class _EditExercisesViewState extends State<EditExercisesView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                listTitle(height, 'Chest'),
-                listWidget(width, height, context, _controller,
+                ...listTitle(height, 'Chest', width, context, _controller,
                     widget.exercisesLists["chest"] ?? []),
                 SizedBox(height: height * 0.02),
-                listTitle(height, 'Back'),
-                listWidget(width, height, context, _controller,
+                ...listTitle(height, 'Back', width, context, _controller,
                     widget.exercisesLists["back"] ?? []),
                 SizedBox(height: height * 0.02),
-                listTitle(height, 'Shoulders'),
-                listWidget(width, height, context, _controller,
+                ...listTitle(height, 'Shoulders', width, context, _controller,
                     widget.exercisesLists["shoulder"] ?? []),
                 SizedBox(height: height * 0.02),
-                listTitle(height, 'Biceps'),
-                listWidget(width, height, context, _controller,
+                ...listTitle(height, 'Biceps', width, context, _controller,
                     widget.exercisesLists["bicep"] ?? []),
                 SizedBox(height: height * 0.02),
-                listTitle(height, 'Triceps'),
-                listWidget(width, height, context, _controller,
+                ...listTitle(height, 'Triceps', width, context, _controller,
                     widget.exercisesLists["tricep"] ?? []),
                 SizedBox(height: height * 0.02),
-                listTitle(height, 'Legs'),
-                listWidget(width, height, context, _controller,
+                ...listTitle(height, 'Legs', width, context, _controller,
                     widget.exercisesLists["legs"] ?? []),
                 SizedBox(height: height * 0.02),
-                listTitle(height, 'Core'),
-                listWidget(width, height, context, _controller,
+                ...listTitle(height, 'Core', width, context, _controller,
                     widget.exercisesLists["core"] ?? []),
               ],
             ),
@@ -131,51 +135,63 @@ class _EditExercisesViewState extends State<EditExercisesView> {
     );
   }
 
-  Text listTitle(height, String text) {
-    return Text(text,
-        style: TextStyle(fontSize: height * 0.04, fontWeight: FontWeight.bold));
-  }
-
-  Container listWidget(width, height, BuildContext context,
+  List listTitle(height, String text, width, BuildContext context,
       ScrollController controller, List list) {
-    return Container(
-      width: width * 0.9,
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-        borderRadius: BorderRadius.all(Radius.circular(height / 50)),
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(text,
+              style: TextStyle(
+                  fontSize: height * 0.04, fontWeight: FontWeight.bold)),
+          IconButton(
+              onPressed: () {},
+              icon: Icon(expMap[text]!
+                  ? Icons.keyboard_arrow_up_outlined
+                  : Icons.keyboard_arrow_down_outlined))
+        ],
       ),
-      child: ListView.separated(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        primary: false,
-        itemCount: list.length,
-        itemBuilder: (context, i) {
-          final ExerciseInfo item = list[i];
-          return Padding(
-            padding: EdgeInsets.fromLTRB(0, height * 0.01, 0, height * 0.01),
-            child: ListTile(
-              title: Text(
-                item.name,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
+      AnimatedContainer(
+        duration: const Duration(seconds: 1),
+        height: expMap[text]! ? 0 : null,
+        width: width * 0.9,
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.all(Radius.circular(height / 50)),
+        ),
+        child: ListView.separated(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          primary: false,
+          itemCount: list.length,
+          itemBuilder: (context, i) {
+            final ExerciseInfo item = list[i];
+            return Padding(
+              padding: EdgeInsets.fromLTRB(0, height * 0.01, 0, height * 0.01),
+              child: ListTile(
+                title: Text(
+                  item.name,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                 ),
+                onTap: () {
+                  // setState(() {
+                  //   exerciseIndex = i;
+                  // });
+                },
               ),
-              onTap: () {
-                // setState(() {
-                //   exerciseIndex = i;
-                // });
-              },
-            ),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Divider(
-            height: 1,
-            thickness: 1,
-            color: Colors.black38,
-          );
-        },
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const Divider(
+              height: 1,
+              thickness: 1,
+              color: Colors.black38,
+            );
+          },
+        ),
       ),
-    );
+    ];
   }
 }
