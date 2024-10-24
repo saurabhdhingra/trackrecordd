@@ -61,6 +61,8 @@ class _HomeViewState extends State<HomeView> {
   String? firstName;
   DateTime? dateJoined;
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+
   Future<List<Exercise>> fetchData() async {
     setState(() {
       isLoading = true;
@@ -162,6 +164,7 @@ class _HomeViewState extends State<HomeView> {
             ),
           )
         : Scaffold(
+           key: _key,
             floatingActionButton: floatingActionRow(
                 context, width, height, action, actionProvider),
             appBar: AppBar(
@@ -174,7 +177,12 @@ class _HomeViewState extends State<HomeView> {
                 description:
                     "Open menu for settings, adding new exercises, privacy policy, theme settings and knowing more the app.",
                 enabled: action == 5,
-                child: const Icon(Icons.menu),
+                child: IconButton(
+                  onPressed: () {
+                    openDrawer();
+                  },
+                  icon: const Icon(Icons.menu),
+                ),
               ),
             ),
             drawer: sideMenu(height, width, context),
@@ -561,6 +569,10 @@ class _HomeViewState extends State<HomeView> {
         ),
       ],
     );
+  }
+
+  void openDrawer() {
+    Scaffold.of(context).openDrawer();
   }
 }
 
