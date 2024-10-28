@@ -49,6 +49,7 @@ class _HomeViewState extends State<HomeView> {
   final GlobalKey menuDrw = GlobalKey();
 
   bool isLoading = true;
+  bool isDeleting = false;
   bool showUndo = false;
 
   int deletedIndex = 0;
@@ -96,9 +97,12 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> deleteExercise(bool isDeleteAction) async {
-    if (deletedItem != null) {
+    if (deletedItem != null && deletedIndex != -1) {
       ExerciseDataStore store = ExerciseDataStore();
       String muscleGroup = deletedItem!.muscleGroup;
+      setState(() {
+        isDeleting = true;
+      });
       await store
           .deleteExercise(
         id: workout.exercises[deletedIndex],
@@ -113,6 +117,9 @@ class _HomeViewState extends State<HomeView> {
           workoutDataStore.updateWorkout(
               workout: workout, id: workoutId(DateTime.now()));
         }
+      });
+      setState(() {
+        isDeleting = false;
       });
     }
 
@@ -131,11 +138,12 @@ class _HomeViewState extends State<HomeView> {
       (timeStamp) {
         if (widget.action == 0) {
           ShowCaseWidget.of(context).startShowCase([addFAB]);
-        } else if (widget.action == 6) {
+        } else if (widget.action == 5) {
           ShowCaseWidget.of(context).startShowCase([exeTile, menuDrw]);
         }
       },
     );
+    print(widget.action);
     fetchData();
     fetchexercisesList();
     firstName = widget.userInformation.firstName;
@@ -164,7 +172,7 @@ class _HomeViewState extends State<HomeView> {
             ),
           )
         : Scaffold(
-           key: _key,
+            key: _key,
             floatingActionButton: floatingActionRow(
                 context, width, height, action, actionProvider),
             appBar: AppBar(
@@ -179,7 +187,7 @@ class _HomeViewState extends State<HomeView> {
                 enabled: action == 5,
                 child: IconButton(
                   onPressed: () {
-                    openDrawer();
+                    _key.currentState!.openDrawer();
                   },
                   icon: const Icon(Icons.menu),
                 ),
@@ -217,14 +225,19 @@ class _HomeViewState extends State<HomeView> {
               key: UniqueKey(),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) async {
-                deletedItem = data.exercises.removeAt(i);
-                setState(() {});
-                await deleteExercise(true);
+                if (isDeleting) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content:
+                          Text("Another request in process. Please wait")));
+                } else {
+                  await deleteExercise(true);
 
-                setState(() {
-                  deletedIndex = i;
-                  showUndo = true;
-                });
+                  setState(() {
+                    deletedItem = data.exercises.removeAt(i);
+                    deletedIndex = i;
+                    showUndo = true;
+                  });
+                }
               },
               child: GestureDetector(
                 onTap: () async {
@@ -277,7 +290,7 @@ class _HomeViewState extends State<HomeView> {
                 },
                 child: ShowCaseView(
                   globalKey: exeTile,
-                  enabled: i == 0 && action == 5,
+                  enabled: i == 0 && action == 4,
                   description:
                       'Double tap to edit.\nLong press for statistics.\nSwipe left to delete.',
                   child: ExerciseWidget(
@@ -523,15 +536,17 @@ class _HomeViewState extends State<HomeView> {
                         );
                       },
                     ),
-                  );
-                  if (result != null && result is Exercise) {
-                    ShowCaseWidget.of(context)
-                        .startShowCase([exeTile, menuDrw]);
-                    provider.setNewAction(6);
-                    setState(() {
-                      action = 6;
-                    });
-                  }
+                  ).then((value) {
+                    action = provider.currAction;
+                    print("Current action is $action");
+                    if (value != null && value is Exercise && action == 4.0) {
+                      print("Action running");
+                      ShowCaseWidget.of(context)
+                          .startShowCase([exeTile, menuDrw]);
+                      // provider.setNewAction(5);
+                      // setState(() => action = 5);
+                    }
+                  });
                 } else {
                   result = await Navigator.push(
                     context,
@@ -569,10 +584,6 @@ class _HomeViewState extends State<HomeView> {
         ),
       ],
     );
-  }
-
-  void openDrawer() {
-    Scaffold.of(context).openDrawer();
   }
 }
 

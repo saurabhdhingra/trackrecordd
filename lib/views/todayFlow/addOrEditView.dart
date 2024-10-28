@@ -326,21 +326,16 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                     enabled: action == 3,
                     globalKey: addBtn,
                     description: "Click to add another set",
-                    child: addButton(height, width, () {
-                      actionProvider.setNewAction(4);
-                      setState() {
-                        action = 4;
-                      }
-                    }),
+                    child: addButton(height, width),
                   ),
                 ),
                 SizedBox(height: height * 0.01),
                 SubmitButton(
                   onSubmit: () {
-                    if (action == 4) {
-                      actionProvider.setNewAction(5);
+                    if (action == 3) {
+                      actionProvider.setNewAction(4);
                       setState(() {
-                        action = 5;
+                        action = 4;
                       });
                     }
                     if (muscleIndex != -1 &&
@@ -432,7 +427,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
     );
   }
 
-  GestureDetector addButton(height, width, VoidCallback callBack) {
+  GestureDetector addButton(height, width) {
     return GestureDetector(
       onTap: () async {
         HapticFeedback.heavyImpact();
@@ -445,9 +440,6 @@ class _AddOrEditViewState extends State<AddOrEditView> {
                 }
               ];
         });
-        if (action == 3) {
-          callBack();
-        }
       },
       child: Container(
         width: width * 0.85,

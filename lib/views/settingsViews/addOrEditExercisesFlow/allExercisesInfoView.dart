@@ -145,16 +145,19 @@ class _EditExercisesViewState extends State<EditExercisesView> {
               style: TextStyle(
                   fontSize: height * 0.04, fontWeight: FontWeight.bold)),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  expMap[text] = !expMap[text]!;
+                });
+              },
               icon: Icon(expMap[text]!
                   ? Icons.keyboard_arrow_up_outlined
                   : Icons.keyboard_arrow_down_outlined))
         ],
       ),
-      AnimatedContainer(
-        duration: const Duration(seconds: 1),
-        height: expMap[text]! ? 0 : null,
+      Container(
         width: width * 0.9,
+        height: null,
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.all(Radius.circular(height / 50)),
@@ -163,7 +166,7 @@ class _EditExercisesViewState extends State<EditExercisesView> {
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           primary: false,
-          itemCount: list.length,
+          itemCount: expMap[text]! ? list.length : 0,
           itemBuilder: (context, i) {
             final ExerciseInfo item = list[i];
             return Padding(
