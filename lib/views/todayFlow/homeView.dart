@@ -290,7 +290,7 @@ class _HomeViewState extends State<HomeView> {
                 },
                 child: ShowCaseView(
                   globalKey: exeTile,
-                  enabled: i == 0 && action == 4,
+                  enabled: i == 0 && action == 5,
                   description:
                       'Double tap to edit.\nLong press for statistics.\nSwipe left to delete.',
                   child: ExerciseWidget(
@@ -463,6 +463,7 @@ class _HomeViewState extends State<HomeView> {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () {
+              deleteExercise(false);
               auth.signOut();
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
@@ -518,52 +519,27 @@ class _HomeViewState extends State<HomeView> {
               backgroundColor: Colors.blue,
               heroTag: "btn2",
               onPressed: () async {
-                var result;
+                Exercise? result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) {
+                      return ShowCaseWidget(
+                        builder: (context) => AddOrEditView(
+                          exerciseLists: exercises,
+                          action: 1,
+                        ),
+                      );
+                    },
+                  ),
+                );
                 if (action == 0) {
                   provider.setNewAction(1);
                   setState(() {
                     action = 1;
                   });
-                  result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) {
-                        return ShowCaseWidget(
-                          builder: (context) => AddOrEditView(
-                            exerciseLists: exercises,
-                            action: 1,
-                          ),
-                        );
-                      },
-                    ),
-                  ).then((value) {
-                    action = provider.currAction;
-                    print("Current action is $action");
-                    if (value != null && value is Exercise && action == 4.0) {
-                      print("Action running");
-                      ShowCaseWidget.of(context)
-                          .startShowCase([exeTile, menuDrw]);
-                      // provider.setNewAction(5);
-                      // setState(() => action = 5);
-                    }
-                  });
-                } else {
-                  result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) {
-                        return ShowCaseWidget(
-                          builder: (context) => AddOrEditView(
-                            exerciseLists: exercises,
-                            action: 1,
-                          ),
-                        );
-                      },
-                    ),
-                  );
                 }
 
-                if (result != null && result is Exercise) {
+                if (result != null) {
                   ExerciseDataStore store = ExerciseDataStore();
                   await store.addExercise(exercise: result).then((value) {
                     workout.exercises.add(value);
@@ -572,6 +548,16 @@ class _HomeViewState extends State<HomeView> {
                     // TODO : add muscleList func
                     setState(() {});
                   });
+
+                  action = provider.currAction;
+
+                  if (action == 4.0) {
+                    print("Action running");
+                    ShowCaseWidget.of(context)
+                        .startShowCase([exeTile, menuDrw]);
+                    provider.setNewAction(5);
+                    setState(() => action = 5);
+                  }
                 }
                 setState(() {
                   showUndo = false;
