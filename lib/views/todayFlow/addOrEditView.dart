@@ -42,7 +42,7 @@ class _AddOrEditViewState extends State<AddOrEditView> {
   ];
 
   List<ExerciseInfo> exerciseList = [
-    ExerciseInfo(name: "Select muscle group", muscleGroup: "")
+    ExerciseInfo(name: "Select muscle group", muscleGroup: "", id: "")
   ];
   List exerciseListsData = [];
 

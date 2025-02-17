@@ -22,7 +22,7 @@ class ExerciseInfoDataStore {
 
       for (var docSnapshot in querySnapshot.docs) {
         var workoutJson = docSnapshot.data() as Map<String, dynamic>;
-        exercises.add(ExerciseInfo.fromJson(workoutJson));
+        exercises.add(ExerciseInfo.fromJson(workoutJson, docSnapshot.id));
       }
       return exercises;
     } catch (error) {
@@ -78,31 +78,32 @@ class ExerciseInfoDataStore {
 
       for (var docSnapshot in querySnapshotChest.docs) {
         var workoutJson = docSnapshot.data() as Map<String, dynamic>;
-        chestExercises.add(ExerciseInfo.fromJson(workoutJson));
+        chestExercises.add(ExerciseInfo.fromJson(workoutJson, docSnapshot.id));
       }
       for (var docSnapshot in querySnapshotBack.docs) {
         var workoutJson = docSnapshot.data() as Map<String, dynamic>;
-        backExercises.add(ExerciseInfo.fromJson(workoutJson));
+        backExercises.add(ExerciseInfo.fromJson(workoutJson, docSnapshot.id));
       }
       for (var docSnapshot in querySnapshotShoulder.docs) {
         var workoutJson = docSnapshot.data() as Map<String, dynamic>;
-        shoulderExercises.add(ExerciseInfo.fromJson(workoutJson));
+        shoulderExercises
+            .add(ExerciseInfo.fromJson(workoutJson, docSnapshot.id));
       }
       for (var docSnapshot in querySnapshotBicep.docs) {
         var workoutJson = docSnapshot.data() as Map<String, dynamic>;
-        bicepExercises.add(ExerciseInfo.fromJson(workoutJson));
+        bicepExercises.add(ExerciseInfo.fromJson(workoutJson, docSnapshot.id));
       }
       for (var docSnapshot in querySnapshotTricep.docs) {
         var workoutJson = docSnapshot.data() as Map<String, dynamic>;
-        tricepExercises.add(ExerciseInfo.fromJson(workoutJson));
+        tricepExercises.add(ExerciseInfo.fromJson(workoutJson, docSnapshot.id));
       }
       for (var docSnapshot in querySnapshotLegs.docs) {
         var workoutJson = docSnapshot.data() as Map<String, dynamic>;
-        legsExercises.add(ExerciseInfo.fromJson(workoutJson));
+        legsExercises.add(ExerciseInfo.fromJson(workoutJson, docSnapshot.id));
       }
       for (var docSnapshot in querySnapshotCore.docs) {
         var workoutJson = docSnapshot.data() as Map<String, dynamic>;
-        coreExercises.add(ExerciseInfo.fromJson(workoutJson));
+        coreExercises.add(ExerciseInfo.fromJson(workoutJson, docSnapshot.id));
       }
 
       return {
@@ -120,12 +121,14 @@ class ExerciseInfoDataStore {
     }
   }
 
-  Future<bool> addExercise({required ExerciseInfo exercise}) async {
+  Future<String> addExercise({required ExerciseInfo exercise}) async {
     try {
       final exerciseDocument = exerciseInfoCollection.doc();
+      exercise.id = exerciseDocument.id;
+
       await exerciseDocument.set(exercise.toJson());
 
-      return true;
+      return exerciseDocument.id;
     } catch (error) {
       throw FireStoreException(
           message: 'Failed to add exercise', devDetails: '$error');

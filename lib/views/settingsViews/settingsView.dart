@@ -13,8 +13,7 @@ import 'package:trackrecordd/views/settingsViews/addOrEditExercisesFlow/allExerc
 
 class SettingsView extends StatefulWidget {
   final Map<String, List> exercisesLists;
-  const SettingsView({Key? key, required this.exercisesLists})
-      : super(key: key);
+  const SettingsView({super.key, required this.exercisesLists});
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -233,7 +232,7 @@ class _SettingsViewState extends State<SettingsView> {
             var result = await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => EditExercisesView(
+                  builder: (context) => AllExercisesInfoView(
                         exercisesLists: widget.exercisesLists,
                       )),
             );

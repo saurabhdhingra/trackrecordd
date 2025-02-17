@@ -143,7 +143,7 @@ class _HomeViewState extends State<HomeView> {
         }
       },
     );
-    print(widget.action);
+    debugPrint(widget.action.toString());
     fetchData();
     fetchexercisesList();
     firstName = widget.userInformation.firstName;

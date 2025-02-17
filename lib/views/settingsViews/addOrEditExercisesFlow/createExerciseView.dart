@@ -1,11 +1,8 @@
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
-// import 'package:trackrecord/database/db.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:trackrecordd/database/exerciseInfoDataStore.dart';
 import 'package:trackrecordd/models/exerciseInfo.dart';
 import 'package:trackrecordd/utils/constants.dart';
-import 'package:trackrecordd/widgets/dropdownSelector.dart';
 import 'package:trackrecordd/widgets/submitButton.dart';
 
 import '../../../widgets/customField.dart';
@@ -13,7 +10,7 @@ import '../../../widgets/customField.dart';
 
 class CreateExercise extends StatefulWidget {
   final bool isExercise;
-  const CreateExercise({Key? key, required this.isExercise}) : super(key: key);
+  const CreateExercise({super.key, required this.isExercise});
 
   @override
   State<CreateExercise> createState() => _CreateExerciseState();
@@ -114,9 +111,9 @@ class _CreateExerciseState extends State<CreateExercise> {
                     Navigator.pop(
                       context,
                       ExerciseInfo(
-                        name: exerciseName,
-                        muscleGroup: muscleGroups[muscleIndex],
-                      ),
+                          name: exerciseName,
+                          muscleGroup: muscleGroups[muscleIndex],
+                          id: null),
                     );
                   },
                   text: "Add",

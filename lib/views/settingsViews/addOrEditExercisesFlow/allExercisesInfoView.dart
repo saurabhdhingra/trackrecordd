@@ -6,17 +6,52 @@ import 'package:trackrecordd/utils/constants.dart';
 import '../../../models/exerciseInfo.dart';
 import 'createExerciseView.dart';
 
-class EditExercisesView extends StatefulWidget {
+class AllExercisesInfoView extends StatefulWidget {
   final Map<String, List> exercisesLists;
-  const EditExercisesView({Key? key, required this.exercisesLists})
+  const AllExercisesInfoView({Key? key, required this.exercisesLists})
       : super(key: key);
 
   @override
-  State<EditExercisesView> createState() => _EditExercisesViewState();
+  State<AllExercisesInfoView> createState() => _AllExercisesInfoViewState();
 }
 
-class _EditExercisesViewState extends State<EditExercisesView> {
+class _AllExercisesInfoViewState extends State<AllExercisesInfoView> {
   bool isEdit = false;
+
+  bool isDeleting = false;
+  ExerciseInfo? deletedItem;
+  int deletedIndex = -1;
+  List? deletedList;
+  bool showUndo = false;
+
+  Future<void> deleteExercise(bool isDeleteAction) async {
+    if (deletedItem != null && deletedIndex != -1) {
+      ExerciseInfoDataStore store = ExerciseInfoDataStore();
+      setState(() => isDeleting = true);
+      await store.deleteExercise(id: deletedItem!.id ?? "");
+      setState(() => isDeleting = false);
+    }
+
+    if (!isDeleteAction) {
+      setState(() {
+        showUndo = false;
+        deletedIndex = -1;
+        deletedItem = null;
+        deletedList = null;
+      });
+    }
+  }
+
+  Future<void> addExercise(ExerciseInfo exerciseInfo) async {
+    deleteExercise(false);
+    ExerciseInfoDataStore store = ExerciseInfoDataStore();
+    await store.addExercise(exercise: exerciseInfo).then((value) {
+      exerciseInfo.id = value;
+      widget.exercisesLists[tagMap[exerciseInfo.muscleGroup]]!
+          .add(exerciseInfo);
+      setState(() {});
+    });
+  }
 
   Map<String, String> tagMap = {
     "Chest": "chest",
@@ -49,16 +84,30 @@ class _EditExercisesViewState extends State<EditExercisesView> {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            // showUndo
-            //     ? FloatingActionButton(
-            //         backgroundColor: Colors.orange[400],
-            //         child: const Icon(Icons.undo),
-            //         onPressed: () {},
-            //       )
-            //     : const SizedBox(),
-            // SizedBox(
-            //   width: width * 0.63,
-            // ),
+            showUndo
+                ? FloatingActionButton(
+                    backgroundColor: Colors.orange[400],
+                    child: const Icon(Icons.undo),
+                    onPressed: () {
+                      setState(() {
+                        deletedList!.insert(
+                            deletedIndex,
+                            deletedItem ??
+                                ExerciseInfo(
+                                  id: "",
+                                  name: "",
+                                  muscleGroup: "",
+                                ));
+                        showUndo = false;
+                        deletedItem = null;
+                        deletedIndex = -1;
+                      });
+                    },
+                  )
+                : const SizedBox(),
+            SizedBox(
+              width: width * 0.63,
+            ),
             FloatingActionButton(
               backgroundColor: Colors.blue,
               child: const Icon(Icons.add),
@@ -72,14 +121,7 @@ class _EditExercisesViewState extends State<EditExercisesView> {
                   ),
                 );
                 if (result != null && result is ExerciseInfo) {
-                  ExerciseInfoDataStore store = ExerciseInfoDataStore();
-                  await store.addExercise(exercise: result).then((value) {
-                    if (value) {
-                      widget.exercisesLists[tagMap[result.muscleGroup]]!
-                          .add(result);
-                      setState(() {});
-                    }
-                  });
+                  addExercise(result);
                 }
               },
             )
@@ -89,6 +131,7 @@ class _EditExercisesViewState extends State<EditExercisesView> {
         leading: IconButton(
           icon: Icon(Icons.chevron_left, size: width * 0.08),
           onPressed: () {
+            deleteExercise(false);
             Navigator.pop(context, isEdit);
           },
         ),
@@ -169,21 +212,58 @@ class _EditExercisesViewState extends State<EditExercisesView> {
           itemCount: expMap[text]! ? list.length : 0,
           itemBuilder: (context, i) {
             final ExerciseInfo item = list[i];
-            return Padding(
-              padding: EdgeInsets.fromLTRB(0, height * 0.01, 0, height * 0.01),
-              child: ListTile(
-                title: Text(
-                  item.name,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+            return Dismissible(
+              key: Key("${item.name} ${item.muscleGroup}"),
+              background: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.only(
+                        topLeft:
+                            i == 0 ? Radius.circular(height / 50) : Radius.zero,
+                        topRight:
+                            i == 0 ? Radius.circular(height / 50) : Radius.zero,
+                        bottomLeft: i == list.length - 1
+                            ? Radius.circular(height / 50)
+                            : Radius.zero,
+                        bottomRight: i == list.length - 1
+                            ? Radius.circular(height / 50)
+                            : Radius.zero),
                   ),
+                  child: const Icon(Icons.delete)),
+              direction: DismissDirection.endToStart,
+              child: Padding(
+                padding:
+                    EdgeInsets.fromLTRB(0, height * 0.01, 0, height * 0.01),
+                child: ListTile(
+                  title: Text(
+                    item.name,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  onTap: () {
+                    // setState(() {
+                    //   exerciseIndex = i;
+                    // });
+                  },
                 ),
-                onTap: () {
-                  // setState(() {
-                  //   exerciseIndex = i;
-                  // });
-                },
               ),
+              onDismissed: (direction) async {
+                if (isDeleting) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content:
+                          Text("Another request in process. Please wait")));
+                } else {
+                  await deleteExercise(true);
+
+                  setState(() {
+                    deletedItem = list.removeAt(i);
+                    deletedIndex = i;
+                    deletedList = list;
+                    showUndo = true;
+                  });
+                }
+              },
             );
           },
           separatorBuilder: (BuildContext context, int index) {
